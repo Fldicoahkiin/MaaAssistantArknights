@@ -5,9 +5,13 @@ dir:
   order: 0
 ---
 
+<!-- markdownlint-disable -->
+
 ::: center
 
-![MAA Logo](https://cdn.jsdelivr.net/gh/MaaAssistantArknights/design@main/logo/maa-logo_512x512.png =256x256)
+![MAA Logo](/images/maa-logo_512x512.png =256x256)
+
+<!-- markdownlint-restore -->
 
 # MaaAssistantArknights
 
@@ -15,8 +19,6 @@ dir:
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet)
 ![license](https://img.shields.io/github/license/MaaAssistantArknights/MaaAssistantArknights) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MaaAssistantArknights?color=%23ff69b4)
 ![stars](https://img.shields.io/github/stars/MaaAssistantArknights/MaaAssistantArknights?style=social) ![GitHub all releases](https://img.shields.io/github/downloads/MaaAssistantArknights/MaaAssistantArknights/total?style=social)
-
-[简体中文](../zh-cn/readme.md) | [繁體中文](../zh-tw/readme.md) | [English](../en-us/readme.md) | [日本語](../ja-jp/readme.md) | 한국어
 
 MAA는 MAA Assistant Arknights의 약자입니다
 
@@ -27,6 +29,10 @@ MAA는 MAA Assistant Arknights의 약자입니다
 개발 진행 중입니다  ✿✿ヽ(°▽°)ノ✿
 
 :::
+
+## 다운로드 및 설치
+
+[문서](./manual/newbie.md)를 읽은 후 [공식 웹사이트](https://maa.plus) 또는 [Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases)에서 다운로드하십시오. [초보자 가이드](./manual/newbie.md)를 참고하여 설치하십시오.
 
 ## 개요
 
@@ -45,67 +51,26 @@ MAA는 MAA Assistant Arknights의 약자입니다
 
 말로만 설명하기보다는 사진으로 보여드리겠습니다!
 
-<!-- markdownlint-disable -->
-
-<div class="image-ko-kr">
-  <img src="/image/ko-kr/readme/1-light.png" />
-  <img src="/image/ko-kr/readme/2-light.png" />
-</div>
-
-<style>
-  .image-ko-kr {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .image-ko-kr > img {
-     box-sizing: border-box;
-     width: 50% !important;
-     padding: 9px;
-     border-radius: 16px;
-  }
-
-  @media (max-width: 419px){
-    .image-ko-kr > img {
-      width: 100% !important;
+```component Image2
+{
+  "imageList": [
+    {
+      "light": "images/ko-kr/readme/1-light.png",
+      "dark": "images/ko-kr/readme/1-light.png"
+    },
+    {
+      "light": "images/ko-kr/readme/2-light.png",
+      "dark": "images/ko-kr/readme/2-light.png"
     }
-  }
-</style>
-
-<!-- markdownlint-restore -->
-
-## 다운로드
-
-[안정 버전](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/latest)  
-[베타 버전](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases)
+  ]
+}
+```
 
 ## 사용 방법
 
-### 기본 설정
+### 기능 소개
 
-1. [Windows 지원 목록](./manual/device/windows.md) 문서를 참고하여 에뮬레이터/기기를 설정해 주세요.
-2. 에뮬레이터 해상도를 `1280x720` 이상으로 변경하세요. 최대값은 `2K`이고 가로세로 비율은 `16:9`입니다.
-
-::: tip
- YostarKR의 경우 게임 인터페이스 문제로 인해 `1280x720` 또는 `1920x1080` 해상도를 권장합니다.
-:::
-
-1. 어시스턴트 시작!
-
-자세한 내용은 [사용자 설명서](./manual/introduction/)를 참조해 주세요.
-
-### FAQ
-
-- 프로그램이 실행하자마자 곧바로 튕겨요
-- 연결 오류가 발생해요/ADB 경로를 어떻게 작성해야 하는지 모르겠어요
-- 연결은 성공했는데, 그대로 멈춰 버렸어요
-- 연결 설정(포트 등)을 바꾸고 싶어요
-- 다운로드 속도가 너무 느려요/미러 사이트가 접속이 안 돼요
-- 다운로드 도중에 “로그인”이나 “인증”이라는 메시지가 떠요
-
-[FAQ](./manual/faq.md) 문서를 참조해 주세요.
+[사용자 매뉴얼](./manual/)을 참조하십시오.
 
 ### 해외 서버 지원
 
@@ -117,7 +82,7 @@ MAA는 MAA Assistant Arknights의 약자입니다
 
 ### CLI지원
 
-MAA는 명령줄 인터페이스(CLI)를 지원하며, Linux,macOS 및 Window에서 사용할 수 있으며, 자동화 스크립트 작성 및 그래픽 인터페이스가 없는 서버에서 사용할 수 있습니다. [CLI 가이드](./manual/cli/intro.md)
+MAA는 명령줄 인터페이스(CLI)를 지원하며, Linux,macOS 및 Window에서 사용할 수 있으며, 자동화 스크립트 작성 및 그래픽 인터페이스가 없는 서버에서 사용할 수 있습니다. [CLI 가이드](./manual/cli/)
 
 ## 관련 프로젝트
 
@@ -138,7 +103,7 @@ MAA는 다국어를 지원하며, Weblate를 사용하여 로컬라이징을 관
 
 MAA는 중국어(간체)를 기본 언어로 하며, 번역 단어는 중국어(간체)를 기준으로 합니다.
 
-[![Weblate](https://weblate.maa-org.net/widgets/maa-assistant-arknights/zh_Hans/maa-wpf-gui/multi-auto.svg)](https://weblate.maa-org.net/engage/maa-assistant-arknights/zh_Hans/)
+[![Weblate](https://weblate.maa-org.net/widget/maa/wpf-gui/multi-auto.svg)](https://weblate.maa-org.net/engage/maa/)
 
 ### Windows
 
@@ -179,7 +144,7 @@ MAA는 중국어(간체)를 기본 언어로 하며, 번역 단어는 중국어(
 
 ### 개발에 기여를 원하지만, GitHub 사용이 어려운 경우?
 
-[GitHub Pull Request 가이드](./develop/pr-tutorial.md)
+[GitHub Pull Request 가이드](./develop/development.md#introduction-to-github-pull-request-flow)
 
 ### Issue bot
 
@@ -214,27 +179,40 @@ MAA는 중국어(간체)를 기본 언어로 하며, 번역 단어는 중국어(
 - ~~오퍼레이터/기반시설 데이터: [PRTS Arknights Wiki (Chinese)](http://prts.wiki/)~~
 - 스테이지 데이터: [Penguin Stats](https://penguin-stats.io/)
 - 게임 데이터/리소스: [Arknights Game Resource](https://github.com/yuanyan3060/ArknightsGameResource)
-- ~~게임 데이터: [Arknights Game Data](https://github.com/Kengxxiao/ArknightsGameData)~~
+- 게임 데이터: [Arknights Yostar Game Data](https://github.com/Kengxxiao/ArknightsGameData_YoStar)
 
 ### 기여자
 
 MAA의 개선을 위한 개발/테스트에 기여해준 모든 친구들에게 감사드립니다! (\*´▽｀)ノノ
 
-[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=114514&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
+[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=105&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
 
 ## 주의사항
 
+- 본 소프트웨어는 [GNU Affero General Public License v3.0 only](https://spdx.org/licenses/AGPL-3.0-only.html) 오픈소스 라이선스를 사용합니다.
 - 이 프로그램의 로고는 AGPL 3.0 라이센스의 적용 대상이 아닙니다. [耗毛](https://weibo.com/u/3251357314)와 Vie 두 명의 아티스트와 프로그램의 개발자들이 모든 권리를 가집니다. 프로젝트가 AGPL 3.0 라이센스 하에 있다고 하더라도 프로그램의 로고는 동의 없이 사용되어서는 안 되며, 동의 없는 상업적 이용 또한 금지됩니다.
 - 이 프로그램은 오픈소스이자 무료이며 학습 및 커뮤니케이션 전용입니다. 이 프로그램을 이용해 장비값이나 시간당 수수료 등을 대가로 서비스를 제공하는 판매자로 인해 발생하는 문제와 결과는 프로그램의 개발자들에게는 책임이 없습니다.
+
+### DirectML 지원 설명
+
+이 소프트웨어는 GPU 가속 기능을 지원하며, GPU 가속은 Microsoft에서 제공하는 DirectML(Microsoft.AI.DirectML)에 의존합니다. 사용자 편의를 위해 설치 패키지에 수정되지 않은 DirectML.dll 파일이 포함되어 있습니다.
+
+#### DirectML.dll에 대하여
+
+- 출처: Microsoft 공식
+- 라이선스: Microsoft의 DirectML 사용 약관을 참조하세요  
+  [DirectML 공식 문서](https://learn.microsoft.com/en-us/windows/ai/directml/)
+
+DirectML.dll은 Microsoft에서 제공하는 독립적인 구성 요소로, 본 소프트웨어의 오픈 소스 부분에 포함되지 않으며 AGPL-3.0의 적용을 받지 않습니다.
+
+GPU 지원이 필요하지 않은 경우, 이 DLL 파일을 안전하게 삭제할 수 있으며 소프트웨어의 핵심 기능은 정상적으로 작동합니다.
 
 ## 광고
 
 사용자 그룹: [Telegram](https://t.me/+Mgc2Zngr-hs3ZjU1), [QQ 그룹](https://ota.maa.plus/MaaAssistantArknights/api/qqgroup/index.html)  
 [전략 JSON 공유](https://prts.plus)  
-[빌리빌리 라이브](https://live.bilibili.com/2808861): 코딩 과정을 밤마다 방송하고 있습니다. 이 프로그램에 대부분의 시간을 할애하고 있습니다.  
+Bilibili 라이브 방송: [MrEO 방송](https://live.bilibili.com/2808861) 코딩 방송 & [MAA-Official 방송](https://live.bilibili.com/27548877) 게임/잡담  
 [명일방주 무관 기술 공유 & 만담 (QQ 그룹)](https://jq.qq.com/?_wv=1027&k=ypbzXcA2): 지옥 같아요!  
 [개발자 그룹 (QQ 그룹)](https://jq.qq.com/?_wv=1027&k=JM9oCk3C)
 
 프로그램이 도움이 된다고 생각하시면 Star를 눌러주세요! (페이지 우측 상단의 작은 별) 저희에게 가장 큰 도움이 됩니다!
-
-<!-- markdownlint-disable-file MD034 MD041 -->

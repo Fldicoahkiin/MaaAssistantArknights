@@ -10,22 +10,25 @@
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY
 // </copyright>
-
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using HandyControl.Controls;
 using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
 using MaaWpfGui.States;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using Stylet;
+using Timer = System.Timers.Timer;
 
 namespace MaaWpfGui.ViewModels.UI
 {
@@ -35,6 +38,7 @@ namespace MaaWpfGui.ViewModels.UI
     public class RecognizerViewModel : Screen
     {
         private readonly RunningState _runningState;
+        private static readonly ILogger _logger = Log.ForContext<RecognizerViewModel>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecognizerViewModel"/> class.
@@ -44,11 +48,22 @@ namespace MaaWpfGui.ViewModels.UI
             DisplayName = LocalizationHelper.GetString("Toolbox");
             _runningState = RunningState.Instance;
             _runningState.IdleChanged += RunningState_IdleChanged;
+            _peepImageTimer.Elapsed += RefreshPeepImageAsync;
+            _peepImageTimer.Interval = 1000d / PeepTargetFps;
+            _gachaTimer.Tick += RefreshGachaTip;
         }
 
-        private void RunningState_IdleChanged(object sender, bool e)
+        private void RunningState_IdleChanged(object? sender, bool e)
         {
             Idle = e;
+            if (!Idle)
+            {
+                return;
+            }
+
+            Peeping = false;
+            IsPeepInProgress = false;
+            IsGachaInProgress = false;
         }
 
         private bool _idle;
@@ -59,30 +74,7 @@ namespace MaaWpfGui.ViewModels.UI
         public bool Idle
         {
             get => _idle;
-            set
-            {
-                SetAndNotify(ref _idle, value);
-
-                if (!value)
-                {
-                    return;
-                }
-
-                // 识别完成、主界面暂停或者连接出错时
-                GachaDone = true;
-                DepotDone = true;
-                OperBoxDone = true;
-            }
-        }
-
-        private static string PadRightEx(string str, int totalByteCount)
-        {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding coding = Encoding.GetEncoding("gb2312");
-            int count = str.ToCharArray().Count(ch => coding.GetByteCount(ch.ToString()) == 2);
-
-            string w = str.PadRight(totalByteCount - count);
-            return w;
+            set => SetAndNotify(ref _idle, value);
         }
 
         #region Recruit
@@ -98,7 +90,7 @@ namespace MaaWpfGui.ViewModels.UI
             set => SetAndNotify(ref _recruitInfo, value);
         }
 
-        private string _recruitResult;
+        private string _recruitResult = string.Empty;
 
         /// <summary>
         /// Gets or sets the recruit result.
@@ -184,46 +176,6 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        private bool _isLevel3UseShortTime = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.Level3UseShortTime, bool.FalseString));
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to shorten the time for level 3.
-        /// </summary>
-        public bool IsLevel3UseShortTime
-        {
-            get => _isLevel3UseShortTime;
-            set
-            {
-                if (value)
-                {
-                    IsLevel3UseShortTime2 = false;
-                }
-
-                SetAndNotify(ref _isLevel3UseShortTime, value);
-                ConfigurationHelper.SetValue(ConfigurationKeys.Level3UseShortTime, value.ToString());
-            }
-        }
-
-        private bool _isLevel3UseShortTime2 = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.Level3UseShortTime2, bool.FalseString));
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to shorten the time for level 3.
-        /// </summary>
-        public bool IsLevel3UseShortTime2
-        {
-            get => _isLevel3UseShortTime2;
-            set
-            {
-                if (value)
-                {
-                    IsLevel3UseShortTime = false;
-                }
-
-                SetAndNotify(ref _isLevel3UseShortTime2, value);
-                ConfigurationHelper.SetValue(ConfigurationKeys.Level3UseShortTime2, value.ToString());
-            }
-        }
-
         private bool _recruitCaught;
 
         /// <summary>
@@ -267,7 +219,7 @@ namespace MaaWpfGui.ViewModels.UI
                 levelList.Add(6);
             }
 
-            Instances.AsstProxy.AsstStartRecruitCalc(levelList.ToArray(), RecruitAutoSetTime);
+            Instances.AsstProxy.AsstStartRecruitCalc(levelList.ToArray(), RecruitAutoSetTime, TaskQueueViewModel.RecruitTask.ChooseLevel3Time, TaskQueueViewModel.RecruitTask.ChooseLevel4Time, TaskQueueViewModel.RecruitTask.ChooseLevel5Time);
         }
 
         private bool _recruitmentShowPotential = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RecruitmentShowPotential, bool.TrueString));
@@ -284,16 +236,16 @@ namespace MaaWpfGui.ViewModels.UI
 
         public void ProcRecruitMsg(JObject details)
         {
-            string what = details["what"].ToString();
+            string? what = details["what"]?.ToString();
             var subTaskDetails = details["details"];
 
             switch (what)
             {
                 case "RecruitTagsDetected":
                     {
-                        JArray tags = (JArray)subTaskDetails["tags"];
+                        JArray? tags = (JArray?)subTaskDetails?["tags"];
                         string infoContent = LocalizationHelper.GetString("RecruitTagsDetected");
-                        tags ??= new JArray();
+                        tags ??= [];
                         infoContent = tags.Select(tagName => tagName.ToString()).Aggregate(infoContent, (current, tagStr) => current + (tagStr + "    "));
 
                         RecruitInfo = infoContent;
@@ -304,20 +256,20 @@ namespace MaaWpfGui.ViewModels.UI
                 case "RecruitResult":
                     {
                         string resultContent = string.Empty;
-                        JArray resultArray = (JArray)subTaskDetails["result"];
+                        JArray? resultArray = (JArray?)subTaskDetails?["result"];
                         /* int level = (int)subTaskDetails["level"]; */
-                        foreach (var combs in resultArray ?? new JArray())
+                        foreach (var combs in resultArray ?? [])
                         {
-                            int tagLevel = (int)combs["level"];
+                            int tagLevel = (int)(combs["level"] ?? -1);
                             resultContent += tagLevel + "★ Tags:    ";
-                            resultContent = (((JArray)combs["tags"]) ?? new JArray()).Aggregate(resultContent, (current, tag) => current + (tag + "    "));
+                            resultContent = (((JArray?)combs["tags"]) ?? []).Aggregate(resultContent, (current, tag) => current + (tag + "    "));
 
                             resultContent += "\n\t";
-                            foreach (var oper in (JArray)combs["opers"] ?? new JArray())
+                            foreach (var oper in (JArray?)combs["opers"] ?? [])
                             {
-                                int operLevel = (int)oper["level"];
-                                string operId = oper["id"]?.ToString();
-                                string operName = oper["name"]?.ToString();
+                                int operLevel = (int)(oper["level"] ?? -1);
+                                var operId = oper["id"]?.ToString();
+                                var operName = DataHelper.GetLocalizedCharacterName(oper["name"]?.ToString());
 
                                 string potential = string.Empty;
 
@@ -362,7 +314,7 @@ namespace MaaWpfGui.ViewModels.UI
             set => SetAndNotify(ref _depotInfo, value);
         }
 
-        private ObservableCollection<DepotResultDate> _depotResult = new ObservableCollection<DepotResultDate>();
+        private ObservableCollection<DepotResultDate> _depotResult = [];
 
         /// <summary>
         /// Gets or sets the depot result.
@@ -375,13 +327,13 @@ namespace MaaWpfGui.ViewModels.UI
 
         public class DepotResultDate
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
-            public string Id { get; set; }
+            public string Id { get; set; } = null!;
 
-            public BitmapImage Image { get; set; }
+            public BitmapImage? Image { get; set; }
 
-            public int Count { get; set; }
+            public string? Count { get; set; }
         }
 
         /// <summary>
@@ -395,11 +347,16 @@ namespace MaaWpfGui.ViewModels.UI
         public string LoliconResult { get; set; } = string.Empty;
 
         /// <summary>
+        /// gets or sets the depot image.
+        /// </summary>
+        private static readonly Dictionary<string, BitmapImage?> _imageCache = new();
+
+        /// <summary>
         /// parse of depot recognition result
         /// </summary>
         /// <param name="details">detailed json-style parameters</param>
         /// <returns>Success or not</returns>
-        public bool DepotParse(JObject details)
+        public bool DepotParse(JObject? details)
         {
             if (details == null)
             {
@@ -407,50 +364,53 @@ namespace MaaWpfGui.ViewModels.UI
             }
 
             DepotResult.Clear();
-            foreach (var item in details["arkplanner"]?["object"]?["items"]?.Cast<JObject>()!)
+
+            var sortedItems = details["arkplanner"]?["object"]?["items"]
+                                  ?.Cast<JObject>()
+                                  .OrderBy(item => (string?)item["id"])
+                              ?? Enumerable.Empty<JObject>();
+
+            foreach (var item in sortedItems)
             {
-                var id = (string)item["id"];
-                DepotResultDate result = new DepotResultDate()
+                var id = (string?)item["id"];
+                if (id == null)
+                {
+                    continue;
+                }
+
+                if (!_imageCache.TryGetValue(id, out var image))
+                {
+                    image = ItemListHelper.GetItemImage(id);
+                    _imageCache[id] = image;
+                }
+
+                DepotResultDate result = new()
                 {
                     Id = id,
                     Name = ItemListHelper.GetItemName(id),
-                    Image = ItemListHelper.GetItemImage(id),
-                    Count = (int)item["have"]
+                    Image = image,
+                    Count = item["have"] != null && int.TryParse(item["have"]?.ToString() ?? "-1", out int haveValue)
+                        ? (haveValue > 10000
+                            ? $"{haveValue / 10000.0:F1}w"
+                            : haveValue.ToString())
+                        : "-1",
                 };
+
                 DepotResult.Add(result);
             }
 
-            ArkPlannerResult = (string)details["arkplanner"]["data"];
-            LoliconResult = (string)details["lolicon"]["data"];
+            ArkPlannerResult = details["arkplanner"]?["data"]?.ToString() ?? string.Empty;
+            LoliconResult = details["lolicon"]?["data"]?.ToString() ?? string.Empty;
 
-            bool done = (bool)details["done"];
+            bool done = (bool)(details["done"] ?? false);
             if (!done)
             {
                 return true;
             }
 
             DepotInfo = LocalizationHelper.GetString("IdentificationCompleted") + "\n" + LocalizationHelper.GetString("DepotRecognitionTip");
-            DepotDone = true;
 
             return true;
-        }
-
-        private bool _depotDone = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether depot info is parsed.
-        /// </summary>
-        public bool DepotDone
-        {
-            get => _depotDone;
-            set
-            {
-                SetAndNotify(ref _depotDone, value);
-                if (value)
-                {
-                    _runningState.SetIdle(true);
-                }
-            }
         }
 
         /// <summary>
@@ -480,7 +440,6 @@ namespace MaaWpfGui.ViewModels.UI
             DepotResult.Clear();
             ArkPlannerResult = string.Empty;
             LoliconResult = string.Empty;
-            DepotDone = false;
         }
 
         /// <summary>
@@ -514,21 +473,37 @@ namespace MaaWpfGui.ViewModels.UI
         /// <summary>
         /// 未实装干员，但在battle_data中，
         /// </summary>
-        private static readonly HashSet<string> _virtuallyOpers = new HashSet<string>
-        {
-            "char_504_rguard",
-            "char_505_rcast",
-            "char_506_rmedic",
-            "char_507_rsnipe",
-            "char_514_rdfend",
-            "char_513_apionr",
-            "char_511_asnipe",
-            "char_510_amedic",
-            "char_509_acast",
-            "char_508_aguard",
-            "char_1001_amiya2",
-            "char_1037_amiya3",
-        };
+        private static readonly HashSet<string?> _virtuallyOpers =
+        [
+            "char_504_rguard", // 预备干员-近战
+            "char_505_rcast", // 预备干员-术师
+            "char_506_rmedic", // 预备干员-后勤
+            "char_507_rsnipe", // 预备干员-狙击
+            "char_508_aguard", // Sharp
+            "char_509_acast", // Pith
+            "char_510_amedic", // Touch
+            "char_511_asnipe", // Stormeye
+            "char_513_apionr", // 郁金香
+            "char_514_rdfend", // 预备干员-重装
+
+            // 因为 core 是通过名字来判断的，所以下面干员中如果有和上面重名的不会用到，不过也加上了
+            "char_600_cpione", // 预备干员-先锋 4★
+            "char_601_cguard", // 预备干员-近卫 4★
+            "char_602_cdfend", // 预备干员-重装 4★
+            "char_603_csnipe", // 预备干员-狙击 4★
+            "char_604_ccast", // 预备干员-术师 4★
+            "char_605_cmedic", // 预备干员-医疗 4★
+            "char_606_csuppo", // 预备干员-辅助 4★
+            "char_607_cspec", // 预备干员-特种 4★
+            "char_608_acpion", // 郁金香 6★
+            "char_609_acguad", // Sharp 6★
+            "char_610_acfend", // Mechanist
+            "char_614_acsupo", // Raidian
+            "char_615_acspec", // Misery
+
+            "char_1001_amiya2", // 阿米娅-WARRIOR
+            "char_1037_amiya3", // 阿米娅-MEDIC
+        ];
 
         private string _operBoxInfo = LocalizationHelper.GetString("OperBoxRecognitionTip");
 
@@ -538,35 +513,9 @@ namespace MaaWpfGui.ViewModels.UI
             set => SetAndNotify(ref _operBoxInfo, value);
         }
 
-        private string _operBoxResult;
-
-        public string OperBoxResult
-        {
-            get => _operBoxResult;
-            set => SetAndNotify(ref _operBoxResult, value);
-        }
-
-        private bool _operBoxDone = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether operBox info is parsed.
-        /// </summary>
-        public bool OperBoxDone
-        {
-            get => _operBoxDone;
-            set
-            {
-                SetAndNotify(ref _operBoxDone, value);
-                if (value)
-                {
-                    _runningState.SetIdle(true);
-                }
-            }
-        }
-
         public string OperBoxExportData { get; set; } = string.Empty;
 
-        private JArray _operBoxDataArray = (JArray)JsonConvert.DeserializeObject(ConfigurationHelper.GetValue(ConfigurationKeys.OperBoxData, string.Empty));
+        private JArray _operBoxDataArray = (JArray)(JsonConvert.DeserializeObject(ConfigurationHelper.GetValue(ConfigurationKeys.OperBoxData, new JArray().ToString())) ?? new JArray());
 
         public JArray OperBoxDataArray
         {
@@ -575,31 +524,26 @@ namespace MaaWpfGui.ViewModels.UI
             {
                 SetAndNotify(ref _operBoxDataArray, value);
                 ConfigurationHelper.SetValue(ConfigurationKeys.OperBoxData, value.ToString());
-                _operBoxPotential = null;   // reset
+                _operBoxPotential = null; // reset
             }
         }
 
-        private Dictionary<string, int> _operBoxPotential;
+        private Dictionary<string, int>? _operBoxPotential;
 
-        public Dictionary<string, int> OperBoxPotential
+        public Dictionary<string, int>? OperBoxPotential
         {
             get
             {
-                if (OperBoxDataArray == null)
-                {
-                    return null;
-                }
-
                 if (_operBoxPotential != null)
                 {
                     return _operBoxPotential;
                 }
 
                 _operBoxPotential = new Dictionary<string, int>();
-                foreach (JObject operBoxData in OperBoxDataArray.Cast<JObject>())
+                foreach (JObject operBoxData in OperBoxDataArray.OfType<JObject>())
                 {
-                    var id = (string)operBoxData["id"];
-                    var potential = (int)operBoxData["potential"];
+                    var id = (string?)operBoxData["id"];
+                    var potential = (int)(operBoxData["potential"] ?? -1);
                     if (id != null)
                     {
                         _operBoxPotential[id] = potential;
@@ -610,88 +554,81 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        public bool OperBoxParse(JObject details)
+        private ObservableCollection<string> _operBoxHaveList = [];
+
+        public ObservableCollection<string> OperBoxHaveList
         {
-            JArray operBoxes = (JArray)details["all_opers"];
-
-            List<Tuple<string, int>> operHave = new List<Tuple<string, int>>();
-            List<Tuple<string, int>> operNotHave = new List<Tuple<string, int>>();
-
-            string localizedName = ConfigurationHelper.GetValue(ConfigurationKeys.Localization, string.Empty) switch
+            get => _operBoxHaveList;
+            set
             {
-                "zh-cn" => "name",
-                "ja-jp" => "name_jp",
-                "ko-kr" => "name_kr",
-                "zh-tw" => "name_tw",
-                _ => "name_en",
-            };
+                SetAndNotify(ref _operBoxHaveList, value);
+            }
+        }
 
+        private ObservableCollection<string> _operBoxNotHaveList = [];
+
+        public ObservableCollection<string> OperBoxNotHaveList
+        {
+            get => _operBoxNotHaveList;
+            set
+            {
+                SetAndNotify(ref _operBoxNotHaveList, value);
+            }
+        }
+
+        public bool OperBoxParse(JObject? details)
+        {
+            var operBoxes = (JArray?)details?["all_opers"];
+
+            if (operBoxes == null)
+            {
+                return false;
+            }
+
+            List<(string Name, int Rarity)> operHave = [];
+            List<(string Name, int Rarity)> operNotHave = [];
+            (string Name, int Rarity) tuple = ("???", -1);
             foreach (JObject operBox in operBoxes.Cast<JObject>())
             {
-                var tuple = new Tuple<string, int>((string)operBox[localizedName], (int)operBox["rarity"]);
+                tuple.Name = DataHelper.GetLocalizedCharacterName((string?)operBox["name"]) ?? "???";
+                tuple.Rarity = (int)(operBox["rarity"] ?? -1);
 
-                if (_virtuallyOpers.Contains((string)operBox["id"]))
+                if (_virtuallyOpers.Contains((string?)operBox["id"]))
                 {
                     continue;
                 }
 
-                if ((bool)operBox["own"])
+                if ((bool)(operBox["own"] ?? false))
                 {
                     /*已拥有干员*/
                     operHave.Add(tuple);
                 }
                 else
                 {
-                    /*未拥有干员,包含预备干员等*/
-                    operNotHave.Add(tuple);
+                    if (DataHelper.IsCharacterAvailableInClient(tuple.Name, SettingsViewModel.GameSettings.ClientType))
+                    {
+                        operNotHave.Add(tuple);
+                    }
                 }
             }
 
-            operHave.Sort((x, y) => y.Item2.CompareTo(x.Item2));
-            operNotHave.Sort((x, y) => y.Item2.CompareTo(x.Item2));
+            operHave.Sort((x, y) => y.Rarity.CompareTo(x.Rarity));
+            operNotHave.Sort((x, y) => y.Rarity.CompareTo(x.Rarity));
 
-            int newlineFlag = 0;
-            string operNotHaveNames = "\t";
+            OperBoxHaveList = new(operHave.Select(valueTuple => valueTuple.Name));
+            OperBoxNotHaveList = new(operNotHave.Select(valueTuple => valueTuple.Name));
 
-            foreach (var name in operNotHave.Select(tuple => tuple.Item1))
+            bool done = (bool)(details?["done"] ?? false);
+            if (!done)
             {
-                operNotHaveNames += PadRightEx(name, 12) + "\t";
-                if (newlineFlag++ != 3)
-                {
-                    continue;
-                }
-
-                operNotHaveNames += "\n\t";
-                newlineFlag = 0;
+                return true;
             }
 
-            newlineFlag = 0;
-            string operHaveNames = "\t";
-            foreach (var name in operHave.Select(tuple => tuple.Item1))
-            {
-                operHaveNames += PadRightEx(name, 12) + "\t";
-                if (newlineFlag++ != 3)
-                {
-                    continue;
-                }
+            OperBoxInfo = LocalizationHelper.GetString("IdentificationCompleted") + "\n" + LocalizationHelper.GetString("OperBoxRecognitionTip");
+            OperBoxExportData = details?["own_opers"]?.ToString() ?? string.Empty;
+            OperBoxDataArray = (JArray)(details?["own_opers"] ?? new JArray());
 
-                operHaveNames += "\n\t";
-                newlineFlag = 0;
-            }
-
-            bool done = (bool)details["done"];
-            if (done)
-            {
-                OperBoxInfo = LocalizationHelper.GetString("IdentificationCompleted") + "\n" + LocalizationHelper.GetString("OperBoxRecognitionTip");
-                OperBoxResult = string.Format(LocalizationHelper.GetString("OperBoxRecognitionResult"), operNotHave.Count, operNotHaveNames, operHave.Count, operHaveNames);
-                OperBoxExportData = details["own_opers"].ToString();
-                OperBoxDataArray = (JArray)details["own_opers"];
-                OperBoxDone = true;
-            }
-            else
-            {
-                OperBoxResult = operHaveNames;
-            }
+            _runningState.SetIdle(true);
 
             return true;
         }
@@ -699,12 +636,11 @@ namespace MaaWpfGui.ViewModels.UI
         /// <summary>
         /// 开始识别干员
         /// </summary>
-        // xaml 中用到了
-        // ReSharper disable once UnusedMember.Global
+        /// xaml 中用到了
+        /// ReSharper disable once UnusedMember.Global
         public async void StartOperBox()
         {
             OperBoxExportData = string.Empty;
-            OperBoxDone = false;
             _runningState.SetIdle(false);
 
             string errMsg = string.Empty;
@@ -740,32 +676,6 @@ namespace MaaWpfGui.ViewModels.UI
 
         #region Gacha
 
-        private bool _gachaDone = true;
-
-        public bool GachaDone
-        {
-            get => _gachaDone;
-            set
-            {
-                bool stop = value && !_gachaDone;
-                SetAndNotify(ref _gachaDone, value);
-                if (value)
-                {
-                    _runningState.SetIdle(true);
-                }
-
-                if (!stop)
-                {
-                    return;
-                }
-
-                _gachaImageTimer.Stop();
-
-                // 强制再刷一下
-                RefreshGachaImage(null, null);
-            }
-        }
-
         private string _gachaInfo = LocalizationHelper.GetString("GachaInitTip");
 
         public string GachaInfo
@@ -788,15 +698,32 @@ namespace MaaWpfGui.ViewModels.UI
             StartGacha(false);
         }
 
+        private bool _isGachaInProgress;
+
+        public bool IsGachaInProgress
+        {
+            get => _isGachaInProgress;
+            set
+            {
+                if (!SetAndNotify(ref _isGachaInProgress, value))
+                {
+                    return;
+                }
+
+                if (!value)
+                {
+                    _gachaTimer.Stop();
+                }
+            }
+        }
+
         public async void StartGacha(bool once = true)
         {
-            GachaDone = false;
-            GachaImage = null;
             _runningState.SetIdle(false);
 
             string errMsg = string.Empty;
             GachaInfo = LocalizationHelper.GetString("ConnectingToEmulator");
-            bool caught = await Task.Run(() => Instances.AsstProxy.AsstConnect(ref errMsg));
+            bool caught = await Task.Run(() => Instances.AsstProxy.AsstConnect(ref errMsg) && Instances.AsstProxy.AsstStartGacha(once));
             if (!caught)
             {
                 GachaInfo = errMsg;
@@ -804,43 +731,18 @@ namespace MaaWpfGui.ViewModels.UI
                 return;
             }
 
-            if (!Instances.AsstProxy.AsstStartGacha(once))
-            {
-                return;
-            }
+            _gachaTimer.Interval = TimeSpan.FromSeconds(5);
+            _gachaTimer.Start();
 
-            _gachaImageTimer.Interval = TimeSpan.FromMilliseconds(500);
-            _gachaImageTimer.Tick += RefreshGachaImage;
-            _gachaImageTimer.Start();
+            RefreshGachaTip(null, null);
+            IsGachaInProgress = true;
+            Peep();
         }
 
-        private readonly DispatcherTimer _gachaImageTimer = new DispatcherTimer();
-
-        private static readonly object _lock = new object();
-
-        private BitmapImage _gachaImage;
-
-        public BitmapImage GachaImage
+        private void RefreshGachaTip(object? sender, EventArgs? e)
         {
-            get => _gachaImage;
-            set => SetAndNotify(ref _gachaImage, value);
-        }
-
-        private void RefreshGachaImage(object sender, EventArgs e)
-        {
-            lock (_lock)
-            {
-                var image = Instances.AsstProxy.AsstGetImage();
-                if (GachaImage.IsEqual(image))
-                {
-                    return;
-                }
-
-                GachaImage = image;
-
-                var rd = new Random();
-                GachaInfo = LocalizationHelper.GetString("GachaTip" + rd.Next(1, 18).ToString());
-            }
+            var rd = new Random();
+            GachaInfo = LocalizationHelper.GetString("GachaTip" + rd.Next(1, 18));
         }
 
         // DO NOT CHANGE
@@ -892,5 +794,232 @@ namespace MaaWpfGui.ViewModels.UI
         }
 
         #endregion Gacha
+
+        #region Peep
+
+        private bool _peeping;
+
+        public bool Peeping
+        {
+            get => _peeping;
+            set
+            {
+                if (!SetAndNotify(ref _peeping, value))
+                {
+                    return;
+                }
+
+                if (!value)
+                {
+                    _peepImageTimer.Stop();
+                }
+            }
+        }
+
+        private bool _isPeepInProgress;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether由 Peep 方法启动的 Peep
+        /// </summary>
+        public bool IsPeepInProgress
+        {
+            get => _isPeepInProgress;
+            set
+            {
+                if (!SetAndNotify(ref _isPeepInProgress, value))
+                {
+                    return;
+                }
+
+                if (!value)
+                {
+                    _peepImageTimer.Stop();
+                }
+            }
+        }
+
+        private BitmapImage? _peepImage;
+
+        public BitmapImage? PeepImage
+        {
+            get => _peepImage;
+            set => SetAndNotify(ref _peepImage, value);
+        }
+
+        private double _peepScreenFpf;
+
+        public double PeepScreenFpf
+        {
+            get => _peepScreenFpf;
+            set => SetAndNotify(ref _peepScreenFpf, value);
+        }
+
+        private int _peepTargetFps = int.Parse(ConfigurationHelper.GetValue(ConfigurationKeys.PeepTargetFps, "20"));
+
+        public int PeepTargetFps
+        {
+            get
+            {
+                return _peepTargetFps;
+            }
+
+            set
+            {
+                value = value switch
+                {
+                    > 60 => 60,
+                    < 1 => 1,
+                    _ => value,
+                };
+
+                SetAndNotify(ref _peepTargetFps, value);
+                _peepImageTimer.Interval = 1000d / _peepTargetFps;
+                ConfigurationHelper.SetValue(ConfigurationKeys.PeepTargetFps, value.ToString());
+            }
+        }
+
+        private DateTime _lastFpsUpdateTime = DateTime.MinValue;
+        private int _frameCount;
+
+        private readonly Timer _peepImageTimer = new();
+        private readonly DispatcherTimer _gachaTimer = new() { Interval = TimeSpan.FromSeconds(5) };
+
+        private int _peepImageCount;
+        private int _peepImageNewestCount;
+
+        private static int _peepImageSemaphoreCurrentCount = 2;
+        private const int PeepImageSemaphoreMaxCount = 5;
+        private static int _peepImageSemaphoreFailCount = 0;
+        private static readonly SemaphoreSlim _peepImageSemaphore = new(_peepImageSemaphoreCurrentCount, PeepImageSemaphoreMaxCount);
+
+        private async void RefreshPeepImageAsync(object? sender, EventArgs? e)
+        {
+            if (!await _peepImageSemaphore.WaitAsync(0))
+            {
+                // 一秒内连续三次未能获取信号量，降低 FPS
+                if (++_peepImageSemaphoreFailCount < 3)
+                {
+                    return;
+                }
+
+                _peepImageSemaphoreFailCount = 0;
+
+                if (_peepImageSemaphoreCurrentCount < PeepImageSemaphoreMaxCount)
+                {
+                    _peepImageSemaphoreCurrentCount++;
+                    _peepImageSemaphore.Release();
+                    return;
+                }
+
+                _logger.Warning($"Gacha Semaphore Full, Reduce fps count to {--PeepTargetFps}");
+                _ = Execute.OnUIThreadAsync(() =>
+                {
+                    Growl.Clear();
+                    Growl.Warning($"Screenshot taking too long, reduce FPS to {PeepTargetFps}");
+                });
+                return;
+            }
+
+            try
+            {
+                var count = Interlocked.Increment(ref _peepImageCount);
+                var cacheImage = await Instances.AsstProxy.AsstGetFreshImageAsync();
+                if (!Peeping || count <= _peepImageNewestCount || cacheImage is null)
+                {
+                    return;
+                }
+
+                Interlocked.Exchange(ref _peepImageNewestCount, count);
+                PeepImage = cacheImage;
+
+                var now = DateTime.Now;
+                Interlocked.Increment(ref _frameCount);
+                var totalSeconds = (now - _lastFpsUpdateTime).TotalSeconds;
+                if (totalSeconds < 1)
+                {
+                    return;
+                }
+
+                var frameCount = Interlocked.Exchange(ref _frameCount, 0);
+                _lastFpsUpdateTime = now;
+                PeepScreenFpf = frameCount / totalSeconds;
+                _peepImageSemaphoreFailCount = 0;
+            }
+            finally
+            {
+                _peepImageSemaphore.Release();
+            }
+        }
+
+        private bool _isPeepTransitioning;
+
+        public bool IsPeepTransitioning
+        {
+            get => _isPeepTransitioning;
+            set => SetAndNotify(ref _isPeepTransitioning, value);
+        }
+
+        /// <summary>
+        /// 获取或停止获取实时截图，在抽卡时额外停止抽卡
+        /// </summary>
+        public async void Peep()
+        {
+            if (IsPeepTransitioning)
+            {
+                return;
+            }
+
+            IsPeepTransitioning = true;
+
+            try
+            {
+                // 正在 Peep 时，点击按钮停止 Peep
+                if (Peeping)
+                {
+                    Peeping = false;
+                    _peepImageTimer.Stop();
+
+                    // 由 Peep() 方法启动的 Peep 也需要停止，Block 不会自动停止
+                    if (IsGachaInProgress || IsPeepInProgress)
+                    {
+                        await Instances.TaskQueueViewModel.Stop();
+                        Instances.TaskQueueViewModel.SetStopped();
+                    }
+
+                    IsPeepInProgress = false;
+                    return;
+                }
+
+                // 点击按钮开始 Peep
+                Peeping = true;
+
+                // 如果没任务在运行，需要先连接，并标记是由 Peep() 方法启动的 Peep
+                if (Idle)
+                {
+                    _runningState.SetIdle(false);
+                    string errMsg = string.Empty;
+                    bool caught = await Task.Run(() => Instances.AsstProxy.AsstConnect(ref errMsg));
+                    if (!caught)
+                    {
+                        GachaInfo = errMsg;
+                        _runningState.SetIdle(true);
+                        return;
+                    }
+
+                    IsPeepInProgress = true;
+                }
+
+                PeepScreenFpf = 0;
+                _peepImageCount = 0;
+                _peepImageNewestCount = 0;
+                _peepImageTimer.Start();
+            }
+            finally
+            {
+                IsPeepTransitioning = false;
+            }
+        }
+
+        #endregion
     }
 }

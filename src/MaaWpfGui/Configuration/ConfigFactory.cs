@@ -10,20 +10,24 @@
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY
 // </copyright>
-
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using System.Threading;
 using System.Threading.Tasks;
 using MaaWpfGui.Helper;
 using ObservableCollections;
 using Serilog;
 
 [assembly: PropertyChanged.FilterType("MaaWpfGui.Configuration.")]
+
 namespace MaaWpfGui.Configuration
 {
     public static class ConfigFactory
@@ -36,16 +40,19 @@ namespace MaaWpfGui.Configuration
 
         private static readonly ILogger _logger = Log.ForContext<ConfigurationHelper>();
 
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new();
 
-        public delegate void ConfigurationUpdateEventHandler(string key, object oldValue, object newValue);
+        private static readonly SemaphoreSlim _semaphore = new(1, 1);
+
+        public delegate void ConfigurationUpdateEventHandler(string key, object? oldValue, object? newValue);
 
         // ReSharper disable once EventNeverSubscribedTo.Global
-        public static event ConfigurationUpdateEventHandler ConfigurationUpdateEvent;
+        public static event ConfigurationUpdateEventHandler? ConfigurationUpdateEvent;
 
-        private static readonly JsonSerializerOptions _options = new JsonSerializerOptions { WriteIndented = true, Converters = { new JsonStringEnumConverter() } };
+        private static readonly JsonSerializerOptions _options = new() { WriteIndented = true, Converters = { new JsonStringEnumConverter() }, Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs, UnicodeRanges.CjkSymbolsandPunctuation, UnicodeRanges.HalfwidthandFullwidthForms), DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
-        private static readonly Lazy<Root> _rootConfig = new Lazy<Root>(() =>
+        // TODO: 参考 ConfigurationHelper ，拆几个函数出来
+        private static readonly Lazy<Root> _rootConfig = new(() =>
         {
             lock (_lock)
             {
@@ -54,12 +61,40 @@ namespace MaaWpfGui.Configuration
                     Directory.CreateDirectory("config");
                 }
 
-                Root parsed = null;
+                Root? parsed = null;
                 if (File.Exists(_configurationFile))
                 {
                     try
                     {
                         parsed = JsonSerializer.Deserialize<Root>(File.ReadAllText(_configurationFile), _options);
+                        if (parsed is null)
+                        {
+                            _logger.Warning("Failed to load configuration file, copying configuration file to error file");
+                            File.Copy(_configurationFile, _configurationFile + ".err", true);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Information("Failed to parse configuration file: " + e);
+                    }
+                }
+
+                if (parsed is null && File.Exists(_configurationBakFile))
+                {
+                    _logger.Information("trying to use backup file");
+                    try
+                    {
+                        parsed = JsonSerializer.Deserialize<Root>(File.ReadAllText(_configurationBakFile), _options);
+                        if (parsed is not null)
+                        {
+                            _logger.Information("Backup file loaded successfully, copying backup file to configuration file");
+                            File.Copy(_configurationBakFile, _configurationFile, true);
+                        }
+                        else
+                        {
+                            _logger.Warning("Failed to load backup file, copying backup file to error file");
+                            File.Copy(_configurationBakFile, _configurationBakFile + ".err", true);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -69,27 +104,9 @@ namespace MaaWpfGui.Configuration
 
                 if (parsed is null)
                 {
-                    if (File.Exists(_configurationBakFile))
-                    {
-                        File.Copy(_configurationBakFile, _configurationFile, true);
-                        try
-                        {
-                            parsed = JsonSerializer.Deserialize<Root>(File.ReadAllText(_configurationFile), _options);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.Information("Failed to parse configuration file: " + e);
-                        }
-                    }
-                }
-
-                if (parsed is null)
-                {
                     _logger.Information("Failed to load configuration file, creating a new one");
                     parsed = new Root();
                 }
-
-                parsed.CurrentConfig ??= new SpecificConfig();
 
                 parsed.PropertyChanged += OnPropertyChangedFactory("Root.");
                 parsed.Configurations.CollectionChanged += (in NotifyCollectionChangedEventArgs<KeyValuePair<string, SpecificConfig>> args) =>
@@ -100,13 +117,13 @@ namespace MaaWpfGui.Configuration
                         case NotifyCollectionChangedAction.Replace:
                             if (args.IsSingleItem)
                             {
-                                args.NewItem.Value.GUI.PropertyChanged += OnPropertyChangedFactory("Root.Configurations." + args.NewItem.Key, JsonSerializer.Serialize(args.NewItem.Value, _options), null);
+                                SpecificConfigBind(args.NewItem.Key, args.NewItem.Value);
                             }
                             else
                             {
                                 foreach (var value in args.NewItems)
                                 {
-                                    value.Value.GUI.PropertyChanged += OnPropertyChangedFactory("Root.Configurations." + value.Key, JsonSerializer.Serialize(value.Value, _options), null);
+                                    SpecificConfigBind(args.NewItem.Key, args.NewItem.Value);
                                 }
                             }
 
@@ -124,21 +141,61 @@ namespace MaaWpfGui.Configuration
 
                 parsed.Timers.CollectionChanged += OnCollectionChangedFactory<int, Timer>("Root.Timers.");
                 parsed.VersionUpdate.PropertyChanged += OnPropertyChangedFactory();
+                parsed.AnnouncementInfo.PropertyChanged += OnPropertyChangedFactory();
+                parsed.GUI.PropertyChanged += OnPropertyChangedFactory();
 
+                parsed.CurrentConfig ??= new SpecificConfig();
                 foreach (var keyValue in parsed.Configurations)
                 {
-                    var key = "Root.Configurations." + keyValue.Key + ".";
-                    keyValue.Value.GUI.PropertyChanged += OnPropertyChangedFactory(key);
-                    keyValue.Value.DragItemIsChecked.CollectionChanged += OnCollectionChangedFactory<string, bool>(key + nameof(SpecificConfig.DragItemIsChecked) + ".");
-                    keyValue.Value.InfrastOrder.CollectionChanged += OnCollectionChangedFactory<string, int>(key + nameof(SpecificConfig.InfrastOrder) + ".");
-                    keyValue.Value.TaskQueueOrder.CollectionChanged += OnCollectionChangedFactory<string, int>(key + nameof(SpecificConfig.TaskQueueOrder) + ".");
+                    SpecificConfigBind(keyValue.Key, keyValue.Value);
                 }
 
                 return parsed;
+
+                void SpecificConfigBind(string name, SpecificConfig config)
+                {
+                    var key = "Root.Configurations." + name + ".";
+                    config.DragItemIsChecked.CollectionChanged += OnCollectionChangedFactory<string, bool>(key + nameof(SpecificConfig.DragItemIsChecked) + ".");
+                    config.InfrastOrder.CollectionChanged += OnCollectionChangedFactory<string, int>(key + nameof(SpecificConfig.InfrastOrder) + ".");
+                    config.TaskQueueOrder.CollectionChanged += OnCollectionChangedFactory<string, int>(key + nameof(SpecificConfig.TaskQueueOrder) + ".");
+                    /*
+                    config.TaskQueue.CollectionChanged += (in NotifyCollectionChangedEventArgs<BaseTask> args) =>
+                    {
+                        switch (args.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
+                            case NotifyCollectionChangedAction.Replace:
+                                if (args.IsSingleItem)
+                                {
+                                    args.NewItem.PropertyChanged += OnPropertyChangedFactory(key + args.NewItem.GetType().Name + ".");
+                                }
+                                else
+                                {
+                                    foreach (var value in args.NewItems)
+                                    {
+                                        value.PropertyChanged += OnPropertyChangedFactory(key + value.GetType().Name + ".");
+                                    }
+                                }
+
+                                break;
+                            case NotifyCollectionChangedAction.Remove:
+                            case NotifyCollectionChangedAction.Move:
+                            case NotifyCollectionChangedAction.Reset:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    };
+                    foreach (var task in config.TaskQueue)
+                    {
+                        // TODO 改名
+                        task.PropertyChanged += OnPropertyChangedFactory(key + ".zdjd.");
+                    }*/
+                }
             }
         });
 
-        private static PropertyChangedEventHandler OnPropertyChangedFactory(string key, object oldValue, object newValue)
+        private static PropertyChangedEventHandler OnPropertyChangedFactory(string key, object? oldValue, object? newValue)
         {
             return (o, args) =>
             {
@@ -156,7 +213,7 @@ namespace MaaWpfGui.Configuration
         {
             return (o, args) =>
             {
-                object after = null;
+                object? after = null;
                 if (args is PropertyChangedEventDetailArgs detailArgs)
                 {
                     after = detailArgs.NewValue;
@@ -179,9 +236,9 @@ namespace MaaWpfGui.Configuration
 
         public static readonly SpecificConfig CurrentConfig = Root.CurrentConfig;
 
-        private static async void OnPropertyChanged(string key, object oldValue, object newValue)
+        private static async void OnPropertyChanged(string key, object? oldValue, object? newValue)
         {
-            var result = await Save();
+            var result = await SaveAsync();
             if (result)
             {
                 ConfigurationUpdateEvent?.Invoke(key, oldValue, newValue);
@@ -193,33 +250,66 @@ namespace MaaWpfGui.Configuration
             }
         }
 
-        private static async Task<bool> Save(string file = null)
+        private static bool Save(string? file = null)
         {
-            return await Task.Run(() =>
+            lock (_lock)
             {
-                lock (_lock)
+                try
                 {
-                    try
-                    {
-                        File.WriteAllText(file ?? _configurationFile, JsonSerializer.Serialize(Root, _options));
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Error(e, "Failed to save configuration file.");
-                        return false;
-                    }
-
-                    return true;
+                    File.WriteAllText(file ?? _configurationFile, JsonSerializer.Serialize(Root, _options));
                 }
-            });
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Failed to save configuration file.");
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        private static async Task<bool> SaveAsync(string? file = null)
+        {
+            await _semaphore.WaitAsync();
+            try
+            {
+                var filePath = file ?? _configurationFile;
+                var jsonString = JsonSerializer.Serialize(Root, _options);
+                await File.WriteAllTextAsync(filePath, jsonString);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, "Failed to save configuration file.");
+                return false;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         public static void Release()
         {
             lock (_lock)
             {
-                Save().Wait();
-                Save(_configurationBakFile).Wait();
+                if (Save())
+                {
+                    _logger.Information($"{_configurationFile} saved");
+                }
+                else
+                {
+                    _logger.Warning($"{_configurationFile} save failed");
+                }
+
+                if (Save(_configurationBakFile))
+                {
+                    _logger.Information($"{_configurationBakFile} saved");
+                }
+                else
+                {
+                    _logger.Warning($"{_configurationBakFile} save failed");
+                }
             }
         }
 
@@ -235,7 +325,7 @@ namespace MaaWpfGui.Configuration
             return true;
         }
 
-        public static bool AddConfiguration(string configName, string copyFrom = null)
+        public static bool AddConfiguration(string configName, string? copyFrom = null)
         {
             if (string.IsNullOrEmpty(configName))
             {

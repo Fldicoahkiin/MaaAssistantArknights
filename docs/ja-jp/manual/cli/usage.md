@@ -1,9 +1,9 @@
 ---
-order: 3
+order: 2
 icon: material-symbols:summarize
 ---
 
-# 使用 maa-cli
+# 使用
 
 ::: important Translation Required
 This page is outdated and maybe still in Simplified Chinese. Translation is needed.
@@ -30,19 +30,31 @@ maa self update
 
 **注意**：使用包管理器安装 maa-cli 的用户请使用包管理器更新 maa-cli，此命令在这些用户中无效。
 
+## 初始化配置
+
+一旦完成了 MaaCore 的安装，通常情况下，你无需额外配置就可以直接运行任务。默认配置可能不适用于所有用户，因此你可以通过以下命令来初始化配置：
+
+```bash
+maa init
+```
+
+通过这个命令，你可以交互式地配置 [MaaCore 的相关配置][config-core]。
+
 ## 运行任务
 
-一旦完成了 MaaCore 的安装，通常情况下，你无需额外配置就可以直接运行任务。默认配置可能不适用于所有用户，如果你在运行任务时遇到问题，你可以参考 [配置文档][config-core] 修改配置。
+完成 MaaCore 的安装和配置后，你可以运行任务了。maa-cli 支持两种类型的任务：预定义任务和自定义任务。
 
 ### 预定义任务
 
 对于常见任务，maa-cli 提供了一些预定义的任务：
 
 - `maa startup [client]`: 启动游戏并进入主界面，`[client]` 是客户端类型，如果留空则不会启动游戏客户端。
-- `maa closedown`: 关闭游戏客户端；
-- `maa fight [stage]`: 运行战斗任务，`[stage]` 是关卡名称，例如 `1-7`；留空选择上次或者当前关卡；
-- `maa copilot <maa_uri>`: 运行自动战斗任务，其中 `<maa_uri>` 是作业的 URI，其可以是 `maa://1234` 或者本地文件路径 `./1234.json`；
-- `maa roguelike [theme]`: 自动集成战略，`[theme]` 是集成战略的主题，可选值为 `Phantom`，`Mizuki` 以及 `Sami`；
+- `maa closedown [client]`: 关闭游戏客户端，`[client]` 是客户端类型，默认为 `Official`。
+- `maa fight [stage]`: 运行战斗任务，`[stage]` 是关卡名称，例如 `1-7`；留空选择上次或者当前关卡。
+- `maa copilot <maa_uri>...`: 自动抄作业，其中 `<maa_uri>` 是作业的 URI，多个 URI 会依次执行，`maa_uri` 可以是 `maa://1234` 或者 本地文件路径 `./1234.json`。
+- `maa sscopilot <maa_uri>`: 自动保全派驻，其中 `<maa_uri>` 是保全派驻作业的 URI。
+- `maa roguelike <theme>`: 自动集成战略，`<theme>` 是集成战略的主题，可选值为 `Phantom`，`Mizuki`，`Sami` 以及 `Sarkaz`。
+- `maa reclamation <theme>`: 自动生息演算，`<theme>` 是生息演算的主题，目前仅 `Tales` 主题可用。
 
 上述任务接受一些参数，你可以通过 `maa <task> --help` 来查看具体的参数。
 
@@ -59,7 +71,7 @@ maa startup Official && maa fight BB-7 -m 3 && maa closedown
 ### 任务总结
 
 不管是预定义任务还是自定义任务，maa-cli 都会在任务运行结束后输出任务的总结信息，
-其包括每个子任务的运行时间（开始时间、结束时间、运行时长）。对于部份任务，还会输出任务的结果汇总：
+其包括每个子任务的运行时间（开始时间、结束时间、运行时长）。对于部分任务，还会输出任务的结果汇总：
 
 - `fight` 任务: 关卡名称，次数，消耗理智药个数以及掉落统计；
 - `infrast`: 各设施进驻的干员，对于制造站和贸易站，还会包括产物类型；
@@ -91,7 +103,5 @@ maa-cli 默认会向标准误 (stderr) 输出日志。`--log-file` 选项可以�
 
 更多命令的使用方法可以通过 `maa help` 查看，具体命令的使用方法可以 通过 `maa help <command>` 查看。
 
-[config-core]: config.md#MaaCore-相关配置
+[config-core]: config.md#maacore-相关配置
 [custom-task]: config.md#自定义任务
-
-<!-- markdownlint-disable-file MD013 -->

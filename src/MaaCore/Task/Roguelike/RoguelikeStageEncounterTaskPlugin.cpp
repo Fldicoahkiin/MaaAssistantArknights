@@ -38,20 +38,9 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
 
     const std::string& theme = m_config->get_theme();
     const RoguelikeMode& mode = m_config->get_mode();
-    std::vector events = RoguelikeStageEncounter.get_events(theme);
-    // 刷源石锭模式和烧水模式
-    if (mode == RoguelikeMode::Investment || mode == RoguelikeMode::Collectible) {
-        events = RoguelikeStageEncounter.get_events(theme + "_deposit");
-    }
-    if (mode == RoguelikeMode::CLP_PDS) { 
-        events = RoguelikeStageEncounter.get_events(theme + "_collapse");
-    }
-    std::vector<std::string> event_names;
-    std::unordered_map<std::string, Config::RoguelikeEvent> event_map;
-    for (const auto& event : events) {
-        event_names.emplace_back(event.name);
-        event_map.emplace(event.name, event);
-    }
+    std::unordered_map<std::string, Config::RoguelikeEvent> event_map = RoguelikeStageEncounter.get_events(theme, mode);
+    std::vector<std::string> event_names = RoguelikeStageEncounter.get_event_names(theme);
+
     const auto event_name_task_ptr = Task.get("Roguelike@StageEncounterOcr");
     sleep(event_name_task_ptr->pre_delay);
 
@@ -100,18 +89,18 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
     callback(AsstMsg::SubTaskExtraInfo, info);
 
     const auto click_option_task_name = [&](const int item, const int total) {
-        return m_config->get_theme() + "@Roguelike@OptionChoose" + std::to_string(total) + "-"
-               + std::to_string(item);
+        if (item > total) {
+            Log.warn("Event:", event.name, "Total:", total, "Choice", item, "out of range, switch to choice", total);
+            return m_config->get_theme() + "@Roguelike@OptionChoose" + std::to_string(total) + "-" +
+                   std::to_string(total);
+        }
+        return m_config->get_theme() + "@Roguelike@OptionChoose" + std::to_string(total) + "-" + std::to_string(item);
     };
 
     for (int j = 0; j < 2; ++j) {
         ProcessTask(*this, { click_option_task_name(choose_option, event.option_num) }).run();
         sleep(300);
     }
-    callback(AsstMsg::SubTaskStart, json::object {
-        { "subtask", "ProcessTask" },
-        { "details", json::object { { "task", "NeedCheckCollapsalParadigmBanner" }, { "pre_task", "RoguelikeStageEncounterTask"} } }
-    });
 
     // 判断是否点击成功，成功进入对话后左上角的生命值会消失
     sleep(500);
@@ -128,10 +117,6 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
                 ProcessTask(*this, { click_option_task_name(i, max_time) }).run();
                 sleep(300);
             }
-            callback(AsstMsg::SubTaskStart, json::object {
-                { "subtask", "ProcessTask" },
-                { "details", json::object { { "task", "NeedCheckCollapsalParadigmBanner" }, { "pre_task", "RoguelikeStageEncounterTask"} } }
-            });
 
             if (need_exit()) {
                 return false;
@@ -188,9 +173,7 @@ bool asst::RoguelikeStageEncounterTaskPlugin::satisfies_condition(
     return true;
 }
 
-int asst::RoguelikeStageEncounterTaskPlugin::process_task(
-    const Config::RoguelikeEvent& event,
-    const int special_val)
+int asst::RoguelikeStageEncounterTaskPlugin::process_task(const Config::RoguelikeEvent& event, const int special_val)
 {
     for (const auto& requirement : event.choice_require) {
         if (requirement.choose == -1) {

@@ -68,10 +68,12 @@ void asst::StageQueueMissionCompletedTaskPlugin::mission_completed()
 
     drop_info_callback(stage_code, difficulty, analyzer);
 }
+
 // 抄自StageDropsTaskPlugin
-void asst::StageQueueMissionCompletedTaskPlugin::drop_info_callback(std::string stage_code,
-                                                                StageDifficulty stage_difficulty,
-                                                                StageDropsImageAnalyzer analyzer)
+void asst::StageQueueMissionCompletedTaskPlugin::drop_info_callback(
+    std::string stage_code,
+    StageDifficulty stage_difficulty,
+    StageDropsImageAnalyzer analyzer)
 {
     LogTraceFunction;
 
@@ -122,27 +124,32 @@ void asst::StageQueueMissionCompletedTaskPlugin::drop_info_callback(std::string 
         upload_to_penguin(stage_code, analyzer.get_stars());
     }
 }
+
 bool asst::StageQueueMissionCompletedTaskPlugin::set_server(std::string server)
 {
     m_server = std::move(server);
     return true;
 }
+
 bool asst::StageQueueMissionCompletedTaskPlugin::set_enable_penguin(bool enable)
 {
     m_enable_penguin = enable;
     return true;
 }
+
 bool asst::StageQueueMissionCompletedTaskPlugin::set_penguin_id(std::string id)
 {
     m_penguin_id = std::move(id);
     return true;
 }
+
 bool asst::StageQueueMissionCompletedTaskPlugin::set_enable_yituliu(bool enable)
 {
     // 暂时没用上，其他地方加了这里也加一个
     m_enable_yituliu = enable;
     return true;
 }
+
 void asst::StageQueueMissionCompletedTaskPlugin::upload_to_penguin(std::string stage_code, int stars)
 {
     LogTraceFunction;
@@ -204,6 +211,18 @@ void asst::StageQueueMissionCompletedTaskPlugin::upload_to_penguin(std::string s
         extra_headers.insert({ "authorization", "PenguinID " + m_penguin_id });
     }
 
+    std::string version = Version;
+    if (version.find("DEBUG VERSION") != std::string::npos) {
+        version = "dev";
+    }
+    else if (!version.empty() && version[0] == 'v') {
+        version.erase(0, 1);
+    }
+
+    version.erase(ranges::remove(version, ' ').begin(), version.end());
+
+    extra_headers.insert({ "User-Agent", std::string("MaaAssistantArknights/") + version + " cpr/" + CPR_VERSION });
+
     if (!m_report_penguin_task_ptr) {
         m_report_penguin_task_ptr = std::make_shared<ReportDataTask>(report_penguin_callback, this);
     }
@@ -214,8 +233,11 @@ void asst::StageQueueMissionCompletedTaskPlugin::upload_to_penguin(std::string s
         .set_retry_times(5)
         .run();
 }
-void asst::StageQueueMissionCompletedTaskPlugin::report_penguin_callback(AsstMsg msg, const json::value& detail,
-                                                                     AbstractTask* task_ptr)
+
+void asst::StageQueueMissionCompletedTaskPlugin::report_penguin_callback(
+    AsstMsg msg,
+    const json::value& detail,
+    AbstractTask* task_ptr)
 {
     LogTraceFunction;
 

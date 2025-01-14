@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 3
 icon: material-symbols:settings
 ---
 
@@ -277,10 +277,14 @@ params = { stage = "CE-6" }
 [tasks.variants.params.stage]
 default = "1-7" # default value of stage, optional (if not given, user can input empty value to re-prompt)
 description = "a stage to fight" # description of the input, optional
+
+# query the medicine to use only when stage is 1-7
 [tasks.variants.params.medicine]
-# dependency of parameters, the key is the name of parameter, the value is the expected value of dependency parameter
-# when set, the parameter will be required to input only if all dependency parameters are satisfied
-deps = { stage = "1-7" }
+# a parameter can be optional with `optional` field
+# if the condition is not matched, the parameter will be ignored
+# the `condition` field can be used to specify the condition of the parameter
+# where the condition can be a table, whose keys are name of other parameters and values are the expected value
+conditions = { stage = "1-7" }
 default = 1000
 description = "medicine to use"
 ```
@@ -313,7 +317,7 @@ cpu_ocr = false
 gpu_ocr = 1
 
 [instance_options]
-touch_mode = "MAATouch"
+touch_mode = "MaaTouch"
 deployment_with_pause = false
 adb_lite_enabled = false
 kill_adb_on_exit = false
@@ -376,7 +380,7 @@ The `instance_options` section is used to configure MAA instance options:
 
 ```toml
 [instance_options]
-touch_mode = "ADB" # touch mode to use, can be "ADB", "MiniTouch", "MAATouch" or "MacPlayTools" (only for PlayCover)
+touch_mode = "ADB" # touch mode to use, can be "ADB", "MiniTouch", "MaaTouch" or "MacPlayTools" (only for PlayCover)
 deployment_with_pause = false # whether pause the game when deployment
 adb_lite_enabled = false # whether use adb-lite
 kill_adb_on_exit = false # whether kill adb when exit
@@ -418,11 +422,24 @@ backend = "libgit2" # the backend of resource, can be "libgit2" or "git"
 
 # the remote of resource
 [resource.remote]
-branch = "main" # the branch of remote repository
-# the url of remote repository, when using ssh, you should set ssh_key field
-url = "https://github.com/MaaAssistantArknights/MaaResource.git"
-# url = "git@github.com:MaaAssistantArknights/MaaResource.git"
-# ssh_key = "~/.ssh/id_ed25519" # path to ssh key
+branch = "main" # Branch of remote resource repository
+# URL of remote resource repository, leave it empty to use the default URL
+url = "git@github.com:MaaAssistantArknights/MaaResource.git"
+# If you want to use ssh, a certificate is needed which can be "ssh-agent" or "ssh-key"
+# To use ssh-agent, set `use_ssh_agent` to true, and leave `ssh_key` and `passphrase` empty
+# use_ssh_agent = true # Use ssh-agent to authenticate
+# To use ssh-key, set `ssh_key` to path of ssh key,
+ssh_key = "~/.ssh/id_ed25519" # Path of ssh key
+# A Passphrase is needed if the ssh key is encrypted
+passphrase = "password" # Passphrase of ssh key
+# Store plain text password in configuration file is unsafe, so there are some ways to avoid it
+# 1. set `passphrase` to true, then maa-cli will prompt you to input passphrase each time
+# passphrase = true
+# 2. set `passphrase` to a environment variable, then maa-cli will use the environment variable as passphrase
+# passphrase = { env = "MAA_SSH_PASSPHRASE" }
+# 3. set `passphrase` to a command, then maa-cli will execute the command to get passphrase
+# which is useful when you use a password manager to manage your passphrase
+# passphrase = { cmd = ["pass", "show", "ssh/id_ed25519"] }
 ```
 
 **NOTE**:
@@ -449,13 +466,11 @@ The JSON schema of configuration files can be found at [`schemas` directory][sch
 With the help of JSON schema, you can get auto-completion and validation in some editors with plugins.
 
 [task-types]: ../../protocol/integration.md#list-of-task-types
-[emulator-ports]: ../faq.md#common-adb-ports-for-popular-android-emulators
-[playcover-doc]: ../device/macos.md#-playcover-the-software-runs-most-fluently-for-its-nativity-
-[example-config]: https://github.com/MaaAssistantArknights/maa-cli/tree/main/maa-cli/config_examples
+[emulator-ports]: ../../manual/connection.md#obtain-port-number
+[playcover-doc]: ../../manual/device/macos.md#%E2%9C%85-playcover-the-software-runs-most-fluently-for-its-nativity-%F0%9F%9A%80
+[example-config]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/config_examples
 [wangl-cc-dotfiles]: https://github.com/wangl-cc/dotfiles/tree/master/.config/maa
-[schema-dir]: https://github.com/MaaAssistantArknights/maa-cli/tree/main/maa-cli/schemas
-[task-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/task.schema.json
-[asst-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/asst.schema.json
-[cli-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/cli.schema.json
-
-<!-- markdownlint-disable-file MD013 -->
+[schema-dir]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/
+[task-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/task.schema.json
+[asst-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/asst.schema.json
+[cli-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/cli.schema.json

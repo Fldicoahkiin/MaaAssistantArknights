@@ -55,12 +55,15 @@ namespace MaaWpfGui.Constants
         public const string AdbMaaMirrorDownloadUrl = "https://ota.maa.plus/MaaAssistantArknights/api/binaries/adb-windows.zip";
         public const string GoogleAdbFilename = "adb-windows.zip";
 
-        private static string Language => ConfigurationHelper.GetValue(ConfigurationKeys.Localization, LocalizationHelper.DefaultLanguage);
+        private static string Language => ConfigurationHelper.GetGlobalValue(ConfigurationKeys.Localization, LocalizationHelper.DefaultLanguage);
 
         private const string MaaDocs = "https://maa.plus/docs";
 
         // 常见问题
         public static string HelpUri => $"{MaaDocs}/{Language}/manual/faq.html";
+
+        // YostarEN resolution info
+        public static string YostarENResolution => $"{MaaDocs}/{Language}/";
 
         // 外服适配教程
         public static string OverseasAdaptation => $"{MaaDocs}/{Language}/develop/overseas-client-adaptation.html";

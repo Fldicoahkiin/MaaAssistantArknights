@@ -5,18 +5,19 @@ dir:
   order: 0
 ---
 
+<!-- markdownlint-disable -->
+
 ::: center
 
-![MAA Logo](https://cdn.jsdelivr.net/gh/MaaAssistantArknights/design@main/logo/maa-logo_512x512.png =256x256)
+![MAA Logo](/images/maa-logo_512x512.png =256x256)
 
+<!-- markdownlint-restore -->
 # MaaAssistantArknights
 
 ![C++](https://img.shields.io/badge/C++-20-%2300599C?logo=cplusplus)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet)
 ![license](https://img.shields.io/github/license/MaaAssistantArknights/MaaAssistantArknights) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MaaAssistantArknights?color=%23ff69b4)
 ![stars](https://img.shields.io/github/stars/MaaAssistantArknights/MaaAssistantArknights?style=social) ![GitHub all releases](https://img.shields.io/github/downloads/MaaAssistantArknights/MaaAssistantArknights/total?style=social)
-
-[简体中文](../zh-cn/readme.md) | [繁體中文](../zh-tw/readme.md) | English | [日本語](../ja-jp/readme.md) | [한국어](../ko-kr/readme.md)
 
 MAA means MAA Assistant Arknights
 
@@ -28,83 +29,69 @@ Development in progress  ✿✿ヽ(°▽°)ノ✿
 
 :::
 
+## Download and Install
+
+Please read the [documentation](./manual/newbie.md) and then go to the [official website](https://maa.plus) or [Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases) to download. Refer to [Getting Started](./manual/newbie.md) for installation instructions.
+
 ## Features
 
 - Auto-battle, drop items recognition, auto-uploading to [Penguin Stats](https://penguin-stats.io/), [Yituliu](https://ark.yituliu.cn/).
-- Auto-shifting in the Base, auto efficiency calculation of operators, optimal solution in single room; also supports [customized schedule](./protocol/base-scheduling-schema.md).
+- Auto-shifting in the Base, auto efficiency calculation of operators, optimal solution in a single room; also supports [customized schedule](./protocol/base-scheduling-schema.md).
 - Auto-recruitment, support for expedited plan. Auto-uploading recruitment data to [Penguin Stats](https://penguin-stats.io/result/stage/recruit/recruit), [Yituliu](https://ark.yituliu.cn/survey/maarecruitdata).
 - Supports manual identification of the public recruitment interface to facilitate selection of high-star public recruitment.
 - Supports identifying operator lists, counting existing and unavailable operators and their potential, and displaying them in the open recruitment identification interface.
-- Depot recognition and upports exporting to [Penguin Stats Planner](https://penguin-stats.cn/planner)、[Arknight Tools](https://arkntools.app/#/material)、[ARK-NIGHTS Operator Builds](https://ark-nights.com/settings).
-- Visiting friends, collecting credits and purchasing items, collecting daily rewards, completing daily quests in one click!
+- Depot recognition and supports exporting to [Penguin Stats Planner](https://penguin-stats.cn/planner)、[Arknight Tools](https://arkntools.app/#/material)、[ARK-NIGHTS Operator Builds](https://ark-nights.com/settings).
+- Visiting friends, collecting credits and purchasing items, collecting daily rewards, and completing daily quests in one click!
 - Auto-battle for Integrated Strategy (I.S.) for collecting originium ingots and candles.
 - Importing JSON task file for auto-battle! [Video](https://www.bilibili.com/video/BV1H841177Fk/)
 - Support C, Python, Java, Rust, Golang, Java HTTP, Rust HTTP and other interfaces, easy to integrate and call, customize your MAA!
 
 Talk is cheap. Show me the pictures!
 
-<!-- markdownlint-disable -->
-
-<div class="image-en-us">
-  <img src="/image/en-us/readme/1-light.png" />
-  <img src="/image/en-us/readme/2-light.png" />
-</div>
-
-<style>
-  .image-en-us {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .image-en-us > img {
-     box-sizing: border-box;
-     width: 50% !important;
-     padding: 9px;
-     border-radius: 16px;
-  }
-
-  @media (max-width: 419px){
-    .image-en-us > img {
-      width: 100% !important;
+```component Image4
+{
+  "imageList": [
+    {
+      "light": "images/en-us/readme/1-light.png",
+      "dark": "images/en-us/readme/1-dark.png"
+    },
+    {
+      "light": "images/en-us/readme/2-light.png",
+      "dark": "images/en-us/readme/2-dark.png"
+    },
+    {
+      "light": "images/en-us/readme/3-light.png",
+      "dark": "images/en-us/readme/3-dark.png"
+    },
+    {
+      "light": "images/en-us/readme/4-light.png",
+      "dark": "images/en-us/readme/4-dark.png"
     }
-  }
-</style>
-
-<!-- markdownlint-restore -->
-
-## Download
-
-- [Stable/Beta](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/latest)
-- [Nightly](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases)
+  ]
+}
+```
 
 ## How to Use
 
 ### Basic Settings
 
-Check [Beginner’s Guide](./manual/newbie.md) and [User Manual](./manual/introduction/).
+Check [Beginner's Guide](./manual/newbie.md) and [User Manual](./manual/introduction/).
+::: tip
+For YostarEN, due to interface layout issues, the only supported resolution is `1920x1080`
+:::
 
-## FAQ
+### Features
 
-- The program crashes immediately when I try to run it.
-- Connection error/not knowing how to fill in ADB path.
-- Connected successfully, then it got stuck.
-- Custom connection settings.
-- Download speed is too slow, or the mirror site is not accessible.
-- Download halfway and prompt "login"/"authentication"
-- The connection is fine and the task starts, but nothing happens.
+Please refer to the [User Manual](./manual/).
 
-Check [FAQ](./manual/faq.md).
-
-## Supports for overseas clients
+### Supports for overseas clients
 
 At present, most of the functions of the International client (US client), Japanese client, Korean client, and traditional Chinese client have been supported. However, due to the small number of overseas users and the shortage of project personnel, many functions have not been fully tested, so please experience it yourself.  
-If you encounter a bug, or have a strong demand for a certain function, welcome to [Issues](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues) and [Discussions](https://github.com/MaaAssistantArknights/MaaAssistantArknights/discussions) to ask questions. And feel free to join us in building the MAA! Please refer to [Overseas Clients Adaptation](#overseas-clients-adaptation)
+If you encounter a bug or have a strong demand for a certain function, welcome to [Issues](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues) and [Discussions](https://github.com/MaaAssistantArknights/MaaAssistantArknights/discussions) to ask questions. And feel free to join us in building the MAA! Please refer to [Overseas Clients Adaptation](#overseas-clients-adaptation)
 
 ### CLI Support
 
-MAA supports command line interface (CLI) operation, supports Linux, macOS and Windows, and can be used for automated scripts or on servers without graphical interfaces. Check [CLI Guide](./manual/cli/intro.md)
+MAA supports command line interface (CLI) operation, supports Linux, macOS and Windows, and can be used for automated scripts or on servers without graphical interfaces. Check [CLI Guide](./manual/cli/)
 
 ## Join us
 
@@ -125,7 +112,7 @@ MAA supports multiple languages and uses Weblate for localization management. If
 
 MAA uses Chinese (Simplified) as its first language, and all translation entries are in Chinese (Simplified).
 
-[![Weblate](https://weblate.maa-org.net/widgets/maa-assistant-arknights/zh_Hans/maa-wpf-gui/multi-auto.svg)](https://weblate.maa-org.net/engage/maa-assistant-arknights/zh_Hans/)
+[![Weblate](https://weblate.maa-org.net/widget/maa/wpf-gui/multi-auto.svg)](https://weblate.maa-org.net/engage/maa/)
 
 ### Development Related Information
 
@@ -155,7 +142,7 @@ Check [Linux Compiling Tutorial](./develop/linux-tutorial.md)
 
 #### Overseas Clients Adaptation
 
-Please refer to [Overseas clients Adaptation](./develop/overseas-client-adaptation.md). For the functions already supported by the CN client, most of the overseas clients adaptation tasks only need screenshots and simple JSON modification.
+Please refer to [Overseas clients Adaptation](./develop/overseas-client-adaptation.md). For the functions already supported by the CN client, most of the overseas client's adaptation tasks only need screenshots and simple JSON modification.
 
 #### For Novice Users of GitHub
 
@@ -195,28 +182,40 @@ Check [Issue Bot Usage](./develop/issue-bot-usage.md).
 - ~~Operators and infrastructure data: [PRTS Arknights Wiki (Chinese)](http://prts.wiki/)~~
 - Stage data: [Penguin Stats](https://penguin-stats.io/)
 - Gamedata and resources: [Arknights Game Resource](https://github.com/yuanyan3060/ArknightsGameResource)
-- ~~Gamedata: [Arknights Game Data](https://github.com/Kengxxiao/ArknightsGameData)~~
+- Gamedata: [Arknights Yostar Game Data](https://github.com/Kengxxiao/ArknightsGameData_YoStar)
 
 ### Contributors
 
 Thanks to all friends who contribute to development/testing for making MAA better! (\*´▽｀)ノノ
 
-[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=114514&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
+[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=105&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
 
 ## Disclaimer
 
 - This software is open source under the [GNU Affero General Public License v3.0 only](https://spdx.org/licenses/AGPL-3.0-only.html).
 - The logo of this software is NOT granted rights under AGPL 3.0 License. [耗毛](https://weibo.com/u/3251357314) and Vie, the two artists and all developers of the software reserves all rights. The logo of the software shall not be used without authorization even if the project has an AGPL 3.0 License. Nor shall the logo be used for commercial purposes without authorization.
-- The software is an open-source, free of charge software only for studying and communication purposes. There is no agreement or understanding between the developers of the software and the 3rd party person who uses this software as an assistant and charges you. In that case, the developers of the software is not responsible for the problems and consequences caused.
+- The software is an open-source, free of charge software only for studying and communication purposes. There is no agreement or understanding between the developers of the software and the 3rd party person who uses this software as an assistant and charges you. In that case, the developers of the software are not responsible for the problems and consequences caused.
+
+### DirectML Support Information
+
+This software supports GPU acceleration, which relies on Microsoft's DirectML (Microsoft.AI.DirectML). For user convenience, an unmodified DirectML.dll file is included with the installation package.
+
+#### About DirectML.dll
+
+- Source: Official Microsoft
+- License: Please refer to Microsoft's DirectML terms of use  
+  [DirectML Official Documentation](https://learn.microsoft.com/en-us/windows/ai/directml/)
+
+DirectML.dll is a standalone component provided by Microsoft. It is not part of this software's open-source section and is not subject to the AGPL-3.0 license.
+
+If you do not require GPU support, you can safely delete the DLL file, and the core functionality of the software will remain unaffected.
 
 ## Advertisement
 
 User Group: [Telegram](https://t.me/+Mgc2Zngr-hs3ZjU1), [QQ Group](https://ota.maa.plus/MaaAssistantArknights/api/qqgroup/index.html)  
 [Copilot JSON Sharing](https://prts.plus)  
-[Bilibili Live](https://live.bilibili.com/2808861): live coding on this program  
+Bilibili Livestreams: [MrEO Livestream](https://live.bilibili.com/2808861) Coding Sessions & [MAA-Official Livestream](https://live.bilibili.com/27548877) Gaming/Chats  
 [Technical Discussion (QQ Group)](https://jq.qq.com/?_wv=1027&k=ypbzXcA2)  
 [Dev Group(QQ Group)](https://jq.qq.com/?_wv=1027&k=JM9oCk3C)
 
 Please click "Star" if you consider it helpful! Thank you for your support!
-
-<!-- markdownlint-disable-file MD034 MD041 -->

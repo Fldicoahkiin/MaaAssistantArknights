@@ -28,10 +28,10 @@
 #include "Common/AsstTypes.h"
 #include "Utils/Logger.hpp"
 
-asst::Controller::Controller(const AsstCallback& callback, Assistant* inst)
-    : InstHelper(inst)
-    , m_callback(callback)
-    , m_rand_engine(std::random_device {}())
+asst::Controller::Controller(const AsstCallback& callback, Assistant* inst) :
+    InstHelper(inst),
+    m_callback(callback),
+    m_rand_engine(std::random_device {}())
 {
     LogTraceFunction;
 }
@@ -112,15 +112,19 @@ void asst::Controller::callback(AsstMsg msg, const json::value& details)
     }
 }
 
-#define CHECK_EXIST(object, return_type)      \
-    if (!object) {                            \
-        Log.error(#object, " is not inited"); \
-        return return_type;                   \
+#define CHECK_EXIST(object, return_value)                       \
+    if (!object) {                                              \
+        Log.error(__FUNCTION__, "|", #object, "is not inited"); \
+        return return_value;                                    \
     }
 
 void asst::Controller::sync_params()
 {
-    CHECK_EXIST(m_controller, );
+    if (!m_controller) {
+        // 参数没有实时同步，但是在连接时会被同步
+        Log.info("skip sync_params, retry when connect");
+        return;
+    }
     m_controller->set_swipe_with_pause(m_swipe_with_pause);
     m_controller->set_kill_adb_on_exit(m_kill_adb_on_exit);
 }
@@ -151,10 +155,10 @@ bool asst::Controller::start_game(const std::string& client_type)
     return m_controller->start_game(client_type);
 }
 
-bool asst::Controller::stop_game()
+bool asst::Controller::stop_game(const std::string& client_type)
 {
     CHECK_EXIST(m_controller, false);
-    return m_controller->stop_game();
+    return m_controller->stop_game(client_type);
 }
 
 bool asst::Controller::click(const Point& p)
@@ -167,6 +171,12 @@ bool asst::Controller::click(const Rect& rect)
 {
     CHECK_EXIST(m_controller, false);
     return m_scale_proxy->click(rect);
+}
+
+bool asst::Controller::input(const std::string& text)
+{
+    CHECK_EXIST(m_controller, false);
+    return m_controller->input(text);
 }
 
 bool asst::Controller::swipe(
@@ -215,10 +225,7 @@ asst::ControlFeat::Feat asst::Controller::support_features()
     return m_controller->support_features();
 }
 
-bool asst::Controller::connect(
-    const std::string& adb_path,
-    const std::string& address,
-    const std::string& config)
+bool asst::Controller::connect(const std::string& adb_path, const std::string& address, const std::string& config)
 {
     LogTraceFunction;
 
@@ -260,8 +267,7 @@ bool asst::Controller::connect(
     };
 
     try {
-        m_scale_proxy =
-            std::make_shared<ControlScaleProxy>(m_controller, m_controller_type, proxy_callback);
+        m_scale_proxy = std::make_shared<ControlScaleProxy>(m_controller, m_controller_type, proxy_callback);
     }
     catch (const std::exception& e) {
         Log.error("Cannot create controller proxy: {}", e.what());

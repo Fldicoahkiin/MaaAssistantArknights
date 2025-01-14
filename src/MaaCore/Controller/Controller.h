@@ -44,8 +44,7 @@ public:
         const std::string& config,
         PlatformType platform_type) const;
 
-    bool
-        connect(const std::string& adb_path, const std::string& address, const std::string& config);
+    bool connect(const std::string& adb_path, const std::string& address, const std::string& config);
     bool inited() noexcept;
     void set_touch_mode(const TouchMode& mode) noexcept;
     void set_swipe_with_pause(bool enable) noexcept;
@@ -65,10 +64,11 @@ public:
     bool screencap(bool allow_reconnect = false);
 
     bool start_game(const std::string& client_type);
-    bool stop_game();
+    bool stop_game(const std::string& client_type);
 
     bool click(const Point& p);
     bool click(const Rect& rect);
+    bool input(const std::string& text);
 
     bool swipe(
         const Point& p1,

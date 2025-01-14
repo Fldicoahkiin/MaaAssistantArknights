@@ -107,9 +107,10 @@ bool asst::RoguelikeSettlementTaskPlugin::get_settlement_info(json::value& info,
                                    "RoguelikeSettlementOcr-Combat",     "RoguelikeSettlementOcr-Recruit",
                                    "RoguelikeSettlementOcr-Collection", "RoguelikeSettlementOcr-BOSS",
                                    "RoguelikeSettlementOcr-Emergency" };
-    static const auto text_task_name =
-        std::vector<std::string> { "RoguelikeSettlementOcr-Difficulty", "RoguelikeSettlementOcr-Score",
-                                   "RoguelikeSettlementOcr-Exp", "RoguelikeSettlementOcr-Skill" };
+    static const auto text_task_name = std::vector<std::string> { "RoguelikeSettlementOcr-Difficulty",
+                                                                  "RoguelikeSettlementOcr-Score",
+                                                                  "RoguelikeSettlementOcr-Exp",
+                                                                  "RoguelikeSettlementOcr-Skill" };
 
     ranges::for_each(battle_task_name, analyze_battle_data);
 
@@ -128,7 +129,7 @@ bool asst::RoguelikeSettlementTaskPlugin::wait_for_whole_page()
     int retry = 0;
     cv::Mat image;
     Matcher matcher;
-    matcher.set_task_info("RoguelikeSettlementConfirm");
+    matcher.set_task_info(m_config->get_theme() + "@RoguelikeSettlementConfirm");
     do {
         image = ctrler()->get_image();
         matcher.set_image(image);
@@ -142,15 +143,17 @@ bool asst::RoguelikeSettlementTaskPlugin::wait_for_whole_page()
     return false;
 }
 
-void asst::RoguelikeSettlementTaskPlugin::save_img(const cv::Mat& image, const std::filesystem::path& relative_dir,
-                                                   std::string name)
+void asst::RoguelikeSettlementTaskPlugin::save_img(
+    const cv::Mat& image,
+    const std::filesystem::path& relative_dir,
+    std::string name)
 {
     if (image.empty()) {
         return;
     }
 
     {
-        // 第1次或每执行 debug.clean_files_freq(100) 次后执行清理
+        // 第1次或每执行 debug.clean_files_freq(50) 次后执行清理
         // 限制文件数量 debug.max_debug_file_num
         if (m_save_file_cnt[relative_dir] == 0) {
             filenum_ctrl(relative_dir, Config.get_options().debug.max_debug_file_num);

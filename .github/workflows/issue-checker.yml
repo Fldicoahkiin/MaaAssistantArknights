@@ -1,4 +1,5 @@
 name: "Issue Checker"
+
 on:
   issues:
     types: [opened, edited]
@@ -16,7 +17,7 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     steps:
-      - uses: zzyyyl/issue-checker@v1.8
+      - uses: MaaAssistantArknights/issue-checker@v1.14
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: .github/issue-checker.yml

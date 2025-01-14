@@ -7,8 +7,8 @@
 #include "Task/ProcessTask.h"
 #include "Utils/Ranges.hpp"
 
-asst::CreditFightTask::CreditFightTask(const AsstCallback& callback, Assistant* inst, std::string_view task_chain)
-    : PackageTask(callback, inst, task_chain)
+asst::CreditFightTask::CreditFightTask(const AsstCallback& callback, Assistant* inst, std::string_view task_chain) :
+    PackageTask(callback, inst, task_chain)
 {
     auto start_up_task_ptr = std::make_shared<ProcessTask>(m_callback, m_inst, task_chain);
     auto stage_navigation_task_ptr = std::make_shared<StageNavigationTask>(m_callback, m_inst, task_chain);
@@ -23,7 +23,7 @@ asst::CreditFightTask::CreditFightTask(const AsstCallback& callback, Assistant* 
     json::value copilot_params = json::object {
         { "filename", utils::path_to_utf8_string(ResDir.get() / "copilot" / "OF-1_credit_fight.json") },
         { "formation", true },
-        { "support_unit_name", "_RANDOM_" },
+        { "support_unit_usage", 3 },
     };
     m_copilot_task_ptr->set_params(copilot_params);
 
@@ -48,7 +48,7 @@ void asst::CreditFightTask::set_select_formation(int index)
     json::value copilot_params = json::object {
         { "filename", utils::path_to_utf8_string(ResDir.get() / "copilot" / "OF-1_credit_fight.json") },
         { "formation", true },
-        { "support_unit_name", "_RANDOM_" },
+        { "support_unit_usage", 3 },
         { "select_formation", index },
     };
     m_copilot_task_ptr->set_params(copilot_params);

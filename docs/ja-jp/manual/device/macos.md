@@ -6,7 +6,7 @@ icon: basil:apple-solid
 # Mac でのエミューレータ
 
 ::: tip
-問題が発生した場合は、まず [よくある質問](../よくある質問.md) を参照してください
+問題が発生した場合は、まず [よくある質問](../faq.md) を参照してください
 :::
 
 ## Apple Silicon チップ
@@ -41,7 +41,17 @@ icon: basil:apple-solid
 
 サポートされています。Android 10 以降、SELinux が\`Enforcing\`モードの場合、Minitouch は使用できません、別のタッチモードに切り替えてください。または SELinux を **一時的に** \`Permissive\`モードに切り替え。
 
+### ✅ [BlueStacks Air](https://www.bluestacks.com/mac) （無料、Apple Mシリーズチップ向けに最適化されたバージョン）
+
+サポート済み、テスト済みで、maatouch経由で`127.0.0.1:5555`に接続できます。
+
+エミュレータの **`設定`** - **`詳細`** で **`Androidデバッグ（ADB）`** を有効にする必要があります。
+
 ## Intel チップ
+
+::: tip
+Mac 版の開発は人手不足のため、更新速度が比較的遅いです。Mac に搭載されているマルチシステム機能を使って Windows をインストールし、Windows 版の MAA を使用することをお勧めします。
+:::
 
 ### ✅ [Bluestacks-CN](https://www.bluestacks.cn/)
 
@@ -53,7 +63,7 @@ icon: basil:apple-solid
 
 ### ✅ [NOX](https://www.yeshen.com/)
 
-サポートされています。現在、 Ma cの MAAX バージョンはエミュレータの自動適応をサポートしていないため、MAAの `設定` - `接続設定` で、 `adb` に `127.0.0.1：62001`を接続する必要があり、ポートはデフォルトの` 5555 `ではないことに注意し、エミュレータポートに関する詳細な説明は[一般的なエミュレータadbポート](../よくある質問.md#一般的なAndroidエミュレータのadbポート)を参照してください。
+サポートされています。現在、 Ma cの MAAX バージョンはエミュレータの自動適応をサポートしていないため、MAAの `設定` - `接続設定` で、 `adb` に `127.0.0.1：62001`を接続する必要があり、ポートはデフォルトの` 5555 `ではないことに注意し、エミュレータポートに関する詳細な説明は[一般的なエミュレータadbポート](../faq.md#一般的なAndroidエミュレータのadbポート)を参照してください。
 
 補足：mac の NOX の adb バイナリファイルの場所は `/Applications/NoxAppPlayer.app/Contents/MacOS/adb` 、親ディレクトリ `MacOS` の下で `adb devices` コマンドを使用してadbポートを表示できます。
 

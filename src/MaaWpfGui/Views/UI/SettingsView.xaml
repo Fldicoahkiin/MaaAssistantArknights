@@ -11,13 +11,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:MaaWpfGui.Styles.Properties"
     xmlns:s="https://github.com/canton7/Stylet"
-    xmlns:styles="clr-namespace:MaaWpfGui.Styles"
+    xmlns:settingsViews="clr-namespace:MaaWpfGui.Views.UserControl.Settings"
     xmlns:ui="clr-namespace:MaaWpfGui.ViewModels.UI"
     xmlns:userControl="clr-namespace:MaaWpfGui.Views.UserControl"
     xmlns:viewModels="clr-namespace:MaaWpfGui.ViewModels"
-    xmlns:vm="clr-namespace:MaaWpfGui"
+    d:Background="White"
     d:DataContext="{d:DesignInstance {x:Type ui:SettingsViewModel}}"
-    d:DesignHeight="3000"
+    d:DesignHeight="4000"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid Margin="20">
@@ -37,55 +37,78 @@
             Grid.Column="1"
             Margin="20,10"
             HorizontalAlignment="Stretch"
-            PanningMode="Both"
             properties:ScrollViewerBinding.DividerVerticalOffsetList="{Binding DividerVerticalOffsetList}"
             properties:ScrollViewerBinding.ExtentHeight="{Binding ScrollExtentHeight}"
             properties:ScrollViewerBinding.VerticalOffset="{Binding ScrollOffset}"
             properties:ScrollViewerBinding.ViewportHeight="{Binding ScrollViewportHeight}"
-            IsInertiaEnabled="True">
+            IsInertiaEnabled="True"
+            PanningMode="Both">
             <StackPanel>
 
                 <hc:Divider Content="{Binding ListTitle[0]}" />
                 <userControl:ConfigurationMgrUserControl Margin="0,20" HorizontalAlignment="Center" />
 
                 <hc:Divider Content="{Binding ListTitle[1]}" />
-                <userControl:TimerSettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:TimerSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding TimerSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[2]}" />
-                <userControl:PerformanceUserControl Margin="0,20" HorizontalAlignment="Center" />
-                
-                <hc:Divider Content="{Binding ListTitle[3]}" />
-                <userControl:GameClientUserControl
+                <settingsViews:PerformanceUserControl
                     Margin="0,20"
                     HorizontalAlignment="Center"
-                    IsEnabled="{Binding Idle}" />
+                    DataContext="{Binding PerformanceSettings}"
+                    IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
+
+                <hc:Divider Content="{Binding ListTitle[3]}" />
+                <settingsViews:GameSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding GameSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[4]}" />
-                <userControl:ConnectSettingsUserControl
+                <settingsViews:ConnectSettingsUserControl
                     Margin="0,20"
                     HorizontalAlignment="Center"
-                    IsEnabled="{Binding Idle}" />
+                    DataContext="{Binding ConnectSettings}"
+                    IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
 
                 <hc:Divider Content="{Binding ListTitle[5]}" />
-                <userControl:StartSettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:StartSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding StartSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[6]}" />
-                <userControl:RemoteControlUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:RemoteControlUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding RemoteControlSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[7]}" />
-                <userControl:GUISettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:GuiSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding GuiSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[8]}" />
-                <userControl:ExternalNotificationSettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:ExternalNotificationSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding ExternalNotificationSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[9]}" />
                 <userControl:HotKeySettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
 
                 <hc:Divider Content="{Binding ListTitle[10]}" />
-                <userControl:VersionUpdateSettingsUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:VersionUpdateSettingsUserControl
+                    Margin="0,20"
+                    HorizontalAlignment="Center"
+                    DataContext="{Binding VersionUpdateSettings}" />
 
                 <hc:Divider Content="{Binding ListTitle[11]}" />
-                <userControl:AboutUserControl Margin="0,20" HorizontalAlignment="Center" />
+                <settingsViews:AboutUserControl Margin="0,20" HorizontalAlignment="Center" />
                 <!--<Rectangle HorizontalAlignment="Stretch" Fill="{DynamicResource BorderBrush}" Height="1" />-->
             </StackPanel>
         </hc:ScrollViewer>

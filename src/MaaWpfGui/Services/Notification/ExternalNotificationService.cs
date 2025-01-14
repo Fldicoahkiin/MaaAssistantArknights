@@ -14,8 +14,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
+using MaaWpfGui.ViewModels.UI;
 using Serilog;
 
 namespace MaaWpfGui.Services.Notification
@@ -28,37 +28,41 @@ namespace MaaWpfGui.Services.Notification
 
         private static async Task SendAsync(string title, string content, bool isTest = false)
         {
-            var enabledProvider = ConfigurationHelper.GetValue(ConfigurationKeys.ExternalNotificationEnabled, "Off");
+            var enabledProviders = SettingsViewModel.ExternalNotificationSettings.EnabledExternalNotificationProviderList;
 
-            IExternalNotificationProvider provider = enabledProvider switch
+            foreach (var enabledProvider in enabledProviders)
             {
-                "ServerChan" => new ServerChanNotificationProvider(Instances.HttpService),
-                "Telegram" => new TelegramNotificationProvider(Instances.HttpService),
-                "Discord" => new DiscordNotificationProvider(Instances.HttpService),
-                "SMTP" => new SmtpNotificationProvider(),
-                "Bark" => new BarkNotificationProvider(Instances.HttpService),
-                _ => new DummyNotificationProvider(),
-            };
+                IExternalNotificationProvider provider = enabledProvider switch
+                {
+                    "ServerChan" => new ServerChanNotificationProvider(Instances.HttpService),
+                    "Telegram" => new TelegramNotificationProvider(Instances.HttpService),
+                    "Discord" => new DiscordNotificationProvider(Instances.HttpService),
+                    "Discord Webhook" => new DiscordWebhookNotificationProvider(Instances.HttpService),
+                    "SMTP" => new SmtpNotificationProvider(),
+                    "Bark" => new BarkNotificationProvider(Instances.HttpService),
+                    "Qmsg" => new QmsgNotificationProvider(Instances.HttpService),
+                    _ => new DummyNotificationProvider(),
+                };
 
-            var result = false;
-            try
-            {
-                result = await provider.SendAsync(title, content);
+                var result = false;
+                try
+                {
+                    result = await provider.SendAsync(title, content);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Failed to send External Notifications");
+                }
+
+                if (isTest is false && result)
+                {
+                    return;
+                }
+
+                ToastNotification.ShowDirect(
+                    enabledProvider + " " +
+                    LocalizationHelper.GetString(result ? "ExternalNotificationSendSuccess" : "ExternalNotificationSendFail"));
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Failed to send External Notifications");
-            }
-
-            if (isTest is false && result)
-            {
-                return;
-            }
-
-            using var toast = new ToastNotification(
-                LocalizationHelper.GetString(
-                    result ? "ExternalNotificationSendSuccess" : "ExternalNotificationSendFail"));
-            toast.Show();
         }
 
         /// <summary>

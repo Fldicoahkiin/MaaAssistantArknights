@@ -11,6 +11,8 @@
 // but WITHOUT ANY WARRANTY
 // </copyright>
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,17 +30,9 @@ namespace MaaWpfGui.Helper
 
         private static readonly ILogger _logger = Log.ForContext("SourceContext", "ItemListHelper");
 
-        private static readonly Dictionary<string, string> _clientDirectoryMapper = new Dictionary<string, string>
-        {
-            { "zh-tw", "txwy" },
-            { "en-us", "YoStarEN" },
-            { "ja-jp", "YoStarJP" },
-            { "ko-kr", "YoStarKR" },
-        };
-
         static ItemListHelper()
         {
-            var language = ConfigurationHelper.GetValue(ConfigurationKeys.Localization, LocalizationHelper.DefaultLanguage);
+            var language = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.Localization, LocalizationHelper.DefaultLanguage);
             string filename = string.Empty;
             switch (language)
             {
@@ -50,7 +44,7 @@ namespace MaaWpfGui.Helper
                     break;
 
                 default:
-                    filename = Path.Combine(Directory.GetCurrentDirectory(), "resource", "global", _clientDirectoryMapper[language], "resource", "item_index.json");
+                    filename = Path.Combine(Directory.GetCurrentDirectory(), "resource", "global", DataHelper.ClientDirectoryMapper[language], "resource", "item_index.json");
                     break;
             }
 
@@ -81,7 +75,7 @@ namespace MaaWpfGui.Helper
         /// 获取当前语言下的物品名称 / Get the name of the item in the current language
         /// </summary>
         /// <param name="itemId">物品 id / Item id</param>
-        /// <returns></returns>
+        /// <returns>物品名称</returns>
         public static string GetItemName(string itemId)
         {
             return ArkItems.TryGetValue(itemId, out var item)
@@ -93,13 +87,30 @@ namespace MaaWpfGui.Helper
         /// 获取对应物品的图标 / Get the icon of the corresponding item
         /// </summary>
         /// <param name="itemId">物品 id / Item id</param>
-        /// <returns></returns>
-        public static BitmapImage GetItemImage(string itemId)
+        /// <returns>物品图片</returns>
+        public static BitmapImage? GetItemImage(string itemId)
         {
             var imagePath = Path.Combine(Environment.CurrentDirectory, $"resource/template/items/{itemId}.png");
-            return File.Exists(imagePath)
-                ? new BitmapImage(new Uri(imagePath, UriKind.RelativeOrAbsolute))
-                : new BitmapImage();
+            if (!File.Exists(imagePath))
+            {
+                return null;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new(imagePath, UriKind.RelativeOrAbsolute);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+
+                bitmap.Freeze();
+                return bitmap;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

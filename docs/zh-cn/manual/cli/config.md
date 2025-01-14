@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 3
 icon: material-symbols:settings
 ---
 
@@ -11,7 +11,7 @@ maa-cli 配置文件位于特定的配置目录中，你可以通过 `maa dir co
 
 所有的配置文件都可以使用 TOML，YAML 或者 JSON 格式，在下面的例子中，我们将使用 TOML 格式，并使用 `.toml` 作为文件扩展名。但是你可以混合这三种格式中的任意一种，只要你的文件扩展名正确。
 
-此外，部份任务接受 `filename` 作为参数，如果你使用相对路径，那么相对路径将会相对于配置目录的对应子目录。比如自定义基建计划文件的相对路径应该相对于 `$MAA_CONFIG_DIR/infrast`，而保全派驻的作业文件则相对于 `$MAA_CONFIG_DIR/ssscopilot`。
+此外，部分任务接受 `filename` 作为参数，如果你使用相对路径，那么相对路径将会相对于配置目录的对应子目录。比如自定义基建计划文件的相对路径应该相对于 `$MAA_CONFIG_DIR/infrast`，而保全派驻的作业文件则相对于 `$MAA_CONFIG_DIR/ssscopilot`。
 
 ## 自定义任务
 
@@ -264,10 +264,13 @@ params = { stage = "CE-6" }
 [tasks.variants.params.stage]
 default = "1-7" # 默认的关卡，可选（如果没有默认值，输入空值将会重新提示输入）
 description = "a stage to fight" # 描述，可选
+
+# 当输入的关卡是 1-7 时，需要输入使用理智药的数量
 [tasks.variants.params.medicine]
-# 依赖的参数，键为参数名，值为依赖的参数的预期值
-# 当设置时，只有所有的依赖参数都满足预期值时，这个参数才会被要求输入
-deps = { stage = "1-7" }
+# 参数可以设置为条件参数，这样只有满足条件时才需要输入
+# conditions 字段是一个表，其中键是同一层级下其他参数名，值是期望的值
+# 这里的条件是 stage 是 1-7， 如果存在多个条件，那么所有条件都必须满足
+conditions = { stage = "1-7" }
 default = 1000
 description = "medicine to use"
 ```
@@ -300,7 +303,7 @@ cpu_ocr = false
 gpu_ocr = 1
 
 [instance_options]
-touch_mode = "MAATouch"
+touch_mode = "MaaTouch"
 deployment_with_pause = false
 adb_lite_enabled = false
 kill_adb_on_exit = false
@@ -361,7 +364,7 @@ gpu_ocr = 1 # 使用 GPU OCR 时使用的 GPU ID，如果这个值被留空，�
 
 ```toml
 [instance_options]
-touch_mode = "ADB" # 使用的触摸模式，可选值为 "ADB"，"MiniTouch"，"MAATouch" 或者 "MacPlayTools"
+touch_mode = "ADB" # 使用的触摸模式，可选值为 "ADB"，"MiniTouch"，"MaaTouch" 或者 "MacPlayTools"
 deployment_with_pause = false # 是否在部署时暂停游戏
 adb_lite_enabled = false # 是否使用 adb-lite
 kill_adb_on_exit = false # 是否在退出时杀死 adb
@@ -406,21 +409,42 @@ backend = "libgit2" # 资源热更新后端，可选值为 "git" 或者 "libgit2
 # 资源热更新远程仓库相关配置
 [resource.remote]
 branch = "main" # 远程仓库的分支，默认为 "main"
-# 远程仓库的 url，如果你想要使用 ssh，你必须配置 ssh_key 的路径
+# 远程资源仓库的 URL，留空以使用默认 URL
+# GitHub 仓库支持 HTTPS 和 SSH 两种协议访问，建议使用 HTTPS 协议，因为通常情况下不需要额外配置
 url = "https://github.com/MaaAssistantArknights/MaaResource.git"
 # url = "git@github.com:MaaAssistantArknights/MaaResource.git"
-# ssh_key = "~/.ssh/id_ed25519" # path to ssh key
+# 如果你必须使用 SSH 协议，你需要提供 SSH 密钥，最简单的方法是提供密钥的路径
+ssh_key = "~/.ssh/id_ed25519" # ssh 密钥的路径
+# maa 默认密钥是未加密的，如果你的密钥是受密码保护的，你需要提供密码来解密密钥
+# 注意：只有你使用 libgit2 后端时 maa 才会将密码传递给 libgit2
+# 当你使用 git 后端时，git 会自己提示你输入密码
+# 如果你使用 git 后端且你的密钥受密码保护，请使用 ssh-agent 来管理你的密钥
+passphrase = "password"       # ssh 密钥的密码
+# 然而在配置文件中存储明文密码是不安全的，因此有一些方法可以避免这种情况
+# 1. 将 `passphrase` 设置为 true，然后 maa-cli 将每次提示你输入密码
+# 这种方法安全但是较为繁琐且无法在 batch 模式下使用
+# passphrase = true
+# 2. 将 `passphrase` 设置为环境变量名，然后 maa-cli 将使用环境变量作为密码
+# 这种方法比明文密码更安全，但是仍然有一定的风险，因为环境变量可能被任何程序访问
+# passphrase = { env = "MAA_SSH_PASSPHRASE" }
+# 3. 将 `passphrase` 设置为命令，然后 maa-cli 将执行该命令以获取密码
+# 如果你使用了密码管理器来管理你的密码，这种方法可能是最安全的且方便的
+# passphrase = { cmd = ["pass", "show", "ssh/id_ed25519"] }
+# 4. 使用 ssh-agent 来管理你的密钥，**推荐**
+# ssh-agent 会将你的密钥保存在内存中，这样你就不需要每次输入密码
+# 注意，你需要确保 ssh-agent 已经启动并且已经添加了你的密钥，同时 SSH_AUTH_SOCK 环境变量已经设置
+# use_ssh_agent = true # 使用 ssh-agent 进行身份验证，如果设置为 true，将忽略 ssh_key 和 passphrase 字段
 ```
 
 **注意事项**：
 
 - MaaCore 的更新通道中 `Alpha` 只在 Windows 上可用；
 - 由于 CLI 默认的 API 链接和下载链接都是 GitHub 的链接，因此在国内可能会有一些问题，你可以通过配置 `api_url` 和 `download_url` 来使用镜像。
-- 即使启动了资源热更新，你依然需要安装 MaaCore 的资源，因为资源热更新并不包含所有的资源文件，只是包含部份可更新的资源文件，基础资源文件仍然需要安装。
+- 即使启动了资源热更新，你依然需要安装 MaaCore 的资源，因为资源热更新并不包含所有的资源文件，只是包含部分可更新的资源文件，基础资源文件仍然需要安装。
 - 资源热更新是通过 Git 来拉取远程仓库，如果后端设置为 `git` 那么 `git` 命令行工具必须可用。
 - 如果你想要使用 SSH 协议来拉取远程仓库，你必须配置 `ssh_key` 字段，这个字段应该是一个路径，指向你的 SSH 私钥。
+- 如果你的 SSH 私钥是受密码保护的，你需要提供密码来解密私钥，或者使用 ssh-agent 来管理你的密钥。
 - 远程仓库的 `url` 设置目前只对首次安装资源有效，如果你想要更改远程仓库的地址，你需要通过 `git` 命令行工具手动更改，或者删除对应的仓库。仓库所在位置可以通过 `maa dir hot-update` 获取。
-- 远程仓库的 `url` 会根据你本机的语言自动设置，如果你的语言是简体中文，那么远程仓库的 `url` 将会被设置为国内的镜像 <https://git.maa-org.net/MAA/MaaResource.git>，在其他情况则会被设置为 GitHub。如果你在国内但是使用的不是简体中文，或者在国外使用简体中文，那么你可能需要手动设置以获得最佳的体验。
 
 ## 参考配置
 
@@ -436,13 +460,11 @@ url = "https://github.com/MaaAssistantArknights/MaaResource.git"
 - CLI 配置的 JSON Schema 文件为 [`cli.schema.json`][cli-schema]。
 
 [task-types]: ../../protocol/integration.md#任务类型一览
-[emulator-ports]: ../../manual/faq.md#模拟器调试端口
-[playcover-doc]: ../../manual/device/macos.md#-playcover原生运行最流畅-
-[example-config]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/config_examples
+[emulator-ports]: ../../manual/connection.md#获取端口号
+[playcover-doc]: ../../manual/device/macos.md#✅-playcover-原生运行最流畅-🚀
+[example-config]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/config_examples
 [wangl-cc-dotfiles]: https://github.com/wangl-cc/dotfiles/tree/master/.config/maa
-[schema-dir]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/
-[task-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/task.schema.json
-[asst-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/asst.schema.json
-[cli-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/maa-cli/schemas/cli.schema.json
-
-<!-- markdownlint-disable-file MD013 -->
+[schema-dir]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/
+[task-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/task.schema.json
+[asst-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/asst.schema.json
+[cli-schema]: https://github.com/MaaAssistantArknights/maa-cli/blob/main/crates/maa-cli/schemas/cli.schema.json

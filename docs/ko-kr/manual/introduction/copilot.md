@@ -6,6 +6,10 @@ order: 9
 
 [prts.plus](https://prts.plus)에서 이용해 다운로드/업로드 및 제작할 수 있습니다!
 
+::: warning
+자동 전투와 관련된 모든 기능에는 60프레임 이상의 안정적인 게임 프레임 속도가 필요합니다.
+:::
+
 ## 작업 불러오기
 
 Copilot은 `일반/이벤트 스테이지` 및 `보안파견` 등을 지원합니다.
@@ -24,7 +28,7 @@ Copilot은 `일반/이벤트 스테이지` 및 `보안파견` 등을 지원합�
   - 전투 목록에 있는 스테이지는 `동일한 지역`에 있어야 합니다. (지도를 좌우로 스크롤하여 이동할 수 있어야 합니다)
 - **우수한 Copilot 파일에 반드시 추천을 눌러 제작자를 격려하세요! 큰 도움이 됩니다!**
 
-  ![image](https://github.com/MaaAssistantArknights/MaaAssistantArknights/assets/99072975/39e6dd67-2ff1-4023-a2b8-0018673c08aa)
+  ![image](/images/zh-cn/copilot-click-like.png)
 
 ## Copilot 파일 작성
 

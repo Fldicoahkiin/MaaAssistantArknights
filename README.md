@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img alt="LOGO" src="https://cdn.jsdelivr.net/gh/MaaAssistantArknights/design@main/logo/maa-logo_512x512.png" width="256" height="256" />
+<img alt="LOGO" src="./docs/.vuepress/public/images/maa-logo_512x512.png" width="256" height="256" />
 
 # MaaAssistantArknights
 
@@ -37,6 +37,10 @@ MAA 的意思是 MAA Assistant Arknights
 
 </div>
 
+## 下载与安装
+
+请阅读[文档](https://maa.plus/docs/zh-cn/manual/newbie.html)后前往 [官网](https://maa.plus) 或 [Releases](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases) 下载，并参考[新手上路](https://maa.plus/docs/zh-cn/manual/newbie.html)进行安装。
+
 ## 亮点功能
 
 - 刷理智，掉落识别及上传 [企鹅物流](https://penguin-stats.cn/)，[一图流](https://ark.yituliu.cn/)
@@ -55,50 +59,31 @@ MAA 的意思是 MAA Assistant Arknights
 <details><summary>话不多说，看图！</summary>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/image/zh-cn/readme/1-dark.png">
-  <img alt="zh1" src="./docs/.vuepress/public/image/zh-cn/readme/1-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/images/zh-cn/readme/1-dark.png">
+  <img alt="zh1" src="./docs/.vuepress/public/images/zh-cn/readme/1-light.png">
 </picture>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/image/zh-cn/readme/2-dark.png">
-  <img alt="zh2" src="./docs/.vuepress/public/image/zh-cn/readme/2-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/images/zh-cn/readme/2-dark.png">
+  <img alt="zh2" src="./docs/.vuepress/public/images/zh-cn/readme/2-light.png">
 </picture>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/image/zh-cn/readme/3-dark.png">
-  <img alt="zh3" src="./docs/.vuepress/public/image/zh-cn/readme/3-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/images/zh-cn/readme/3-dark.png">
+  <img alt="zh3" src="./docs/.vuepress/public/images/zh-cn/readme/3-light.png">
 </picture>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/image/zh-cn/readme/4-dark.png">
-  <img alt="zh4" src="./docs/.vuepress/public/image/zh-cn/readme/4-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./docs/.vuepress/public/images/zh-cn/readme/4-dark.png">
+  <img alt="zh4" src="./docs/.vuepress/public/images/zh-cn/readme/4-light.png">
 </picture>
 
 </details>
 
 <!-- markdownlint-restore -->
 
-## 下载地址
-
-前往[官网](https://maa.plus)自动匹配镜像源并下载稳定版，或：
-
-- [稳定版/公测版](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases)
-- [内测版](https://github.com/MaaAssistantArknights/MaaRelease/releases)
-
 ## 使用说明
 
-### 基本说明
+### 功能介绍
 
-请参阅 [新手上路](https://maa.plus/docs/zh-cn/manual/newbie.html) 与 [功能介绍](https://maa.plus/docs/zh-cn/manual/introduction/)。
-
-### 常见问题
-
-- 软件一打开就闪退；
-- 连接错误、不知道 ADB 路径怎么填写；
-- 连接成功了，但没反应；
-- 如何连接自定义端口；
-- 下载速度慢，且镜像站无法打开网页；
-- 下载到一半提示“登陆”/“鉴权”；
-- 连接正常，任务开始了，但是没反应。
-
-请参阅 [常见问题](https://maa.plus/docs/zh-cn/manual/faq.html)
+请参阅 [用户手册](https://maa.plus/docs/zh-cn/manual/)。
 
 ### 外服支持
 
@@ -107,7 +92,7 @@ MAA 的意思是 MAA Assistant Arknights
 
 ### CLI 支持
 
-MAA 支持命令行界面（CLI）操作，支持 Linux，macOS 和 Windows，可用于自动化脚本或在无图形界面的服务器上使用。请参阅 [CLI 使用指南](https://maa.plus/docs/zh-cn/manual/cli/intro.html)
+MAA 支持命令行界面（CLI）操作，支持 Linux，macOS 和 Windows，可用于自动化脚本或在无图形界面的服务器上使用。请参阅 [CLI 使用指南](https://maa.plus/docs/zh-cn/manual/cli/)
 
 ## 加入我们
 
@@ -198,13 +183,13 @@ MAA 以中文（简体）为第一语言，翻译词条均以中文（简体）�
 - ~~干员及基建数据：[PRTS Wiki](http://prts.wiki/)~~
 - 关卡数据：[企鹅物流数据统计](https://penguin-stats.cn/)
 - 游戏数据及资源：[明日方舟客户端素材](https://github.com/yuanyan3060/ArknightsGameResource)
-- ~~游戏数据：[《明日方舟》游戏数据](https://github.com/Kengxxiao/ArknightsGameData)~~
+- 游戏数据：[《明日方舟》Yostar游戏数据](https://github.com/Kengxxiao/ArknightsGameData_YoStar)
 
 ### 贡献/参与者
 
 感谢所有参与到开发/测试中的朋友们，是大家的帮助让 MAA 越来越好！ (\*´▽｀)ノノ
 
-[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=114514&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
+[![Contributors](https://contributors-img.web.app/image?repo=MaaAssistantArknights/MaaAssistantArknights&max=105&columns=15)](https://github.com/MaaAssistantArknights/MaaAssistantArknights/graphs/contributors)
 
 ## 声明
 
@@ -212,12 +197,26 @@ MAA 以中文（简体）为第一语言，翻译词条均以中文（简体）�
 - 本软件 logo 并非使用 AGPL 3.0 协议开源，[耗毛](https://weibo.com/u/3251357314)、vie 两位画师及软件全体开发者保留所有权利。不得以 AGPL 3.0 协议已授权为由在未经授权的情况下使用本软件 logo，不得在未经授权的情况下将本软件 logo 用于任何用途。
 - 本软件开源、免费，仅供学习交流使用。若您遇到商家使用本软件进行代练并收费，可能由于设备或时间等原因，产生的任何问题及后果与本软件无关。
 
+### DirectML 支持说明
+
+本软件支持 GPU 加速功能，但 GPU 加速依赖于 Microsoft 提供的 DirectML（Microsoft.AI.DirectML）。为了方便用户，我们随安装包附带了一个未修改的 DirectML.dll 文件。
+
+#### 关于 DirectML.dll
+
+- 来源：Microsoft 官方
+- 许可证：请参考 Microsoft 的 DirectML 使用条款
+  [DirectML 官方文档](https://learn.microsoft.com/en-us/windows/ai/directml/)
+
+DirectML.dll 是 Microsoft 提供的独立组件，不属于本软件的开源部分，也不受 AGPL-3.0 的约束。
+
+如果您不需要 GPU 支持，可以安全地删除该 DLL 文件，软件核心功能仍然可以正常运行。
+
 ## 广告
 
 用户交流 QQ 群：[MAA 使用 & 粥游交流 QQ 群](https://ota.maa.plus/MaaAssistantArknights/api/qqgroup/index.html)  
 用户交流 TG 群：[Telegram 群](https://t.me/+Mgc2Zngr-hs3ZjU1)  
-自动战斗 JSON 作业分享：[prts.plus](https://prts.plus) 或 [抄作业.com](http://抄作业.com)  
-Bilibili 直播间：[直播间](https://live.bilibili.com/2808861) 每晚直播敲代码，近期很长一段时间应该都是在写本软件~  
+自动战斗 JSON 作业分享：[prts.plus](https://prts.plus)  
+Bilibili 直播间：[MrEO 直播间](https://live.bilibili.com/2808861) 直播敲代码 & [MAA-Official 直播间](https://live.bilibili.com/27548877) 游戏/杂谈  
 
 技术群（舟无关、禁水）：[内卷地狱！(QQ 群)](https://jq.qq.com/?_wv=1027&k=ypbzXcA2)  
 开发者群：[QQ 群](https://jq.qq.com/?_wv=1027&k=JM9oCk3C)  

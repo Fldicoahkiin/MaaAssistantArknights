@@ -5,47 +5,69 @@ icon: ph:question-fill
 
 # よくある質問
 
-::: warning
-MAA はバージョン 5.0 で .NET 8 に更新され、エンドユーザーにとって次のような影響を与えます：
+初めて MAA を使用する場合は、[新規ユーザーガイド](./newbie.md)をお読みください。
 
-1. MAA には .NET 8 Runtime が必要になり、起動時にインストールするようにユーザーに自動的にプロンプトが表示されます。インストールに失敗した場合は、以下をお読みになり、インストールパッケージをダウンロードして手動でインストールしてください。
-2. MAA が Windows Defender によって誤検出されることはなくなりました。~~それが目的です~~
-3. [.NET 8 は Windows 7/8/8.1 システムをサポートしていません](https://github.com/dotnet/core/issues/7556)、その結果、MAA もサポートしなくなりました。 たとえそれがまだ機能していたとしても。
-4. Windows 7 で MAA を実行する場合、メモリ使用量の異常に問題があります、 [#8238](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/8238) 軽減策の実装を参照してください。 Windows 8/8.1 はテストされていませんが、同じ問題がある場合は、補足ドキュメントを思い出させるために Issue を送信してください。
+::: warning
+
+MAAがアップデート後に動作しなくなった場合、またはエラーメッセージウィンドウを経由してここにたどり着いた場合、それは大体ランタイムが更新されていないことが原因です。  
+最も多い問題はランタイム関連であり、それにもかかわらず多くの人がドキュメントを読まずに質問するため、トップメッセージをこれに変更しました。とてもイライラします。
+
+MAAディレクトリ内の `DependencySetup_依赖库安装.bat` を実行するか、以下のコマンドを端末で実行するか、
+
+```sh
+winget install "Microsoft.VCRedist.2015+.x64" --override "/repair /passive /norestart" --force --uninstall-previous --accept-package-agreements && winget install "Microsoft.DotNet.DesktopRuntime.8" --override "/repair /passive /norestart" --force --uninstall-previous --accept-package-agreements
+```
+
+以下の<u>**2つ**</u>のランタイムライブラリを手動でダウンロードしてインストールして問題を解決してください。
+
+- [Visual C++ 再頒布可能パッケージ](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+- [.NET デスクトップランタイム 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0#:~:text=Binaries-,Windows,-x64)
+
 :::
 
 ## ソフトウェアが動作しない/クラッシュする/エラーが出る
 
-### 可能性0：ダウンロードされたパッケージが不完全です
+### ダウンロード/インストールの問題
 
-- 完全なMAAソフトウェアパッケージは`MAA-`バージョン`-`プラットフォーム（Windows/Mac/Linuxなど）`-`アーキテクチャ`.zip`という名前で、他は個別に使用できない「コンポーネント」ですので、よくお読みください。 Windowsユーザーは`MAA-*-win-x64.zip`をダウンロードするだけで大丈夫です。
-- 一定期間経過しても自動アップデートがうまくいかない場合は、自動アップデート機能にバグがある可能性があるので、パッケージ全体を再ダウンロードして解凍し、手動で `config` フォルダを移行してみてください。
+- 完全な MAA ソフトウェアパッケージの命名形式は "MAA-`バージョン`-`プラットフォーム`-`アーキテクチャ`.zip" です。他のものは単独で使用できない「コンポーネント」ですので、よくお読みください。
+  ほとんどの場合、x64 アーキテクチャの MAA を使用する必要があります。つまり、`MAA-*-win-x64.zip` をダウンロードする必要があり、`MAA-*-win-arm64.zip` ではありません。
+- 自動更新後に機能が欠落している、または使用できない場合は、更新プロセス中に問題が発生した可能性があります。完全なインストールパッケージを再ダウンロードして解凍してください。解凍後、古い `MAA` フォルダから `config` フォルダを新しく解凍した `MAA` フォルダに直接ドラッグしてください。
 
-### 可能性1：アーキテクチャのエラー
+### ランタイムの問題
 
-- 大体のミスの場合`MAA-*-win-arm64.zip`を間違ってダウンロードしており、その場合`MAA-*-win-x64.zip`をダウンロードする必要があります。ですが、32ビットオペレーティングシステムは、MAAではサポートされていません。
+ウェブページの右下にある上向きの ↑ 矢印を見つけてクリックしてください。
 
-### 可能性2：ランタイム・ライブラリの問題
+### システムの問題
 
-::: info 注意
-ここでは公式のインストール方法のみを掲載しており、サードパーティの統合パックの信頼性を保証することはできません。
-:::
+- MAA は 32 ビットのオペレーティングシステムをサポートしておらず、Windows 7 / 8 / 8.1 をサポートしていません。
+- 上記のランタイムのインストールには、すべてコンポーネントストアサービス（CBS、TrustedInstaller/TiWorker、WinSxS）が必要です。
+  コンポーネントストアサービスが破損している場合、正常にインストールできません。
 
-- [VCRedist x64](https://aka.ms/vs/17/release/vc_redist.x64.exe) と [.NET 8.0.6](https://dotnet.microsoft.com/en-us/download/dotnet/8.0#:~:text=x86-,.NET%20Desktop%20Runtime,-8.0.6)パッケージをインストールし、コンピューターを再起動してアプリを実行してみてください。
+システムの再インストール以外の修復提案を提供することはできませんので、縮小項目および縮小リスクが明記されていない「縮小版」システムや、古いバージョンのシステムを使用しないでください。
 
-#### Windows N/KN 関連
+#### Windows N/KN
 
-- Windows 8/8.1/10/11 N/KN（ヨーロッパ/韓国）バージョンを使用している場合は、 [Media Feature Pack](https://support.microsoft.com/ja-jp/topic/windows-n-%E3%82%A8%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE-media-feature-pack-%E3%81%AE%E4%B8%80%E8%A6%A7-c1c6fffa-d052-8338-7a79-a4bb980a700a) のインストールも必要です。
+Windows N/KN（ヨーロッパ/韓国）の場合、[メディア機能パック](https://support.microsoft.com/ja-jp/topic/c1c6fffa-d052-8338-7a79-a4bb980a700a)をインストールする必要があります。
 
 #### Windows 7 関連
 
-- Windows 7を使用している場合は、ランタイム・ライブラリをインストールする前に、以下のパッチがインストールされていることも確認する必要があります：
+.NET 8 は Windows 7 / 8 / 8.1 システムをサポートしていないため<sup>[ソース](https://github.com/dotnet/core/issues/7556)</sup>、MAA も同様にサポートしていません。最後に利用可能な .NET 8 バージョンは [`v5.4.0-beta.1.d035.gd2e5001e7`](https://github.com/MaaAssistantArknights/MaaRelease/releases/tag/v5.4.0-beta.1.d035.gd2e5001e7) です。最後に利用可能な .NET 4.8 バージョンは [`v4.28.8`](https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/tag/v4.28.8) です。自己コンパイルの実現可能性はまだ確認されていません。
 
-  1. [Windows 7 Service Pack 1](https://support.microsoft.com/ja-jp/windows/windows-7-service-pack-1-sp1-%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B-b3da2c0f-cdb6-0572-8596-bab972897f61)
-  2. SHA-2 コード署名：
-     - KB4474419：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2019/09/windows6.1-kb4474419-v3-x64_b5614c6cea5cb4e198717789633dca16308ef79c.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/c/msdownload/update/software/secu/2019/09/windows6.1-kb4474419-v3-x64_b5614c6cea5cb4e198717789633dca16308ef79c.msu)
-     - KB4490628：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2019/03/windows6.1-kb4490628-x64_d3de52d6987f7c8bdc2c015dca69eac96047c76e.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/c/msdownload/update/software/secu/2019/03/windows6.1-kb4490628-x64_d3de52d6987f7c8bdc2c015dca69eac96047c76e.msu)
-  3. Platform Update for Windows 7（DXGI 1.2、Direct3D 11.1，KB2670838）：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/msdownload/update/software/ftpk/2013/02/windows6.1-kb2670838-x64_9f667ff60e80b64cbed2774681302baeaf0fc6a6.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/msdownload/update/software/ftpk/2013/02/windows6.1-kb2670838-x64_9f667ff60e80b64cbed2774681302baeaf0fc6a6.msu)
+Windows 7 の場合、上記の 2 つのランタイムライブラリをインストールする前に、以下のパッチがインストールされているかどうかを確認する必要があります：
+
+1. [Windows 7 Service Pack 1](https://support.microsoft.com/ja-jp/windows/windows-7-service-pack-1-sp1-%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B-b3da2c0f-cdb6-0572-8596-bab972897f61)
+2. SHA-2 コード署名：
+    - KB4474419：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2019/09/windows6.1-kb4474419-v3-x64_b5614c6cea5cb4e198717789633dca16308ef79c.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/c/msdownload/update/software/secu/2019/09/windows6.1-kb4474419-v3-x64_b5614c6cea5cb4e198717789633dca16308ef79c.msu)
+    - KB4490628：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/c/msdownload/update/software/secu/2019/03/windows6.1-kb4490628-x64_d3de52d6987f7c8bdc2c015dca69eac96047c76e.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/c/msdownload/update/software/secu/2019/03/windows6.1-kb4490628-x64_d3de52d6987f7c8bdc2c015dca69eac96047c76e.msu)
+3. Platform Update for Windows 7（DXGI 1.2、Direct3D 11.1，KB2670838）：[ダウンロードリンク1](https://catalog.s.download.windowsupdate.com/msdownload/update/software/ftpk/2013/02/windows6.1-kb2670838-x64_9f667ff60e80b64cbed2774681302baeaf0fc6a6.msu)、[ダウンロードリンク2](http://download.windowsupdate.com/msdownload/update/software/ftpk/2013/02/windows6.1-kb2670838-x64_9f667ff60e80b64cbed2774681302baeaf0fc6a6.msu)
+
+##### .NET 8 アプリケーションが Windows 7 で異常に動作する場合の緩和策 [#8238](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/8238)
+
+Windows 7 で .NET 8 アプリケーションを実行すると、メモリ使用量が異常になる問題があります。以下の緩和策を参照してください。Windows 8/8.1 はテストされていません。同じ問題がある場合は、ドキュメントを更新するために Issue を提出してください。
+
+1. `コンピュータ` を開き、空白部分を右クリックしてプロパティをクリックし、左側の `システムの詳細設定` をクリックし、`環境変数` をクリックします。
+2. 新しいシステム変数を作成し、変数名を `DOTNET_EnableWriteXorExecute`、変数値を `0` に設定します。
+3. コンピュータを再起動します。
 
 #### 公式統合パック（確信）
 
@@ -64,7 +86,7 @@ MAA はバージョン 5.0 で .NET 8 に更新され、エンドユーザーに
 ## 接続エラー
 
 ::: tip
-[エミュレータのサポート](./エミュレータのサポート) を参照して、エミュレータがサポートされていることを確認してください。
+[エミュレータのサポート](./device/) を参照して、エミュレータがサポートされていることを確認してください。
 :::
 
 ### adbと接続アドレスが正しいことを確認する
@@ -109,7 +131,7 @@ Android Phone Assistant は adb を使用してスマホと通信しますが、
 
 ### エミュレーターを変更する
 
-[エミュレータのサポート](./エミュレータのサポート) を参照してください。
+[エミュレータのサポート](./device/) を参照してください。
 
 ## 接続に成功した後、固まり、全く操作できなくなる
 
@@ -185,7 +207,7 @@ MAA はレジストリから `bluestacks.conf` の保存場所を読み取ろう
 
 - `UI調整`を使用している場合は、0に調整してください。
 - CN以外のクライアントをお使いの場合は、`設定` - `対象クライアント` - `クライアントバージョン` の選択でご確認ください。また、非CNクライアントでは全ての機能がサポートされているわけではありませんので、各国語のドキュメントを参照してください。
-- 自動ローグを実行している場合、[詳細説明](./詳細説明.md#自動統合戦略-ローグライク)を参照し、`スタート` - `自動ローグ` - `主題`で正しいテーマを選択してください。
+- 自動ローグを実行している場合、[詳細説明](./introduction/integrated-strategy.md)を参照し、`スタート` - `自動ローグ` - `主題`で正しいテーマを選択してください。
 - `Adb Input` のタッチモードで動作が遅いのは正常です。オートバトルなどが必要な場合は他のモードに切り替えてみてください。
 
 ### スクリーンショットに時間がかかる/長すぎるというメッセージが表示される
@@ -194,6 +216,17 @@ MAA はレジストリから `bluestacks.conf` の保存場所を読み取ろう
 - 「設定 - 接続設定」には、過去 30 枚のスクリーンショットにかかった最小/平均/最大時間が表示され、スクリーンショット 10 枚ごとに更新されます。
 - 自動戦闘機能（自動肉バトなど）はスクリーンショットの撮影時間に大きく影響されます。
 - この時間の消費はMAAとは関係ありませんが、コンピューターのパフォーマンス、現在の使用状況、またはエミュレーターに関連しています。バックグラウンドプロセスをクリーンアップしたり、エミュレーターを変更したり、コンピューターの構成をアップグレードすることができます。
+
+## 管理者権限に関する問題
+
+MAAはWindows UAC管理者権限なしで、すべての機能を実行できるはずです。現在、管理者権限に関係する機能は以下の通りです：
+
+1. `接続の自動検出`：ターゲットエミュレーターが管理者権限で実行されている場合、管理者権限が必要です。
+2. `終了後にエミュレーターを閉じる`：ターゲットエミュレーターが管理者権限で実行されている場合、管理者権限が必要です。
+3. `起動時にMAAを自動的に開始`：管理者権限で起動する場合、起動時の自動起動設定はできません。
+4. MAAが誤って管理者権限が必要なパスに解凍されている場合、例えば `C:\`、`C:\Program Files\` など。
+
+UACを無効にしたシステムでは、「右クリックして管理者として実行を選択しなくても、管理者権限で起動される」という問題が報告されています。意図しない権限昇格を避けるために、UACを有効にすることをお勧めします。
 
 ## ダウンロード速度が遅い、ミラーサイトにアクセスできない
 

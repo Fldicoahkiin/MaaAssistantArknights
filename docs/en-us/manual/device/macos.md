@@ -9,9 +9,9 @@ icon: basil:apple-solid
 
 ### ✅ [PlayCover](https://playcover.io) (The software runs most fluently for its nativity 🚀)
 
-Compatible in beta, plz submit issue marked with `ios` when encounter errors.
+Compatible in beta, plz submit issue marked with `MacOS` when encounter errors.
 
-P.S.: For the reason of `macOS` mechanism itself, errors might occur when `PlayCover` is minimized and you switch to others windows. The errors of screenshot might crash `MAA`. Reference 👉🏻️[issue](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/4371#issuecomment-1527977512)
+P.S.: For the reason of `MacOS` mechanism itself, errors might occur when `PlayCover` is minimized and you switch to others windows. The errors of screenshot might crash `MAA`. Reference 👉🏻️[issue](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/4371#issuecomment-1527977512)
 
 1. Requests: MAA version above v4.13.0-rc.1
 
@@ -33,7 +33,17 @@ P.S.: For the reason of `macOS` mechanism itself, errors might occur when `PlayC
 
 Compatible
 
+### ✅ [BlueStacks Air](https://www.bluestacks.com/mac) (Free, optimized for Apple M-series chips)
+
+Supported, tested, and can be connected via maatouch at `127.0.0.1:5555`.
+
+You need to enable **"Android Debugging (ADB)"** in the emulator's **`Settings`** - **`Advanced`** section.
+
 ## Intel Chips
+
+::: tip
+Due to a lack of manpower for Mac version development, updates are relatively slower. It is recommended to use Mac's built-in multi-system feature to install Windows and use the Windows version of MAA.
+:::
 
 ### ✅ [Bluestacks-CN 5](https://www.bluestacks.cn/)
 

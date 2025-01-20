@@ -34,8 +34,13 @@ ignore_list_file_name = "ignore_list_of_templates.txt"
 # NOTE
 # You may customize here
 regex_ignore_list = [
-    #Wait for Overseas release
-    "Siege"
+    # OVERSEAS
+    # UNRELEASED THEMES
+    "Delicious",
+    "DahuangCity",
+    "Gaming",
+    # UNRELEASED I.S.
+    "Sarkaz",
 ]
 
 server_list = [

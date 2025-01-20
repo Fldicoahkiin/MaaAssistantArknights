@@ -8,10 +8,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:s="https://github.com/canton7/Stylet"
-    xmlns:styles="clr-namespace:MaaWpfGui.Styles"
     xmlns:ui="clr-namespace:MaaWpfGui.ViewModels.UI"
-    xmlns:viewModels="clr-namespace:MaaWpfGui.ViewModels"
-    xmlns:vm="clr-namespace:MaaWpfGui"
     d:DataContext="{d:DesignInstance {x:Type ui:RecognizerViewModel}}"
     d:DesignHeight="600"
     d:DesignWidth="800"
@@ -24,7 +21,7 @@
             <Grid Margin="20,0,20,20" IsEnabled="{Binding Idle}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="150" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <hc:ScrollViewer
                     Grid.Row="0"
@@ -53,7 +50,6 @@
                 </hc:ScrollViewer>
                 <StackPanel
                     Grid.Row="1"
-                    Margin="27,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
@@ -62,22 +58,6 @@
                             Margin="5"
                             Content="{DynamicResource AutoSettingTime}"
                             IsChecked="{Binding RecruitAutoSetTime}" />
-                        <CheckBox
-                            MaxWidth="170"
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding IsLevel3UseShortTime}"
-                            ToolTip="{DynamicResource Level3UseShortTimeTip}">
-                            <controls:TextBlock Text="{DynamicResource Level3UseShortTime}" TextWrapping="Wrap" />
-                        </CheckBox>
-                        <CheckBox
-                            MaxWidth="170"
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding IsLevel3UseShortTime2}"
-                            ToolTip="{DynamicResource Level3UseShortTimeTip}">
-                            <controls:TextBlock Text="{DynamicResource Level3UseShortTime2}" TextWrapping="Wrap" />
-                        </CheckBox>
                         <CheckBox
                             MaxWidth="200"
                             Margin="5"
@@ -88,31 +68,104 @@
                         </CheckBox>
                     </StackPanel>
 
-                    <StackPanel Margin="40,0,40,0" VerticalAlignment="Center">
-                        <CheckBox
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Content="{DynamicResource AutoSelectLevel3Tags}"
-                            IsChecked="{Binding ChooseLevel3}" />
-                        <CheckBox
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Content="{DynamicResource AutoSelectLevel4Tags}"
-                            IsChecked="{Binding ChooseLevel4}" />
-                        <CheckBox
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Content="{DynamicResource AutoSelectLevel5Tags}"
-                            IsChecked="{Binding ChooseLevel5}" />
-                        <CheckBox
-                            Margin="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Content="{DynamicResource AutoSelectLevel6Tags}"
-                            IsChecked="{Binding ChooseLevel6}" />
+                    <StackPanel VerticalAlignment="Center">
+                        <StackPanel Height="30" Orientation="Horizontal">
+                            <CheckBox
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Content="{DynamicResource AutoSelectLevel3Tags}"
+                                IsChecked="{Binding ChooseLevel3}" />
+                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding RecruitAutoSetTime}">
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Maximum="9"
+                                    Minimum="1"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel3Hour, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                                <controls:TextBlock Margin="5" Text=":" />
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Increment="10"
+                                    Maximum="50"
+                                    Minimum="0"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel3Min, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Height="30" Orientation="Horizontal">
+                            <CheckBox
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Content="{DynamicResource AutoSelectLevel4Tags}"
+                                IsChecked="{Binding ChooseLevel4}" />
+                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding RecruitAutoSetTime}">
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Maximum="9"
+                                    Minimum="1"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel4Hour, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                                <controls:TextBlock Margin="5" Text=":" />
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Increment="10"
+                                    Maximum="50"
+                                    Minimum="0"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel4Min, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Height="30" Orientation="Horizontal">
+                            <CheckBox
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Content="{DynamicResource AutoSelectLevel5Tags}"
+                                IsChecked="{Binding ChooseLevel5}" />
+                            <StackPanel Orientation="Horizontal" Visibility="{c:Binding RecruitAutoSetTime}">
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Maximum="9"
+                                    Minimum="1"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel5Hour, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                                <controls:TextBlock Margin="5" Text=":" />
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    Increment="10"
+                                    Maximum="50"
+                                    Minimum="0"
+                                    ValueFormat="00"
+                                    Value="{Binding ChooseLevel5Min, Source={x:Static ui:TaskQueueViewModel.RecruitTask}}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Height="30" Orientation="Horizontal">
+                            <CheckBox
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Content="{DynamicResource AutoSelectLevel6Tags}"
+                                IsChecked="{Binding ChooseLevel6}" />
+                            <StackPanel
+                                IsEnabled="False"
+                                Orientation="Horizontal"
+                                Visibility="{c:Binding RecruitAutoSetTime}">
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    ValueFormat="00"
+                                    Value="9" />
+                                <controls:TextBlock Margin="5" Text=":" />
+                                <hc:NumericUpDown
+                                    Width="55"
+                                    ValueFormat="00"
+                                    Value="0" />
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                     <Button
                         Width="180"
@@ -126,43 +179,103 @@
             </Grid>
         </TabItem>
         <TabItem Header="{DynamicResource OperBoxRecognition}">
-            <Grid
-                Width="600"
-                Margin="20,0,20,20"
-                IsEnabled="{Binding Idle}">
+            <Grid Margin="20,0,20,20" IsEnabled="{Binding Idle}">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="150" />
                 </Grid.RowDefinitions>
-                <hc:ScrollViewer
+
+                <controls:TextBlock
                     Grid.Row="0"
-                    Margin="10,0"
+                    Margin="10"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    IsInertiaEnabled="True"
-                    PanningMode="Both">
-                    <StackPanel>
+                    Focusable="True"
+                    FontSize="14"
+                    Style="{StaticResource TextBlockDefaultBold}"
+                    Text="{Binding OperBoxInfo}"
+                    TextWrapping="Wrap" />
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <controls:TextBlock
+                            Grid.Row="0"
                             Margin="10"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Top"
-                            Focusable="True"
-                            FontSize="14"
-                            Style="{StaticResource TextBlockDefaultBold}"
-                            Text="{Binding OperBoxInfo}"
-                            TextWrapping="Wrap" />
-                        <TextBox
-                            Margin="10"
-                            HorizontalAlignment="Stretch"
-                            BorderThickness="0"
-                            FontFamily="SimSun, Global Monospace"
-                            FontSize="14"
+                            Text="{c:Binding OperBoxNotHaveList.Count,
+                                             StringFormat={StaticResource OperBoxNotHaveList}}"
+                            Visibility="{c:Binding 'OperBoxNotHaveList.Count != 0'}" />
+                        <DataGrid
+                            Grid.Row="1"
+                            Width="680"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Stretch"
+                            AutoGenerateColumns="False"
+                            HeadersVisibility="None"
                             IsReadOnly="True"
-                            Text="{Binding OperBoxResult}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </hc:ScrollViewer>
+                            ItemsSource="{Binding OperBoxNotHaveList}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Visibility="{c:Binding 'OperBoxNotHaveList.Count != 0'}">
+                            <DataGrid.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </DataGrid.ItemsPanel>
+                            <DataGrid.Resources>
+                                <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type DataGrid}">
+                                    <EventSetter Event="PreviewMouseWheel" Handler="DataGrid_PreviewMouseWheel" />
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <controls:TextBlock
+                            Grid.Row="2"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Text="{c:Binding OperBoxHaveList.Count,
+                                             StringFormat={StaticResource OperBoxHaveList}}"
+                            Visibility="{c:Binding 'OperBoxHaveList.Count != 0'}" />
+                        <DataGrid
+                            Grid.Row="3"
+                            Width="680"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Stretch"
+                            AutoGenerateColumns="False"
+                            HeadersVisibility="None"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding OperBoxHaveList}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            Visibility="{c:Binding 'OperBoxHaveList.Count != 0'}">
+                            <DataGrid.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </DataGrid.ItemsPanel>
+                            <DataGrid.Resources>
+                                <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type DataGrid}">
+                                    <EventSetter Event="PreviewMouseWheel" Handler="DataGrid_PreviewMouseWheel" />
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </ScrollViewer>
                 <StackPanel
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="27,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -173,14 +286,14 @@
                         Margin="30"
                         Command="{s:Action ExportOperBox}"
                         Content="{DynamicResource OperBoxCopyToClipboard}"
-                        IsEnabled="{Binding OperBoxDone}" />
+                        IsEnabled="{Binding Idle}" />
                     <Button
                         Width="180"
                         Height="70"
                         Margin="30"
                         Command="{s:Action StartOperBox}"
                         Content="{DynamicResource StartToOperBoxRecognition}"
-                        IsEnabled="{Binding OperBoxDone}" />
+                        IsEnabled="{Binding Idle}" />
                 </StackPanel>
             </Grid>
         </TabItem>
@@ -195,7 +308,7 @@
                     <controls:TextBlock
                         Height="36"
                         Margin="10"
-                        HorizontalAlignment="Left"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         Focusable="True"
                         FontSize="14"
@@ -215,7 +328,7 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <DataGrid.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel  HorizontalAlignment="Center"/>
+                            <WrapPanel HorizontalAlignment="Center" />
                         </ItemsPanelTemplate>
                     </DataGrid.ItemsPanel>
                     <DataGrid.Columns>
@@ -247,7 +360,7 @@
                         VerticalAlignment="Center"
                         Command="{s:Action ExportToArkplanner}"
                         Content="{DynamicResource ExportToArkplanner}"
-                        IsEnabled="{Binding DepotDone}" />
+                        IsEnabled="{Binding Idle}" />
                     <Button
                         Width="180"
                         Height="70"
@@ -256,7 +369,7 @@
                         VerticalAlignment="Center"
                         Command="{s:Action ExportToLolicon}"
                         Content="{DynamicResource ExportToLolicon}"
-                        IsEnabled="{Binding DepotDone}" />
+                        IsEnabled="{Binding Idle}" />
                     <Button
                         Width="180"
                         Height="70"
@@ -265,11 +378,11 @@
                         VerticalAlignment="Center"
                         Command="{s:Action StartDepot}"
                         Content="{DynamicResource StartToDepotRecognition}"
-                        IsEnabled="{Binding DepotDone}" />
+                        IsEnabled="{Binding Idle}" />
                 </StackPanel>
             </Grid>
         </TabItem>
-        <TabItem Header="{DynamicResource VideoRecognition}">
+        <TabItem Header="{DynamicResource VideoRecognition}" Visibility="Collapsed">
             <controls:TextBlock
                 Height="80"
                 Margin="10"
@@ -282,7 +395,7 @@
                 TextWrapping="Wrap" />
         </TabItem>
         <TabItem Header="{DynamicResource Gacha}">
-            <Grid Margin="20,0,20,20" IsEnabled="{Binding Idle}">
+            <Grid Margin="20,0,20,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80" />
                     <RowDefinition Height="*" />
@@ -298,12 +411,32 @@
                     Text="{Binding GachaInfo}"
                     TextWrapping="Wrap"
                     Visibility="{c:Binding !GachaShowDisclaimer}" />
-                <Image
+                <Grid
                     Grid.Row="1"
-                    Margin="10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Source="{Binding GachaImage}" />
+                    Visibility="{c:Binding !GachaShowDisclaimer}">
+                    <Image
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="{Binding PeepImage}" />
+                    <Canvas Visibility="{c:Binding !Idle}">
+                        <Viewbox Canvas.Left="15" Canvas.Top="15">
+                            <Border
+                                Padding="4,2"
+                                Background="#EE404040"
+                                CornerRadius="3">
+                                <controls:TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontWeight="Bold"
+                                    Foreground="Aquamarine"
+                                    Text="{Binding PeepScreenFpf, StringFormat={}{0:F2} FPS}" />
+                            </Border>
+                        </Viewbox>
+                    </Canvas>
+                </Grid>
                 <StackPanel
                     Grid.Row="1"
                     HorizontalAlignment="Center"
@@ -348,8 +481,8 @@
                                                 Storyboard.TargetName="LinearGradientBrushTranslate"
                                                 Storyboard.TargetProperty="X"
                                                 From="0"
-                                                To="410"
-                                                Duration="0:0:2" />
+                                                To="4000"
+                                                Duration="0:0:20" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -390,19 +523,89 @@
                     <Button
                         Width="180"
                         Height="70"
-                        Margin="30,0"
+                        Margin="10"
                         Command="{s:Action GachaOnce}"
                         Content="{DynamicResource GachaOnce}"
                         FontSize="16"
-                        IsEnabled="{Binding GachaDone}" />
+                        IsEnabled="{Binding Idle}" />
                     <Button
                         Width="180"
                         Height="70"
-                        Margin="30,0"
+                        Margin="10"
                         Command="{s:Action GachaTenTimes}"
                         Content="{DynamicResource GachaTenTimes}"
                         FontSize="16"
-                        IsEnabled="{Binding GachaDone}" />
+                        IsEnabled="{Binding Idle}" />
+                    <Button
+                        Width="180"
+                        Height="70"
+                        Margin="10"
+                        Command="{s:Action Peep}"
+                        Content="{c:Binding '!Peeping ? &quot;Peep!&quot; : (IsGachaInProgress ? &quot;Stop!!!!!&quot; : &quot;Stop!&quot;)'}"
+                        FontSize="16"
+                        IsEnabled="{c:Binding !IsPeepTransitioning}" />
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="{DynamicResource Peep}">
+            <Grid Margin="20,0,20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="100" />
+                </Grid.RowDefinitions>
+                <Grid
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Image
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="{Binding PeepImage}" />
+                    <Canvas Visibility="{c:Binding !Idle}">
+                        <Viewbox Canvas.Left="15" Canvas.Top="15">
+                            <Border
+                                Padding="4,2"
+                                Background="#EE404040"
+                                CornerRadius="3">
+                                <controls:TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontWeight="Bold"
+                                    Foreground="Aquamarine"
+                                    Text="{Binding PeepScreenFpf, StringFormat={}{0:F2} FPS}" />
+                            </Border>
+                        </Viewbox>
+                    </Canvas>
+                </Grid>
+
+                <StackPanel
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="180"
+                        Height="70"
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{s:Action Peep}"
+                        Content="{c:Binding '!Peeping ? &quot;Peep!&quot; : (IsGachaInProgress ? &quot;Stop!!!!!&quot; : &quot;Stop!&quot;)'}"
+                        FontSize="16"
+                        IsEnabled="{c:Binding !IsPeepTransitioning}" />
+                    <hc:NumericUpDown
+                        MinWidth="50"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        d:Value="60"
+                        hc:TitleElement.HorizontalAlignment="Center"
+                        hc:TitleElement.Title="{DynamicResource PeepTargetFps}"
+                        hc:TitleElement.TitlePlacement="Top"
+                        Maximum="60"
+                        Minimum="1"
+                        Style="{StaticResource NumericUpDownExtend}"
+                        Value="{Binding PeepTargetFps, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </Grid>
         </TabItem>

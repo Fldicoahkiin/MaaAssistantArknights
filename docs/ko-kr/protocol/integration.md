@@ -39,7 +39,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `StartUp`  
   게임 시작
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool,              // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -52,17 +52,19 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `CloseDown`  
   게임 종료
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool,              // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
+    "client_type": string,       // 클라이언트 버전이 필수이며, 빈칸을 채우지 않으면 실행되지 않습니다.
+                                 // 옵션: "Official" | "Bilibili" | "txwy" | "YoStarEN" | "YoStarJP" | "YoStarKR"
 }
 ```
 
 - `Fight`  
   작전
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool,             // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -92,12 +94,12 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 }
 ```
 
-특수 스테이지의 일부를 지원합니다. 자세한 내용은 [자동 현지화 예제](..\..\..\tools\AutoLocalization\example\ko-kr.xaml)를 참고하세요.
+특수 스테이지의 일부를 지원합니다. 자세한 내용은 [자동 현지화 예제](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/master/tools/AutoLocalization/example/ko-kr.xaml#L233)를 참고하세요.
 
 - `Recruit`  
   공개모집
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool,             // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -136,7 +138,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `Infrast`  
   기반시설 교대
 
-```json
+```json5
 {
     "enable": bool,             // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
     "mode": int,            // 전환 모드, 선택 사항입니다. 실행 중에는 편집할 수 없습니다.
@@ -163,7 +165,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
   크레딧 수집 및 자동 구매
   "구매 우선 항목" 목록에 따라 순서대로 아이템을 구매하며 "무시 항목"에 있는 항목을 무시하고 크레딧이 넘칠 때까지 다른 항목을 순서대로 구매합니다.
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool,         // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -185,7 +187,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `Award`  
   임무 보상 수령
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool          // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -195,36 +197,63 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `Roguelike`  
   통합전략
 
-```json
+```json5
+// 해당 작업 파라미터
 {
-    "enable": bool,         // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
-    "theme": string,        // 테마 이름, 선택 사항, 기본값은 "Phantom"입니다.
-                            // Phantom - 팬텀 & 크림손 솔리테어
-                            // Mizuki  - 미즈키 & 카이룰라 아버
-    "mode": int,            // 모드, 선택 사항, 기본값은 0입니다.
-                            // 0 - 레벨 우선, 안정적인 전략으로 최대한 플레이
-                            // 1 - 오리지늄각뿔 우선, 미래를 위한 투자 및 2층 도달 즉시 탐험 중도 포기
-                            // 2 - 둘 다, 투자를 했을 경우 종료, 못했을 경우 최대한 진행
-    "starts_count": int,    // 시작 횟수, 선택 사항, 기본값은 INT_MAX입니다.
-    "investment_enabled": bool, // 기본값은 true입니다.
-
-    "investments_count": int,
-                            // 투자 횟수, 선택 사항, 기본값은 INT_MAX입니다.
-    "stop_when_investment_full": bool,
-                            // 투자가 가득 찬 경우 작업을 중지할지 여부, 선택 사항, 기본값은 false입니다.
-    "squad": string,        // "강습 전술 분대"와 같은 부대 이름, 선택 사항, 기본값은 "지휘 분대"입니다.
-    "roles": string,        // 역할, 선택 사항
-    "core_char": string,    // 오퍼레이터 이름, 선택 사항입니다. 레벨에 따라 자동으로 선택합니다.
-    "use_support": bool,    // "core_char"이 지원 유닛인지 여부, 선택 사항, 기본값은 false입니다.
-    "use_nonfriend_support": bool,  // 지원 유닛이 친구가 아닌 사람의 지원 유닛인지 여부, 선택 사항, 기본값은 false입니다. use_support=true일 때 유효합니다.
-    "refresh_trader_with_dice": bool  // 주사위로 거래상인을 새로 고침하여 특별 아이템을 구매할지 여부, 선택 사항, 기본값은 false입니다.
+    "enable": bool,  // 작업을 활성화할지 여부, 선택 가능, 기본값 true
+    "theme": string, // 테마, 선택 가능, 기본값 "Phantom"
+                     //   Phantom - 괴영과 주홍색 혈다이아
+                     //   Mizuki  - 수월과 심해의 나무
+                     //   Sami    - 탐색자의 은서림의 종점
+                     //   Sarkaz  - 사카즈의 끝없는 기묘담
+    "mode": int,     // 모드, 선택 가능, 기본값 0
+                     //   0 - 점수/보상 포인트 획득, 가능한 한 안정적으로 더 많은 층 도달
+                     //   1 - 원석 정 수집, 첫 층에서 투자 후 종료
+                     //   2 - 【폐지됨】모드 0과 1을 겸한 방식, 투자 후 종료하고 투자 없으면 계속 진행
+                     //   3 - 개발 중…
+                     //   4 - 시작 리셋, 난이도 0에서 3층 도달 후 리셋, 지정된 난이도로 리셋 보상 시도. 열쇠 아이템이 뜨지 않으면 난이도 0으로 돌아감;
+                     //       Phantom 테마에서는 난이도 변경 없이 현재 난이도에서 3층 도달 후 리셋 및 시작 리셋 시도
+                     //   5 - 붕괴 패러다임 수집; Sami 테마에만 해당; 전투에서 적을 놓쳐 붕괴 수치를 빠르게 누적시킴.
+                     //       첫 붕괴 패러다임이 expected_collapsal_paradigms 리스트에 있으면 작업 중지, 없으면 리셋
+    "squad": string,                // 시작 시 부대명, 선택 가능, 기본값 "지휘 부대"
+    "roles": string,                // 시작 직업 그룹, 선택 가능, 기본값 "적재적소 활용"
+    "core_char": string,            // 시작 캐릭터 이름, 선택 가능; 단일 캐릭터 **한국어 이름**만 지원, 서버 무관; 비우거나 ""로 설정하면 자동으로 숙련도 기반 선택
+    "use_support": bool,            // 시작 캐릭터가 지원 캐릭터인지 여부, 선택 가능, 기본값 false
+    "use_nonfriend_support": bool,  // 비친구 지원 캐릭터 사용 가능 여부, 선택 가능, 기본값 false; use_support가 true일 때만 유효
+    "starts_count": int,            // 탐색 시작 횟수, 선택 가능, 기본값 INT_MAX; 도달 시 자동으로 작업 중지
+    "difficulty": int,              // 난이도 설정, 선택 가능, 기본값 0; **Phantom 제외** 테마에만 해당;
+                                    // 해제되지 않은 경우, 현재 해제된 최고 난이도 선택
+    "stop_at_final_boss": bool,         // 5층 최종 보스 노드에서 작업을 중지할지 여부, 선택 가능, 기본값 false; **Phantom 제외** 테마에만 해당
+    "stop_at_max_level": bool,          // 로그라이크에서 최대 레벨에 도달했을 때 작업을 멈출지 여부, 선택 가능, 기본값 false
+    "investment_enabled": bool,         // 원석 정을 투자할지 여부, 선택 가능, 기본값 true
+    "investments_count": int,           // 원석 정 투자 횟수, 선택 가능, 기본값 INT_MAX; 도달 시 자동으로 작업 중지
+    "stop_when_investment_full": bool,  // 투자 한도 도달 시 작업을 자동 중지할지 여부, 선택 가능, 기본값 false
+    "investment_with_more_score": bool, // 투자 후 쇼핑을 시도할지 여부 (선택 가능, 기본값: false); 모드 1 에만 적용
+    "start_with_elite_two": bool,       // 시작 리셋 시 엘리트2 등급 진급을 함께 시도할지 여부, 선택 가능, 기본값 false; 모드 4에만 해당
+    "only_start_with_elite_two": bool,  // 엘리트2 등급 진급만 시도하고 다른 조건 무시 여부, 선택 가능, 기본값 false;
+                                        // 모드가 4이고 start_with_elite_two가 true일 때만 유효
+    "refresh_trader_with_dice": bool,   // 주사위를 사용해 상점을 새로고침해 특정 상품 구매할지 여부, 선택 가능, 기본값 false; Mizuki 테마에만 해당, 지표 물고기 획득 목표
+    "first_floor_foldartal": string,    // 1층 원견 단계에서 획득 희망하는 밀문, 선택 가능; Sami 테마에만 해당, 모드와 무관; 성공 시 작업 중지
+    "start_foldartal_list": [           // 시작 리셋 시 획득 희망 밀문 목록, 선택 가능, 기본값 []；Sami 테마에서 모드 4일 때만 유효;
+        string,                         // 시작 시 목록의 모든 밀문을 보유할 경우 시작 리셋 성공으로 간주;
+        ...                             // 주의: 이 파라미터는 "생활 우선 부대"와 함께 사용해야 하며, 다른 부대에서는 시작 보상으로 밀문 획득 불가;
+    ],
+    "start_with_two_ideas": bool,       // 2 번 구상 개시 여부 (선택 가능, 기본값: false); 테마가 Sarkaz 이고 모드가 4 일 때만 유효
+    "use_foldartal": bool,                    // 밀문 사용 여부, 모드 5에서는 기본값 false, 다른 모드에서는 기본값 true; Sami 테마에만 해당
+    "check_collapsal_paradigms": bool,        // 획득한 붕괴 패러다임을 확인할지 여부, 모드 5에서는 기본값 true, 다른 모드에서는 기본값 false
+    "double_check_collapsal_paradigms": bool, // 붕괴 패러다임 확인 누락 방지 조치를 수행할지 여부, 모드 5에서는 기본값 true, 다른 모드에서는 기본값 false;
+                                              // 테마가 Sami이고 check_collapsal_paradigms가 true일 때만 유효
+    "expected_collapsal_paradigms": [         // 기대하는 붕괴 패러다임, 기본값 ["조금의 무시", "눈 감기", "이미지 손상", "새까맘"];
+        string,                               // 테마가 Sami이고 모드가 5일 때만 유효
+        ...
+    ]
 }
 ```
 
 - `Copilot`  
   Copilot 기반 자동 전투 기능
 
-```json
+```json5
 {
     "enable": bool,             // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
     "filename": string,         // 작업 JSON의 파일명과 경로, 절대/상대 경로를 지원합니다. 실행 중에 편집할 수 없습니다.
@@ -237,7 +266,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `SSSCopilot`  
   보안파견용 AI 동반(Copilot 기반) 자동 전투 기능
 
-```json
+```json5
 {
     "enable": bool,             // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
     "filename": string,         // 작업 JSON의 파일명과 경로, 절대/상대 경로를 지원합니다. 실행 중에 편집할 수 없습니다.
@@ -250,7 +279,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `Depot`
   창고 인식
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool          // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
@@ -260,28 +289,35 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 - `OperBox`  
   오퍼레이터 보유 목록 인식 결과
 
-```json
+```json5
 // 해당 작업 매개변수
 {
     "enable": bool          // 이 작업을 활성화할지 여부, 선택 사항, 기본값은 true
 }
 ```
 
-- `ReclamationAlgorithm`  
+- `Reclamation`  
   생명연산
 
-```json
+```json5
 {
     "enable": bool,
-    "theme": int,           // 테마, 선택사항, 기본값은 1입니다.
-                            // 0 - *모래 속의 불꽃*
-                            // 1 - *모래 안의 이야기*
-    "mode": int,            // 모드,선택사항, 기본값은 0
-                            // 0 - 점수를 획득하고 건설 점수를 얻어 전투에 진입한 후 바로 나가기
-                            // 1 - *모래 속의 불꽃*: 황금을 얻기 위해 오퍼레이터가 물을 사고 기지를 강화합니다.
-                            //     *모래 안의 이야기*: 모래 안의 이야기: 자동으로 아이템을 제작하고 로드하여 통화를 획득
-    "product": string       // 자동으로 제작되는 아이템, 선택 사항, 기본값은 형광봉
-                            // 부분 문자열을 채우는 것이 좋습니다
+    "theme": string,            // 테마, 선택사항, 기본값은 1입니다.
+                                // Fire  - *모래 속의 불꽃*
+                                // Tales - *모래 안의 이야기*
+    "mode": int,                // 모드,선택사항, 기본값은 0
+                                // 0 - 점수를 획득하고 건설 점수를 얻어 전투에 진입한 후 바로 나가기
+                                // 1 - *모래 속의 불꽃*: 황금을 얻기 위해 오퍼레이터가 물을 사고 기지를 강화합니다.
+                                //     *모래 안의 이야기*: 모래 안의 이야기: 자동으로 아이템을 제작하고 로드하여 통화를 획득
+    "tools_to_craft": [
+        string,                 // 자동으로 제작되는 아이템, 선택 사항, 기본값은 형광봉
+        ...
+    ] 
+                                // 부분 문자열을 채우는 것이 좋습니다
+    "increment_mode": int,      // 클릭 유형, 선택 사항. 기본값은 0
+                                // 0 - 연속 클릭
+                                // 1 - 길게 누르기
+    "num_craft_batches": int    // 한 번의 최대 제작 배치 수, 선택 사항. 기본값은 16
 }
 ```
 
@@ -289,7 +325,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 
   사용자 정의 태스크
 
-```json
+```json5
 {
     "enable": bool,
     "task_names": [     // 배열에서 첫 번째 일치하는 항목부터 실행 (이후 next 등 순차적으로 진행)
@@ -304,7 +340,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 
   단일 단계 태스크 (현재로서는 Copilot만 지원)
 
-```json
+```json5
 {
     "enable": bool,
     "type": string,     // 현재로서는 "copilot"만 지원합니다.
@@ -323,7 +359,7 @@ TaskId ASSTAPI AsstAppendTask(AsstHandle handle, const char* type, const char* p
 
   비디오 인식, 현재로서는 전투 비디오만 지원합니다.
 
-```json
+```json5
 {
     "enable": bool,
     "filename": string,
@@ -413,7 +449,7 @@ bool ASSTAPI AsstSetInstanceOption(AsstHandle handle, AsstInstanceOptionKey key,
 
 ##### 키와 값 목록
 
-```json
+```cpp
     enum InstanceOptionKey
     {
         Invalid = 0,

@@ -183,8 +183,9 @@ bool asst::StageDropsTaskPlugin::recognize_drops()
 
     auto&& [code, difficulty] = analyzer.get_stage_key();
     m_stage_code = std::move(code);
-    ranges::transform(m_stage_code, m_stage_code.begin(),
-                      [](char ch) -> char { return static_cast<char>(::toupper(ch)); });
+    ranges::transform(m_stage_code, m_stage_code.begin(), [](char ch) -> char {
+        return static_cast<char>(::toupper(ch));
+    });
     m_stage_difficulty = difficulty;
     m_stars = analyzer.get_stars();
     m_cur_drops = analyzer.get_drops();
@@ -368,6 +369,18 @@ bool asst::StageDropsTaskPlugin::upload_to_server(const std::string& subtask, Re
     if (!m_penguin_id.empty()) {
         extra_headers.insert({ "authorization", "PenguinID " + m_penguin_id });
     }
+
+    std::string version = Version;
+    if (version.find("DEBUG VERSION") != std::string::npos) {
+        version = "dev";
+    }
+    else if (!version.empty() && version[0] == 'v') {
+        version.erase(0, 1);
+    }
+
+    version.erase(ranges::remove(version, ' ').begin(), version.end());
+
+    extra_headers.insert({ "User-Agent", std::string("MaaAssistantArknights/") + version + " cpr/" + CPR_VERSION });
 
     std::shared_ptr<ReportDataTask> report_task_ptr;
     if (report_type == ReportType::PenguinStats) {

@@ -22,10 +22,7 @@ class ControllerAPI
 public:
     virtual ~ControllerAPI() = default;
 
-    virtual bool connect(
-        const std::string& adb_path,
-        const std::string& address,
-        const std::string& config) = 0;
+    virtual bool connect(const std::string& adb_path, const std::string& address, const std::string& config) = 0;
     virtual bool inited() const noexcept = 0;
 
     virtual void set_swipe_with_pause([[maybe_unused]] bool enable) noexcept {}
@@ -41,9 +38,11 @@ public:
     virtual bool screencap(cv::Mat& image_payload, bool allow_reconnect = false) = 0;
 
     virtual bool start_game(const std::string& client_type) = 0;
-    virtual bool stop_game() = 0;
+    virtual bool stop_game(const std::string& client_type) = 0;
 
     virtual bool click(const Point& p) = 0;
+
+    virtual bool input(const std::string& text) = 0;
 
     virtual bool swipe(
         const Point& p1,

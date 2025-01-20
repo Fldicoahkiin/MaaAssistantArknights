@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
 using MaaWpfGui.Main;
 using MaaWpfGui.ViewModels;
+using MaaWpfGui.ViewModels.UI;
 using Serilog;
 using Stylet;
 
@@ -92,17 +94,13 @@ namespace MaaWpfGui.Models
             };
             if (!string.IsNullOrEmpty(toastMessage))
             {
-                _ = Execute.OnUIThreadAsync(() =>
-                {
-                    using var toast = new ToastNotification(toastMessage);
-                    toast.Show();
-                });
+                ToastNotification.ShowDirect(toastMessage);
             }
         }
 
         private static async Task<string> GetResourceApiAsync()
         {
-            string mirror = ConfigurationHelper.GetValue(ConfigurationKeys.ResourceApi, MaaUrls.MaaResourceApi);
+            string mirror = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.ResourceApi, MaaUrls.MaaResourceApi);
             if (mirror != MaaUrls.MaaResourceApi && await IsMirrorAccessibleAsync(mirror))
             {
                 return mirror;
@@ -132,7 +130,7 @@ namespace MaaWpfGui.Models
 
             if (mirror != MaaUrls.MaaResourceApi)
             {
-                ConfigurationHelper.SetValue(ConfigurationKeys.ResourceApi, mirror);
+                ConfigurationHelper.SetGlobalValue(ConfigurationKeys.ResourceApi, mirror);
             }
 
             return mirror;
@@ -172,11 +170,7 @@ namespace MaaWpfGui.Models
 
             _versionUrl = url;
             _versionEtag = response.Headers.ETag?.Tag ?? string.Empty;
-            _ = Execute.OnUIThreadAsync(() =>
-            {
-                using var toast = new ToastNotification(LocalizationHelper.GetString("GameResourceUpdating"));
-                toast.Show();
-            });
+            ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceUpdating"));
 
             return true;
         }
@@ -238,7 +232,7 @@ namespace MaaWpfGui.Models
                 OutputDownloadProgress(LocalizationHelper.GetString("GameResourceUpdated"));
 
                 // 现在用的和自动安装服更新包一个逻辑，看看有没有必要分开
-                if (Instances.SettingsViewModel.AutoInstallUpdatePackage)
+                if (SettingsViewModel.VersionUpdateSettings.AutoInstallUpdatePackage)
                 {
                     await Bootstrapper.RestartAfterIdleAsync();
                 }
@@ -423,6 +417,115 @@ namespace MaaWpfGui.Models
                     _logItemViewModels.Add(log);
                 }
             });
+        }
+
+        // 额外加一个从 github 下载完整包的方法，老的版本先留着，看看之后增量还能不能整了
+        public static async Task<bool> UpdateFromGithubAsync()
+        {
+            ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceUpdating"));
+            bool download = await DownloadFullPackageAsync("https://github.com/MaaAssistantArknights/MaaResource/archive/refs/heads/main.zip", "MaaResource.zip").ConfigureAwait(false);
+            if (!download)
+            {
+                ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceFailed"));
+                return false;
+            }
+
+            // 解压到 MaaResource 文件夹
+            try
+            {
+                if (Directory.Exists("MaaResource"))
+                {
+                    Directory.Delete("MaaResource", true);
+                }
+
+                ZipFile.ExtractToDirectory("MaaResource.zip", "MaaResource");
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to extract MaaResource.zip: " + e.Message);
+                ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceFailed"));
+                return false;
+            }
+
+            // 把 \MaaResource-main 中的 cache 和 resource 文件夹复制到当前目录
+            try
+            {
+                string sourcePath = Path.Combine("MaaResource", "MaaResource-main");
+                string[] foldersToCopy = ["cache", "resource"];
+
+                foreach (var folder in foldersToCopy)
+                {
+                    string sourceFolder = Path.Combine(sourcePath, folder);
+                    string destinationFolder = Path.Combine(Directory.GetCurrentDirectory(), folder);
+
+                    DirectoryMerge(sourceFolder, destinationFolder);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to copy folders: " + e.Message);
+                ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceFailed"));
+                return false;
+            }
+
+            // 删除 MaaResource 文件夹 和 MaaResource.zip
+            try
+            {
+                Directory.Delete("MaaResource", true);
+                File.Delete("MaaResource.zip");
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to delete MaaResource: " + e.Message);
+            }
+
+            return true;
+        }
+
+        private static async Task<bool> DownloadFullPackageAsync(string url, string saveTo)
+        {
+            using var response = await Instances.HttpService.GetAsync(
+                new Uri(url),
+                httpCompletionOption: HttpCompletionOption.ResponseHeadersRead);
+
+            if (response is not
+                {
+                    StatusCode: System.Net.HttpStatusCode.OK
+                })
+            {
+                return false;
+            }
+
+            return await HttpResponseHelper.SaveResponseToFileAsync(response, saveTo);
+        }
+
+        private static void DirectoryMerge(string sourceDirName, string destDirName)
+        {
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException("Source directory does not exist or could not be found: " + sourceDirName);
+            }
+
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string tempPath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(tempPath, true); // 覆盖现有文件
+            }
+
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                string tempPath = Path.Combine(destDirName, subdir.Name);
+                DirectoryMerge(subdir.FullName, tempPath);
+            }
         }
     }
 }

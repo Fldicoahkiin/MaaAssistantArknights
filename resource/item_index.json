@@ -905,11 +905,11 @@
     },
     "EXTERMINATION_AGENT": {
         "classifyType": "NORMAL",
-        "description": "以海量实战记录为基础，通过数据精算、逻辑演练与场景模拟，PRTS能在代理指挥剿灭作战时完美复现您的战术。您甚至不需要再去关注过程。",
+        "description": "以海量实战记录为基础，通过数据精算、逻辑演练与场景模拟，PRTS能在代理指挥剿灭作战和保全派驻时完美复现您的战术。您甚至不需要再去关注过程。",
         "icon": "EXTERMINATION_AGENT.png",
-        "name": "PRTS剿灭代理卡",
+        "name": "常态事务代理卡",
         "sortId": 30200,
-        "usage": "承载PRTS功能权限的卡片，激活后可在剿灭作战中为您提供代理指挥。"
+        "usage": "承载PRTS功能权限的卡片，激活后可在剿灭作战和保全派驻中为您提供代理指挥。"
     },
     "LINKAGE_TKT_GACHA_10_1701": {
         "classifyType": "NORMAL",
@@ -940,6 +940,14 @@
         "description": "为了确保人才扩展而应博士要求准备的应急手段，该批寻访条目具有一定的针对性与时效性，以及，小小的风险。",
         "icon": "LINKAGE_TKT_GACHA_10_4801.png",
         "name": "特勤专家寻访凭证",
+        "sortId": 40003,
+        "usage": "罗德岛人事部特别批发的许可书，在特殊的时间点上招揽特殊的人才，一次可招聘十位干员。"
+    },
+    "LINKAGE_TKT_GACHA_10_5401": {
+        "classifyType": "NORMAL",
+        "description": "为了确保人才扩展而应博士要求准备的应急手段，该批寻访条目具有一定的针对性与时效性，以及，小小的风险。",
+        "icon": "LINKAGE_TKT_GACHA_10_5401.png",
+        "name": "好好吃饭寻访凭证",
         "sortId": 40003,
         "usage": "罗德岛人事部特别批发的许可书，在特殊的时间点上招揽特殊的人才，一次可招聘十位干员。"
     },
@@ -1063,6 +1071,22 @@
         "sortId": 10024,
         "usage": "新型招聘合约所约定的一种时限货币，累积一定数量后可在指定时期内招聘指定干员。"
     },
+    "LMTGS_COIN_5301": {
+        "classifyType": "NORMAL",
+        "description": "与猎头公司长久且稳定的合作关系带来的回报，可有效控制支出。不过，但愿不是每次都需要用到这个手段。",
+        "icon": "LMTGS_COIN_5301.png",
+        "name": "寻访数据契约",
+        "sortId": 10025,
+        "usage": "新型招聘合约所约定的一种时限货币，累积一定数量后可在指定时期内招聘指定干员。"
+    },
+    "LMTGS_COIN_5601": {
+        "classifyType": "NORMAL",
+        "description": "与猎头公司长久且稳定的合作关系带来的回报，可有效控制支出。不过，但愿不是每次都需要用到这个手段。",
+        "icon": "LMTGS_COIN_5601.png",
+        "name": "寻访数据契约",
+        "sortId": 10026,
+        "usage": "新型招聘合约所约定的一种时限货币，累积一定数量后可在指定时期内招聘指定干员。"
+    },
     "LMTGS_COIN_601": {
         "classifyType": "NORMAL",
         "description": "与猎头公司长久且稳定的合作关系带来的回报，可有效控制支出。不过，但愿不是每次都需要用到这个手段。",
@@ -1116,6 +1140,22 @@
         "description": "为了确保人才扩展而应博士要求准备的应急手段，该批寻访条目具有一定的针对性与时效性，以及，小小的风险。",
         "icon": "SINGLE_49_0_1_GACHA_10.png",
         "name": "如死亦终十连寻访凭证",
+        "sortId": 40003,
+        "usage": "罗德岛人事部特别批发的许可书，在特殊的时间点上招揽特殊的人才，一次可招聘十位干员。"
+    },
+    "SINGLE_55_0_1_GACHA": {
+        "classifyType": "NORMAL",
+        "description": "为了确保人才扩展而应博士要求准备的应急手段，该批寻访条目具有一定的针对性与时效性，以及，小小的风险。",
+        "icon": "SINGLE_55_0_1_GACHA.png",
+        "name": "未致蒙尘寻访凭证",
+        "sortId": 40003,
+        "usage": "罗德岛人事部特别批发的许可书，在特殊的时间点上招揽特殊的人才，一次可招聘一位干员。"
+    },
+    "SINGLE_55_0_1_GACHA_10": {
+        "classifyType": "NORMAL",
+        "description": "为了确保人才扩展而应博士要求准备的应急手段，该批寻访条目具有一定的针对性与时效性，以及，小小的风险。",
+        "icon": "SINGLE_55_0_1_GACHA_10.png",
+        "name": "未致蒙尘十连寻访凭证",
         "sortId": 40003,
         "usage": "罗德岛人事部特别批发的许可书，在特殊的时间点上招揽特殊的人才，一次可招聘十位干员。"
     },
@@ -1455,6 +1495,14 @@
         "sortId": -10000,
         "usage": "莱茵生命能量科的最新研究成果。收集一定数量可以从危险物品回收处领取必要物资。"
     },
+    "act1arcade_milestone_point": {
+        "classifyType": "NONE",
+        "description": "小小一张卡券，但攒起来能兑换不少大奖呢！",
+        "icon": "act1arcade_milestone_point.png",
+        "name": "积点卡券",
+        "sortId": -10000,
+        "usage": "关卡首通报酬，用于在博物馆兑换台换取奖励；首通后复刷不会再次获得。"
+    },
     "act1bossrush_milestone_point": {
         "classifyType": "NONE",
         "description": "模拟中的对错并不重要，它们只是种辅助，帮助你在实战中做出正确的选择。",
@@ -1470,6 +1518,14 @@
         "name": "数据黑盒",
         "sortId": -10000,
         "usage": "用于对遏制单元进行数据迭代。"
+    },
+    "act1collection_point_token": {
+        "classifyType": "NONE",
+        "description": "为了激励前往舒巴特-阿尔萨兰地区建设基地的外勤干员，罗德岛发放了一定量的特殊奖励兑换点数。干员凭借兑换点数可兑换急需的物资。",
+        "icon": "act1collection_point_token.png",
+        "name": "“探索者”兑换点数",
+        "sortId": -10000,
+        "usage": "用于兑换相应的阶段性活动奖励。"
     },
     "act1lock_point_reward": {
         "classifyType": "NONE",
@@ -1502,6 +1558,22 @@
         "name": "繁荣证章",
         "sortId": -10000,
         "usage": "用以在里程碑处兑换奖励。"
+    },
+    "act1vautochess_token_chess": {
+        "classifyType": "NONE",
+        "description": "罗德岛工坊为参与卫戍协议的干员准备的勋章，带有磁性，听说集齐一定数量便可合成一个堡垒棋子。",
+        "icon": "act1vautochess_token_chess.png",
+        "name": "卫戍认证",
+        "sortId": -10000,
+        "usage": "用于在卫戍协议中兑换各类物资。"
+    },
+    "act1vecb_milestone_point": {
+        "classifyType": "NONE",
+        "description": "罗德岛工程部制作的特殊纪念物，负责设计它的工程干员似乎是从近期风靡罗德岛的一款桌游中获得的灵感。",
+        "icon": "act1vecb_milestone_point.png",
+        "name": "胜绩积分",
+        "sortId": -10000,
+        "usage": "可在突破里程碑中兑换奖励。"
     },
     "act20side_token_book": {
         "classifyType": "NONE",
@@ -1639,6 +1711,14 @@
         "sortId": -10000,
         "usage": "用于对遏制单元进行数据迭代。"
     },
+    "act2collection_point_token": {
+        "classifyType": "NONE",
+        "description": "为了激励在各项集成战略行动中做出贡献的外勤人员，罗德岛发放了一定量的特殊奖励兑换点数。凭借兑换点数可兑换急需的物资。",
+        "icon": "act2collection_point_token.png",
+        "name": "“战略家”点数",
+        "sortId": -10000,
+        "usage": "用于兑换相应的阶段性活动奖励。"
+    },
     "act2vmulti_token_cap": {
         "classifyType": "NONE",
         "description": "参赛纪念的累积代表了赛事热度的攀升，达到一定热度等级即可获取对应奖励",
@@ -1687,6 +1767,30 @@
         "sortId": -10000,
         "usage": "存储了许多设计蓝图的微缩芯片，凭借它就可以在物质塑形操作终端打印出对应的实物。"
     },
+    "act35side_token_dust": {
+        "classifyType": "NONE",
+        "description": "“辉煌之城”提供的观光纪念品，据说工匠们能把它变回大个头的宝石。“曾有一位帕夏，命人将宫殿里辉耀千年的宝石全部磨制成沙，铺在花园的水池底，只为与全城的子民共赏光华。”——摘自博物馆中某干尸的展签",
+        "icon": "act35side_token_dust.png",
+        "name": "流光之沙",
+        "sortId": -10000,
+        "usage": "星星点点闪烁的宝石细沙。它比“辉煌之城”更古老，比古老秘藏更辉煌。"
+    },
+    "act36side_token_recipe": {
+        "classifyType": "NONE",
+        "description": "需要提醒部分干员——尤其是小刻，食谱推荐的餐食就是正餐，不要再问是零食还是小吃这种问题了！",
+        "icon": "act36side_token_recipe.png",
+        "name": "今日食谱",
+        "sortId": -10000,
+        "usage": "送往森西迷宫食堂的今日食谱，保证营养均衡就能获得奖品。如果不清楚怎么搭配食材，可以询问角峰、古米和芙蓉。"
+    },
+    "act37side_token_nay": {
+        "classifyType": "NONE",
+        "description": "这枚徽章由议长阁下亲自赠予在战斗或者重建家园时表现卓越的市民，不论他们的身份为何，在每一项会决定伦蒂尼姆未来的提案公示期间，他们都可以用这枚徽章投出宝贵的反对票。\n请注意，议会禁止市民私下以任何形式交易或赠送这份荣誉！",
+        "icon": "act37side_token_nay.png",
+        "name": "“我反对！”",
+        "sortId": -10000,
+        "usage": "每一位值得尊敬的市民都有权对议会公开的提案表达反对，而这枚徽章则是议会对这份权利的认可。不过听说提案决议厅的某些文官愿意私下用物资来交换这份宝贵的反对权？"
+    },
     "act38d1_token_coin": {
         "classifyType": "NONE",
         "description": "纯净无瑕的源石晶体，圣所对此视若珍宝。",
@@ -1694,6 +1798,22 @@
         "name": "晶化源石",
         "sortId": -10000,
         "usage": "完成尖灭测试作战后得到的报酬。可用于兑换补给品。"
+    },
+    "act38side_token_ticket": {
+        "classifyType": "NONE",
+        "description": "神秘的匿名发件人自称“狂欢之主”，分不清是恐吓还是玩笑。沁透信纸的殷红并非某人的鲜血，而是醇香的美酒，似乎说明这邀请函也是与狂欢一同诞生的产物。",
+        "icon": "act38side_token_ticket.png",
+        "name": "匿名邀请函",
+        "sortId": -10000,
+        "usage": "匿名人士在狂欢节上散发的邀请函，凭此可以到城内各处的狂欢夜集市兑换丰厚礼品。放心，人们看到信函，一定会给予热情招待。"
+    },
+    "act39side_token_garum": {
+        "classifyType": "NONE",
+        "description": "以搅碎的盐鳞内脏为原料，以盐漠地下河中的微生物为酵母，经过发酵得来的饮品。腥得沁人心脾，臭得荡气回肠，以及，“有没有人去跟厨子说一声，盐鳞已经很咸了，别*伊比利亚粗口*再加盐了！”",
+        "icon": "act39side_token_garum.png",
+        "name": "盐鳞咸鳞汁",
+        "sortId": -10000,
+        "usage": "既是盐漠海盗的日常饮品，也是他们认可的硬通货。除非船队搞到朗姆酒这种无价之宝，否则它的地位永远不会被取代。"
     },
     "act3bossrush_milestone_point": {
         "classifyType": "NONE",
@@ -1839,6 +1959,14 @@
         "sortId": 30201,
         "usage": "罗德岛采购部特别发行的提货券，凭此券可限时领取一份高级品质的精英材料。"
     },
+    "advanced_material_voucher_perm": {
+        "classifyType": "CONSUME",
+        "description": "为应对加工时部分材料紧缺的问题，采购部发行了提货券供干员们自行取用所需的材料。",
+        "icon": "advanced_material_voucher_perm.png",
+        "name": "高级材料提货券",
+        "sortId": 60005,
+        "usage": "罗德岛采购部特别发行的提货券，凭此券可领取一份高级品质的精英材料。"
+    },
     "ap_supply_lt_010": {
         "classifyType": "CONSUME",
         "description": "试用品剂量较少，请合理安排使用，若对本产品功效满意，请关注更多组合套餐。",
@@ -1862,70 +1990,6 @@
         "name": "应急理智浓缩液",
         "sortId": 30001,
         "usage": "用于临时维持理智的大剂量浓缩应急合剂，配方中新增活性成分，效果立竿见影，可能会造成生物钟紊乱，服用前请仔细阅读说明。"
-    },
-    "ap_supply_lt_120_2022_1": {
-        "classifyType": "CONSUME",
-        "description": "口口松脆的酥皮月饼，颜色焦黄，让人食指大动。",
-        "icon": "ap_supply_lt_120_2022_1.png",
-        "name": "满颜色",
-        "sortId": 30001,
-        "usage": "一份鲜甜肉馅的酥皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2022_2": {
-        "classifyType": "CONSUME",
-        "description": "口口松脆的酥皮月饼，颜色焦黄，让人食指大动。",
-        "icon": "ap_supply_lt_120_2022_2.png",
-        "name": "正圆月",
-        "sortId": 30001,
-        "usage": "一份乳香云腿的酥皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2022_3": {
-        "classifyType": "CONSUME",
-        "description": "口口绵润的糖皮月饼，色泽油亮，引人口水四溢。",
-        "icon": "ap_supply_lt_120_2022_3.png",
-        "name": "笑靥开",
-        "sortId": 30001,
-        "usage": "一份玫瑰豆沙的糖皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2022_4": {
-        "classifyType": "CONSUME",
-        "description": "口口绵润的糖皮月饼，色泽油亮，引人口水四溢。",
-        "icon": "ap_supply_lt_120_2022_4.png",
-        "name": "桂子落",
-        "sortId": 30001,
-        "usage": "一份椒盐果仁的糖皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2023_1": {
-        "classifyType": "CONSUME",
-        "description": "可口凉爽的冰皮月饼，记得冷藏保存哦！",
-        "icon": "ap_supply_lt_120_2023_1.png",
-        "name": "“满庭光”",
-        "sortId": 30001,
-        "usage": "一份芒果椰蓉馅的冰皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2023_2": {
-        "classifyType": "CONSUME",
-        "description": "可口凉爽的冰皮月饼，记得冷藏保存哦！",
-        "icon": "ap_supply_lt_120_2023_2.png",
-        "name": "“良宵晴”",
-        "sortId": 30001,
-        "usage": "一份肉松馅的冰皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2023_3": {
-        "classifyType": "CONSUME",
-        "description": "香甜脆爽的糖皮月饼，食用前记得加热哦！",
-        "icon": "ap_supply_lt_120_2023_3.png",
-        "name": "“飘桂香”",
-        "sortId": 30001,
-        "usage": "一份豆沙桂花馅的糖皮月饼，可用于恢复理智。"
-    },
-    "ap_supply_lt_120_2023_4": {
-        "classifyType": "CONSUME",
-        "description": "香甜脆爽的糖皮月饼，食用前记得加热哦！",
-        "icon": "ap_supply_lt_120_2023_4.png",
-        "name": "“藏金波”",
-        "sortId": 30001,
-        "usage": "一份咸蛋黄馅的糖皮月饼，可用于恢复理智。"
     },
     "ap_supply_lt_60": {
         "classifyType": "CONSUME",
@@ -2127,12 +2191,20 @@
         "sortId": 30200,
         "usage": "罗德岛采购部特别发行的提货券，凭此券可限时领取一份特级品质的精英材料。"
     },
+    "premium_material_voucher_perm": {
+        "classifyType": "CONSUME",
+        "description": "为应对加工时部分材料紧缺的问题，采购部发行了提货券供干员们自行取用所需的材料。",
+        "icon": "premium_material_voucher_perm.png",
+        "name": "特级材料提货券",
+        "sortId": 60004,
+        "usage": "罗德岛采购部特别发行的提货券，凭此券可领取一份特级品质的精英材料。"
+    },
     "randomDiamondShd_1": {
         "classifyType": "CONSUME",
         "description": "没有人知道到底是谁掏的腰包，只有对罗德岛满怀希望的情感是真切的。",
         "icon": "randomDiamondShd_1.png",
         "name": "罗德岛迎春红包",
-        "sortId": 60111,
+        "sortId": 60112,
         "usage": "分发给罗德岛全员的红包，数额随机，饱含着对新年的祝福。"
     },
     "randomDiamondShd_2": {
@@ -2140,7 +2212,7 @@
         "description": "没有人知道到底是谁掏的腰包，只有对罗德岛满怀希望的情感是真切的。",
         "icon": "randomDiamondShd_2.png",
         "name": "庆典礼盒",
-        "sortId": 60112,
+        "sortId": 60113,
         "usage": "分发给罗德岛全员的礼盒，数额随机，饱含着庆典到来的喜悦。"
     },
     "randomMaterialRune_0": {
@@ -2295,6 +2367,14 @@
         "sortId": 60105,
         "usage": "装有各种物资补给，包含多种随机材料。"
     },
+    "randomMaterial_5d5": {
+        "classifyType": "CONSUME",
+        "description": "罗德岛从各地采购、储备的材料补给箱。不过因为缺乏系统性的整理收纳，每一个箱子里都装着截然不同的材料。",
+        "icon": "randomMaterial_5d5.png",
+        "name": "2024感谢庆典物资补给",
+        "sortId": 60111,
+        "usage": "装有各种物资补给，包含多种随机材料。"
+    },
     "randomMaterial_6": {
         "classifyType": "CONSUME",
         "description": "罗德岛从各地采购、储备的材料补给箱。不过因为缺乏系统性的整理收纳，每一个箱子里都装着截然不同的材料。",
@@ -2327,12 +2407,20 @@
         "sortId": 60109,
         "usage": "装有各种物资补给，包含多种随机材料。"
     },
+    "randomMaterial_act38side": {
+        "classifyType": "CONSUME",
+        "description": "烟花筹委会为狂欢节特制的烟花桶也能直接用来包装礼品，打开拿取物资时有极小可能会爆炸——当作惊喜礼盒吧。",
+        "icon": "randomMaterial_act38side.png",
+        "name": "狂欢烟花桶",
+        "sortId": 60115,
+        "usage": "装有狂欢节上可能用到的各种物资补给，包含多种随机材料。"
+    },
     "randomMaterial_leith2": {
         "classifyType": "CONSUME",
         "description": "“尽管内里如心声般各不相似，它们也足以成为你探寻真相的助力。跟随尚未忘却的回响，你终会抓住那个答案。”",
         "icon": "randomMaterial_leith2.png",
         "name": "查访补给",
-        "sortId": 60114,
+        "sortId": 60115,
         "usage": "不知何人将其交予你，装有各种物资补给，包含多种随机材料。"
     },
     "randomMaterial_rhine2": {
@@ -2348,7 +2436,7 @@
         "description": "来自峯联贸易的材料补给箱。供货商很高兴能与大客户合作，协同物流公司为您送来这些赠品。",
         "icon": "randomMaterial_siesta2.png",
         "name": "峯联贸易物流补给",
-        "sortId": 60113,
+        "sortId": 60114,
         "usage": "装有各种物资补给，包含多种随机材料。"
     },
     "return_credit_token": {
@@ -2396,6 +2484,14 @@
         "description": null,
         "icon": "rogue_3_token_bp.png",
         "name": "生态标本",
+        "sortId": -10000,
+        "usage": null
+    },
+    "rogue_4_token_bp": {
+        "classifyType": "NONE",
+        "description": null,
+        "icon": "rogue_4_token_bp.png",
+        "name": "魂灵书签",
         "sortId": -10000,
         "usage": null
     },

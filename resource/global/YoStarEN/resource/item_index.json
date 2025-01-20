@@ -841,7 +841,7 @@
     },
     "7002": {
         "classifyType": "NORMAL",
-        "description": "Anyone who receives this permit, please report to the Rhodes Island Human Resource Department immediately!",
+        "description": "Anyone who receives this Expedited Plan, please report to HR immediately!",
         "icon": "7002.png",
         "name": "Expedited Plan",
         "sortId": 40013,
@@ -915,7 +915,7 @@
         "classifyType": "NORMAL",
         "description": "In order to ensure the available talent pool can be scaled upwards to satisfy the Doctor's emergency preparation request, this batch of headhunting items carries specificity, time-sensitivity, and of course, a degree of risk.",
         "icon": "LINKAGE_TKT_GACHA_10_1701.png",
-        "name": "Elite Forces Headhunting Permit",
+        "name": "Expert Headhunting Permit",
         "sortId": 40003,
         "usage": "A batch headhunting permit issued by the Rhodes Island HR Department; Can be used at a certain time to recruit talented Operators, 10 rolls at once."
     },
@@ -932,6 +932,14 @@
         "description": "In order to ensure the available talent pool can be scaled upwards to satisfy the Doctor's emergency preparation request, this batch of headhunting items carries specificity, time-sensitivity, and of course, a degree of risk.",
         "icon": "LINKAGE_TKT_GACHA_10_3602.png",
         "name": "Collaboration Limited Ten-roll Headhunting Permit",
+        "sortId": 40003,
+        "usage": "A batch headhunting permit issued by the Rhodes Island HR Department; Can be used at a certain time to recruit talented Operators, 10 rolls at once."
+    },
+    "LINKAGE_TKT_GACHA_10_4801": {
+        "classifyType": "NORMAL",
+        "description": "In order to ensure the available talent pool can be scaled upwards to satisfy the Doctor's emergency preparation request, this batch of headhunting items carries specificity, time-sensitivity, and of course, a degree of risk.",
+        "icon": "LINKAGE_TKT_GACHA_10_4801.png",
+        "name": "Expert Headhunting Permit",
         "sortId": 40003,
         "usage": "A batch headhunting permit issued by the Rhodes Island HR Department; Can be used at a certain time to recruit talented Operators, 10 rolls at once."
     },
@@ -1039,6 +1047,30 @@
         "sortId": 10022,
         "usage": "A time-limited currency arranged for a new type of headhunting contract; Collect enough to recruit an operator from a designated pool for a limited time"
     },
+    "LMTGS_COIN_4701": {
+        "classifyType": "NORMAL",
+        "description": "A long-term, stable relationship with the headhunting agency can effectively control our expenditures. However, we hope that this method will not be required every time.",
+        "icon": "LMTGS_COIN_4701.png",
+        "name": "Headhunting Data Contract",
+        "sortId": 10023,
+        "usage": "A time-limited currency arranged for a new type of headhunting contract; Collect enough to recruit an operator from a designated pool for a limited time"
+    },
+    "LMTGS_COIN_5001": {
+        "classifyType": "NORMAL",
+        "description": "A long-term, stable relationship with the headhunting agency can effectively control our expenditures. However, we hope that this method will not be required every time.",
+        "icon": "LMTGS_COIN_5001.png",
+        "name": "Headhunting Data Contract",
+        "sortId": 10024,
+        "usage": "A time-limited currency arranged for a new type of headhunting contract; Collect enough to recruit an operator from a designated pool for a limited time"
+    },
+    "LMTGS_COIN_5301": {
+        "classifyType": "NORMAL",
+        "description": "A long-term, stable relationship with the headhunting agency can effectively control our expenditures. However, we hope that this method will not be required every time.",
+        "icon": "LMTGS_COIN_5301.png",
+        "name": "Headhunting Data Contract",
+        "sortId": 10025,
+        "usage": "A time-limited currency arranged for a new type of headhunting contract; Collect enough to recruit an operator from a designated pool for a limited time"
+    },
     "LMTGS_COIN_601": {
         "classifyType": "NORMAL",
         "description": "A long-term, stable relationship with the headhunting agency can effectively control our expenditures. However, we hope that this method will not be required every time.",
@@ -1078,6 +1110,22 @@
         "name": "Event Crystal",
         "sortId": -10000,
         "usage": "A topological model of aggregated information. Can be used to rebuild past events."
+    },
+    "SINGLE_49_0_1_GACHA": {
+        "classifyType": "NORMAL",
+        "description": "In order to ensure the available talent pool can be scaled upwards to satisfy the Doctor's emergency preparation request, this batch of headhunting items carries specificity, time-sensitivity, and of course, a degree of risk.",
+        "icon": "SINGLE_49_0_1_GACHA.png",
+        "name": "Like Ending Like Death Headhunting Permit",
+        "sortId": 40003,
+        "usage": "A special permit from Rhodes Island HR for recruiting special talents at special points in time. Can be used to recruit one operator."
+    },
+    "SINGLE_49_0_1_GACHA_10": {
+        "classifyType": "NORMAL",
+        "description": "In order to ensure the available talent pool can be scaled upwards to satisfy the Doctor's emergency preparation request, this batch of headhunting items carries specificity, time-sensitivity, and of course, a degree of risk.",
+        "icon": "SINGLE_49_0_1_GACHA_10.png",
+        "name": "Like Ending Like Death Ten-roll Headhunting Permit",
+        "sortId": 40003,
+        "usage": "A batch headhunting permit issued by the Rhodes Island HR Department; Can be used at a certain time to recruit talented Operators, 10 rolls at once."
     },
     "SOCIAL_PT": {
         "classifyType": "NONE",
@@ -1423,6 +1471,14 @@
         "sortId": -10000,
         "usage": "Used to perform Data Iteration on Limiter Units."
     },
+    "act1collection_point_token": {
+        "classifyType": "NONE",
+        "description": "Rhodes Island issues special reward points as an incentive to field operators dispatched to the base building operation in Szubat-Arsalan. These points can be used to redeem important supplies.",
+        "icon": "act1collection_point_token.png",
+        "name": "'Expeditioners' Redemption Point",
+        "sortId": -10000,
+        "usage": "Can be exchanged for the corresponding event stage reward."
+    },
     "act1lock_point_reward": {
         "classifyType": "NONE",
         "description": "Points gained for taking down OpFor troops, awarded to competitors in the form of medals. Owing to it being forged by Minos smiths, in each medal's engraving is the proverb 'all heroes arise from normal people.'",
@@ -1438,6 +1494,14 @@
         "name": "Milestone Fragment",
         "sortId": -10000,
         "usage": "Can be exchanged for Milestone Rewards."
+    },
+    "act1mainss_token_medi": {
+        "classifyType": "NONE",
+        "description": "WARNING: For best results, administer via peripheral IV. In case of first-aid, can attempt via CVC. If shock ensues after first dose, second IV may be administered within 5-7 minutes (repeat dose). EACH DOSE COULD BE THE KEY TO SAVING A LIFE IN THE FIELD. MAKE GOOD USE OF THEM.",
+        "icon": "act1mainss_token_medi.png",
+        "name": "Emergency Inhibitor",
+        "sortId": -10000,
+        "usage": "A new formulation from Rhodes Island's Medical R&D, capable of temporarily suppressing the exacerbation of Oripathy in Catastrophe- or battlefield-level Originium zones. THIS DRUG PLACES IMMENSE STRAIN ON THE BODY. USE WITH CAUTION."
     },
     "act1sandbox_milestone_point": {
         "classifyType": "NONE",
@@ -1631,6 +1695,14 @@
         "sortId": -10000,
         "usage": "Used to perform Data Iteration on Limiter Units."
     },
+    "act2vmulti_token_cap": {
+        "classifyType": "NONE",
+        "description": "As you collect Mementos, so does Hype. Reach certain Hype levels to receive rewards.",
+        "icon": "act2vmulti_token_cap.png",
+        "name": "Memento",
+        "sortId": -10000,
+        "usage": "Leave your sweat in the stadium. Come home with camaraderie."
+    },
     "act30side_token_box": {
         "classifyType": "NONE",
         "description": "Blind boxes from the cultural industries in collaboration with 'BangBang Burdenbeast.' Collect all nine, including a limited-edition secret burdenbeast.\nNOTE: Pray faithfully to the newly erected Kjeragandr statue, and your odds of drawing the secret one go up!",
@@ -1638,6 +1710,46 @@
         "name": "Burdenbeast Blind Box",
         "sortId": -10000,
         "usage": "Burdenbeast Blind Boxes—such a smash hit, Onboard Services ran out of stock for a time. That means this batch couldn't have come sooner, and the train attendants will be delighted to trade other goods for it."
+    },
+    "act31side_token_box": {
+        "classifyType": "NONE",
+        "description": "The newest fruit borne of the Dahuang Tianshi Bureau's research. Simple to control, resiliently mobile. Sample-taking and soil monitoring are among its many functions. Naughty children occasionally make off with them to use in 'fowl fights.'",
+        "icon": "act31side_token_box.png",
+        "name": "Sky Pole",
+        "sortId": -10000,
+        "usage": "An agricultural drone developed by the Tianshi Bureaus, which people occasionally leave lying in the fields after they malfunction. If you pick any up, you can exchange them for goods at Shennong Market."
+    },
+    "act32side_token_stamp": {
+        "classifyType": "NONE",
+        "description": "Upon seeing these cards, Tecno indifferently thumbs at a row of halved radishes in the corner of her workshop, each cross-section dyed through in seal ink and ready to go.",
+        "icon": "act32side_token_stamp.png",
+        "name": "Galería Stamp Card",
+        "sortId": -10000,
+        "usage": "A card for the Galería stamp rally. The more stamps, the more prizes you get. Despite each and every card bearing the limited-daily ultra-rare secret stamps, Reynell will still gladly exchange them for goods. In his words, 'my small token of respect to our anonymous seal-forger supreme.'"
+    },
+    "act33side_token_sugar": {
+        "classifyType": "NONE",
+        "description": "Crude sugar cubes of mechanized make, a Babel wartime supply ration. Provides soldiers with ample energy and a hint of sweetness.",
+        "icon": "act33side_token_sugar.png",
+        "name": "Raw Sugar Lumps",
+        "sortId": -10000,
+        "usage": "A 'hard currency' aboard Babel. Save up enough to spare, and the nice Vampire lady down by the Engineering Team will trade for some scarcities you'll appreciate."
+    },
+    "act34side_token_chip": {
+        "classifyType": "NONE",
+        "description": "'Emergency Supplies' Blueprint Chip that contains nearly a thousand ready-to-print blueprints, including survival necessities and equipment for experiments and creative activities. Do not neglect exploration and expression, no matter how dire the circumstances, for the stagnation of the mind and numbing of the spirit is akin to death.",
+        "icon": "act34side_token_chip.png",
+        "name": "'Emergency Supplies' Blueprint Chip",
+        "sortId": -10000,
+        "usage": "Microchip that holds a large number of blueprints, which can be printed at the Materianomicon Moderatrix."
+    },
+    "act35side_token_dust": {
+        "classifyType": "NONE",
+        "description": "A tourist souvenir from the City of Radiance. It is said that artificers can turn them into large gemstones. 'A padishah once ordered all the gems accumulated in his palace over a thousand years to be ground into fine grains of sand and scattered at the bottom of the garden pond, just so that the citizens could share in the radiance.' - Exhibit label on a mummy in the museum",
+        "icon": "act35side_token_dust.png",
+        "name": "Flowing Glimmerdust",
+        "sortId": -10000,
+        "usage": "Fine grains of gems that glitter like stars in the sky, older than the City of Radiance, and brighter than its hidden treasures."
     },
     "act38d1_token_coin": {
         "classifyType": "NONE",
@@ -1659,6 +1771,22 @@
         "classifyType": "NONE",
         "description": "An encrypted data block. Always remember, the conversion of information often entails unavoidable wear. Make good use of your information storage devices, but do not depend on them.",
         "icon": "act3bossrush_token_relic.png",
+        "name": "Data Blackbox",
+        "sortId": -10000,
+        "usage": "Used to perform Data Iteration on Limiter Units."
+    },
+    "act4bossrush_milestone_point": {
+        "classifyType": "NONE",
+        "description": "Right and wrong are far from crucial in a simulation. They are only a form of support. They help you make the correct choices when the battle is real.",
+        "icon": "act4bossrush_milestone_point.png",
+        "name": "Trial EXP",
+        "sortId": -10000,
+        "usage": "Experience gained from finished trials. Upgrades trial levels."
+    },
+    "act4bossrush_token_relic": {
+        "classifyType": "NONE",
+        "description": "An encrypted data block. Always remember, the conversion of information often entails unavoidable wear. Make good use of your information storage devices, but do not depend on them.",
+        "icon": "act4bossrush_token_relic.png",
         "name": "Data Blackbox",
         "sortId": -10000,
         "usage": "Used to perform Data Iteration on Limiter Units."
@@ -1767,6 +1895,14 @@
         "sortId": 30201,
         "usage": "A special exchange voucher issued by the Rhodes Island Procurement Department. Can be used within a limited time to obtain advanced elite materials."
     },
+    "advanced_material_voucher_perm": {
+        "classifyType": "CONSUME",
+        "description": "In order to address scarcities of certain materials during processing, the Procurement Department has issued exchange vouchers for operators' discretionary use, granting access to the materials needed.",
+        "icon": "advanced_material_voucher_perm.png",
+        "name": "Advanced Material Voucher",
+        "sortId": 60005,
+        "usage": "A special exchange voucher issued by the Rhodes Island Procurement Department. Can be used to obtain advanced elite materials."
+    },
     "ap_supply_lt_010": {
         "classifyType": "CONSUME",
         "description": "A low-dosage sample. To be used rationally and sensibly. If you are satisfied with this product's efficacy, you may also be interested in our other packages.",
@@ -1790,70 +1926,6 @@
         "name": "Emergency Sanity Concentrate",
         "sortId": 30001,
         "usage": "A large dose of concentrated emergency supplement used to maintain Sanity. New active ingredients, same instant results. Possible side effect: disruption of biological clock. Please read carefully before administering."
-    },
-    "ap_supply_lt_120_2022_1": {
-        "classifyType": "CONSUME",
-        "description": "A crisp, flaky mooncake in golden brown, liable to stir anyone's appetite.",
-        "icon": "ap_supply_lt_120_2022_1.png",
-        "name": "Full Color",
-        "sortId": 30001,
-        "usage": "A flaky mooncake filled with perky sweet ground meat. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2022_2": {
-        "classifyType": "CONSUME",
-        "description": "A crisp, flaky mooncake in golden brown, liable to stir anyone's appetite.",
-        "icon": "ap_supply_lt_120_2022_2.png",
-        "name": "Full Moon",
-        "sortId": 30001,
-        "usage": "A flaky mooncake filled with frankincense Yunnan ham. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2022_3": {
-        "classifyType": "CONSUME",
-        "description": "A tender, sugary mooncake with a glossy sheen, prone to making anyone drool at the mouth.",
-        "icon": "ap_supply_lt_120_2022_3.png",
-        "name": "Smiley Face",
-        "sortId": 30001,
-        "usage": "A glazed mooncake filled with rose red bean paste. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2022_4": {
-        "classifyType": "CONSUME",
-        "description": "A tender, sugary mooncake with a glossy sheen, prone to making anyone drool at the mouth.",
-        "icon": "ap_supply_lt_120_2022_4.png",
-        "name": "Osmanthus",
-        "sortId": 30001,
-        "usage": "A glazed mooncake filled with spicy and salty nuts. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2023_1": {
-        "classifyType": "CONSUME",
-        "description": "A tasty and refreshing snowskin mooncake. Remember to properly refrigerate!",
-        "icon": "ap_supply_lt_120_2023_1.png",
-        "name": "'Radiant Courtyard'",
-        "sortId": 30001,
-        "usage": "A snowskin mooncake filled with mango and shredded coconut. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2023_2": {
-        "classifyType": "CONSUME",
-        "description": "A tasty and refreshing snowskin mooncake. Remember to properly refrigerate!",
-        "icon": "ap_supply_lt_120_2023_2.png",
-        "name": "'Clear Nights'",
-        "sortId": 30001,
-        "usage": "A snowskin mooncake filled with meat floss. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2023_3": {
-        "classifyType": "CONSUME",
-        "description": "A sweet and crisp glazed mooncake. Remember to heat prior to consumption!",
-        "icon": "ap_supply_lt_120_2023_3.png",
-        "name": "'Fragrant Osmanthus'",
-        "sortId": 30001,
-        "usage": "A glazed mooncake filled with bean paste and sweet osmanthus. Can be used to restore Sanity."
-    },
-    "ap_supply_lt_120_2023_4": {
-        "classifyType": "CONSUME",
-        "description": "A sweet and crisp glazed mooncake. Remember to heat prior to consumption!",
-        "icon": "ap_supply_lt_120_2023_4.png",
-        "name": "'Shrouded Golden Waves'",
-        "sortId": 30001,
-        "usage": "A glazed mooncake filled with salted egg yolk. Can be used to restore Sanity."
     },
     "ap_supply_lt_60": {
         "classifyType": "CONSUME",
@@ -2017,11 +2089,11 @@
     },
     "mcardVoucher": {
         "classifyType": "NONE",
-        "description": null,
+        "description": "With an eye to negotiability and convenience, several new permits have risen to the task, and this just so happens to be one of them.",
         "icon": "mcardVoucher.png",
-        "name": "Monthly Card",
+        "name": "Monthly Card Exchange Permit",
         "sortId": -10000,
-        "usage": null
+        "usage": "Enables activation of Monthly Card privileges."
     },
     "mod_unlock_token": {
         "classifyType": "MATERIAL",
@@ -2055,12 +2127,20 @@
         "sortId": 30200,
         "usage": "A special exchange voucher issued by the Rhodes Island Procurement Department. Can be used within a limited time to obtain premium elite materials."
     },
+    "premium_material_voucher_perm": {
+        "classifyType": "CONSUME",
+        "description": "In order to address scarcities of certain materials during processing, the Procurement Department has issued exchange vouchers for operators' discretionary use, granting access to the materials needed.",
+        "icon": "premium_material_voucher_perm.png",
+        "name": "Premium Material Voucher",
+        "sortId": 60004,
+        "usage": "A special exchange voucher issued by the Rhodes Island Procurement Department. Can be used to obtain premium elite materials."
+    },
     "randomDiamondShd_1": {
         "classifyType": "CONSUME",
         "description": "Nobody knows who ended up footing the bill. What we do know is the hope they have for Rhodes Island.",
         "icon": "randomDiamondShd_1.png",
         "name": "Half Year Anniversary Red Envelope",
-        "sortId": 60110,
+        "sortId": 60111,
         "usage": "Red envelopes passed out to every member of Rhodes Island. The goods inside may be random, but they are always filled to the brim with blessings."
     },
     "randomDiamondShd_2": {
@@ -2068,7 +2148,7 @@
         "description": "Nobody knows who ended up footing the bill. What we do know is the hope they have for Rhodes Island.",
         "icon": "randomDiamondShd_2.png",
         "name": "Celebratory Box",
-        "sortId": 60111,
+        "sortId": 60112,
         "usage": "Gift boxes distributed to all members of Rhodes Island, random in amount, and full of the joy that comes with celebration."
     },
     "randomMaterialRune_0": {
@@ -2183,6 +2263,14 @@
         "sortId": 60101,
         "usage": "Filled with an assortment of supplies and materials."
     },
+    "randomMaterial_10": {
+        "classifyType": "CONSUME",
+        "description": "Rhodes Island purchases and stores boxes of supplies from various places. However, due to the lack of an organized storage system, each box contains seemingly random materials.",
+        "icon": "randomMaterial_10.png",
+        "name": "Rhodes Island Supplies VII",
+        "sortId": 60110,
+        "usage": "Filled with an assortment of supplies and materials."
+    },
     "randomMaterial_2": {
         "classifyType": "CONSUME",
         "description": "Lanterns hung up during the passing of the old year and the arrival of the new. Within them are recent memories, puzzles and riddles, and even tales from the distant past.",
@@ -2252,7 +2340,7 @@
         "description": "'Though the contents are as unalike as the sounds of the heart, they will help you in your search for the truth. Follow the echoes not yet forgotten, and you will eventually find the answer.'",
         "icon": "randomMaterial_leith2.png",
         "name": "Investigation Resupply",
-        "sortId": 60113,
+        "sortId": 60114,
         "usage": "Package from an unknown source containing various supplies, including random materials."
     },
     "randomMaterial_rhine2": {
@@ -2260,7 +2348,7 @@
         "description": "A materials supply crate provided by the Maylander Foundation. Allocated based on the needs of each investigated area. As such, the materials in each crate can be different.",
         "icon": "randomMaterial_rhine2.png",
         "name": "Technological Investigation Supply",
-        "sortId": 60110,
+        "sortId": 60111,
         "usage": "Filled with an assortment of supplies and materials."
     },
     "randomMaterial_siesta2": {
@@ -2268,7 +2356,7 @@
         "description": "A material resupply box from Mountaincomm Trade. We the vendor are delighted to work with such a major client, and offer these complimentary gifts to you courtesy of our partner logistics firm.",
         "icon": "randomMaterial_siesta2.png",
         "name": "Mountaincomm Trade Supplies",
-        "sortId": 60112,
+        "sortId": 60113,
         "usage": "Filled with an assortment of supplies and materials."
     },
     "return_credit_token": {
@@ -2318,6 +2406,14 @@
         "name": "Ecological Specimens",
         "sortId": -10000,
         "usage": null
+    },
+    "sandbox_1_tokencoin": {
+        "classifyType": "NONE",
+        "description": "Each bead of sweat shed upon the barren ground will one day bear witness to the prospering of Terran civilization.",
+        "icon": "sandbox_1_tokencoin.png",
+        "name": "Prosperity Point",
+        "sortId": -10000,
+        "usage": "A voucher that can be exchanged for rewards at 'Gift of Prosperity'."
     },
     "token_Obsidian": {
         "classifyType": "NONE",

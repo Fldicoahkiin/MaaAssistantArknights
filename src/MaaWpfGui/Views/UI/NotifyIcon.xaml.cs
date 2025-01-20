@@ -12,8 +12,11 @@
 // </copyright>
 
 using System;
+using System.Runtime.InteropServices;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
 using MaaWpfGui.Main;
 using MaaWpfGui.ViewModels.UI;
@@ -24,28 +27,48 @@ namespace MaaWpfGui.Views.UI
     /// <summary>
     /// 托盘图标。
     /// </summary>
-    public partial class NotifyIcon : System.Windows.Controls.UserControl
+    public partial class NotifyIcon
     {
         private static readonly ILogger _logger = Log.ForContext<NotifyIcon>();
         private readonly int _menuItemNum;
+        private static Timer _clickTimer;
+        private static bool _canClick = true;
+
+        [DllImport("user32.dll")]
+        private static extern uint GetDoubleClickTime();
 
         public NotifyIcon()
         {
             InitializeComponent();
+
+            uint doubleClickTime = GetDoubleClickTime();
+            _clickTimer = new(doubleClickTime);
+            _clickTimer.AutoReset = false;
+            _clickTimer.Elapsed += (s, e) =>
+            {
+                _canClick = true;
+            };
+
             InitIcon();
-            _menuItemNum = notifyIcon.ContextMenu.Items.Count;
+            if (notifyIcon.ContextMenu is not null)
+            {
+                _menuItemNum = notifyIcon.ContextMenu.Items.Count;
+            }
         }
 
         private void InitIcon()
         {
             notifyIcon.Icon = AppIcon.GetIcon();
+            notifyIcon.Visibility = Convert.ToBoolean(ConfigurationHelper.GetGlobalValue(ConfigurationKeys.UseTray, bool.TrueString)) ? Visibility.Visible : Visibility.Collapsed;
 
             notifyIcon.Click += NotifyIcon_MouseClick;
-            notifyIcon.MouseDoubleClick += OnNotifyIconDoubleClick;
+            notifyIcon.MouseDoubleClick += NotifyIcon_MouseClick;
 
             startMenu.Click += StartTask;
             stopMenu.Click += StopTask;
             forceShowMenu.Click += ForceShow;
+            hideTrayMenu.Click += HideTray;
+            restartMenu.Click += App_restart;
             exitMenu.Click += App_exit;
 
             foreach (var lang in LocalizationHelper.SupportedLanguages)
@@ -56,19 +79,26 @@ namespace MaaWpfGui.Views.UI
                 }
 
                 var langMenu = new MenuItem() { Header = lang.Value };
-                langMenu.Click += (sender, e) =>
+                langMenu.Click += (_, _) =>
                 {
-                    Instances.SettingsViewModel.Language = lang.Key;
+                    SettingsViewModel.GuiSettings.Language = lang.Key;
                 };
 
                 switchLangMenu.Items.Add(langMenu);
             }
         }
 
+        // 不知道是干嘛的，先留着
+        // ReSharper disable once UnusedMember.Local
         private void AddMenuItemOnFirst(string text, Action action)
         {
-            var menuItem = new MenuItem() { Header = text };
-            menuItem.Click += (sender, e) => { action?.Invoke(); };
+            var menuItem = new MenuItem { Header = text };
+            menuItem.Click += (_, _) => { action?.Invoke(); };
+            if (notifyIcon.ContextMenu is null)
+            {
+                return;
+            }
+
             if (notifyIcon.ContextMenu.Items.Count == _menuItemNum)
             {
                 notifyIcon.ContextMenu.Items.Insert(0, menuItem);
@@ -79,12 +109,19 @@ namespace MaaWpfGui.Views.UI
             }
         }
 
-        private void NotifyIcon_MouseClick(object sender, RoutedEventArgs e)
+        private static void NotifyIcon_MouseClick(object sender, RoutedEventArgs e)
         {
+            if (!_canClick)
+            {
+                return;
+            }
+
+            _clickTimer.Start();
+            _canClick = false;
             Instances.MainWindowManager?.SwitchWindowState();
         }
 
-        private void StartTask(object sender, RoutedEventArgs e)
+        private static void StartTask(object sender, RoutedEventArgs e)
         {
             // taskQueueViewModel意外为null了是不是也可以考虑Log一下
             // 先放个log点方便跟踪
@@ -92,19 +129,35 @@ namespace MaaWpfGui.Views.UI
             _logger.Information("Tray service task started.");
         }
 
-        private void StopTask(object sender, RoutedEventArgs e)
+        private static void StopTask(object sender, RoutedEventArgs e)
         {
             Instances.TaskQueueViewModel?.Stop();
             _logger.Information("Tray service task stop.");
         }
 
-        private void ForceShow(object sender, RoutedEventArgs e)
+        private static void ForceShow(object sender, RoutedEventArgs e)
         {
             Instances.MainWindowManager?.ForceShow();
             _logger.Information("WindowManager force show.");
         }
 
-        private void App_exit(object sender, RoutedEventArgs e)
+        private static void HideTray(object sender, RoutedEventArgs e)
+        {
+            Instances.MainWindowManager?.Show();
+
+            SettingsViewModel.GuiSettings.UseTray = !SettingsViewModel.GuiSettings.UseTray;
+            _logger.Information("Use tray icon: {0}", SettingsViewModel.GuiSettings.UseTray);
+        }
+
+        private static void App_restart(object sender, RoutedEventArgs e)
+        {
+            if (Instances.TaskQueueViewModel.ConfirmExit())
+            {
+                Bootstrapper.ShutdownAndRestartWithoutArgs();
+            }
+        }
+
+        private static void App_exit(object sender, RoutedEventArgs e)
         {
             if (Instances.TaskQueueViewModel.ConfirmExit())
             {
@@ -112,12 +165,7 @@ namespace MaaWpfGui.Views.UI
             }
         }
 
-        private void App_show(object sender, RoutedEventArgs e)
-        {
-            Instances.MainWindowManager?.Show();
-        }
-
-        private void OnNotifyIconDoubleClick(object sender, RoutedEventArgs e)
+        private static void App_show(object sender, RoutedEventArgs e)
         {
             Instances.MainWindowManager?.Show();
         }

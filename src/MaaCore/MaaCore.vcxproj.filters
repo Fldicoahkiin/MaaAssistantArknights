@@ -98,6 +98,9 @@
     <Filter Include="Source\Resource\TaskData">
       <UniqueIdentifier>{8d436f0b-8dad-42b2-9549-f9073b808104}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Task\Roguelike\Sami">
+      <UniqueIdentifier>{78679758-d75f-4a67-82cc-d0a868050ac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resource\config.json">
@@ -219,10 +222,10 @@
     <ClInclude Include="Config\TemplResource.h">
       <Filter>Source\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Config\Roguelike\RoguelikeFoldartalConfig.h">
+    <ClInclude Include="Config\Roguelike\RoguelikeCopilotConfig.h">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClInclude>
-    <ClInclude Include="Config\Roguelike\RoguelikeCopilotConfig.h">
+    <ClInclude Include="Config\Roguelike\RoguelikeMapConfig.h">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClInclude>
     <ClInclude Include="Config\Roguelike\RoguelikeRecruitConfig.h">
@@ -234,7 +237,10 @@
     <ClInclude Include="Config\Roguelike\RoguelikeStageEncounterConfig.h">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClInclude>
-    <ClInclude Include="Config\Roguelike\RoguelikeCollapsalParadigmConfig.h">
+    <ClInclude Include="Config\Roguelike\Sami\RoguelikeFoldartalConfig.h">
+      <Filter>Source\Resource\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Roguelike\Sami\RoguelikeCollapsalParadigmConfig.h">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClInclude>
     <ClInclude Include="Config\Miscellaneous\BattleDataConfig.h">
@@ -435,6 +441,9 @@
     <ClInclude Include="Task\Miscellaneous\BattleFormationTask.h">
       <Filter>Source\Task\Miscellaneous</Filter>
     </ClInclude>
+    <ClInclude Include="Task\Miscellaneous\UseSupportUnitTaskPlugin.h">
+      <Filter>Source\Task\Miscellaneous</Filter>
+    </ClInclude>
     <ClInclude Include="Task\Miscellaneous\BattleProcessTask.h">
       <Filter>Source\Task\Miscellaneous</Filter>
     </ClInclude>
@@ -453,13 +462,7 @@
     <ClInclude Include="Task\Roguelike\RoguelikeBattleTaskPlugin.h">
       <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Roguelike\RoguelikeFoldartalGainTaskPlugin.h">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClInclude>
-    <ClInclude Include="Task\Roguelike\RoguelikeFoldartalUseTaskPlugin.h">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClInclude>
-    <ClInclude Include="Task\Roguelike\RoguelikeConfig.h">
+    <ClInclude Include="Task\Roguelike\Map\RoguelikeMap.h">
       <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
     <ClInclude Include="Task\Roguelike\RoguelikeControlTaskPlugin.h">
@@ -498,9 +501,6 @@
     <ClInclude Include="Task\Roguelike\RoguelikeStrategyChangeTaskPlugin.h">
       <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Roguelike\RoguelikeCollapsalParadigmTaskPlugin.h">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClInclude>
     <ClInclude Include="InstHelper.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -537,18 +537,20 @@
     <ClInclude Include="Task\Interface\SingleStepTask.h">
       <Filter>Source\Task\Interface</Filter>
     </ClInclude>
+    <!-- 生息演算 .h Begin -->
     <ClInclude Include="Task\Interface\ReclamationTask.h">
       <Filter>Source\Task\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Reclamation\ReclamationBattlePlugin.h">
+    <ClInclude Include="Task\Reclamation\ReclamationConfig.h">
       <Filter>Source\Task\Reclamation</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Reclamation\ReclamationConclusionReportPlugin.h">
+    <ClInclude Include="Task\Reclamation\AbstractReclamationTaskPlugin.h">
       <Filter>Source\Task\Reclamation</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Reclamation\ReclamationControlTask.h">
+    <ClInclude Include="Task\Reclamation\ReclamationCraftTaskPlugin.h">
       <Filter>Source\Task\Reclamation</Filter>
     </ClInclude>
+    <!-- 生息演算 .h End -->
     <ClInclude Include="Utils\File.hpp">
       <Filter>Source\Utils</Filter>
     </ClInclude>
@@ -645,6 +647,9 @@
     <ClInclude Include="Vision\Miscellaneous\OperBoxImageAnalyzer.h">
       <Filter>Source\Vision\Miscellaneous</Filter>
     </ClInclude>
+    <ClInclude Include="Vision\Miscellaneous\BrightPointAnalyzer.h">
+      <Filter>Source\Vision\Miscellaneous</Filter>
+    </ClInclude>
     <ClInclude Include="Vision\Config\MatcherConfig.h">
       <Filter>Source\Vision\Config</Filter>
     </ClInclude>
@@ -702,17 +707,41 @@
     <ClInclude Include="Task\Roguelike\RoguelikeInvestTaskPlugin.h">
       <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
-    <ClInclude Include="Task\Roguelike\RoguelikeFoldartalStartTaskPlugin.h">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClInclude>
     <ClInclude Include="Controller\MumuExtras.h">
       <Filter>Source\Controller</Filter>
     </ClInclude>
     <ClInclude Include="Utils\LibraryHolder.hpp">
       <Filter>Source\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\LogControl.hpp">
-      <Filter>Source\Utils</Filter>
+    <ClInclude Include="Task\Roguelike\Sami\RoguelikeFoldartalGainTaskPlugin.h">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\Sami\RoguelikeFoldartalStartTaskPlugin.h">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\Sami\RoguelikeFoldartalUseTaskPlugin.h">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\Sami\RoguelikeCollapsalParadigmTaskPlugin.h">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClInclude>
+    <ClInclude Include="Vision\Roguelike\RoguelikeParameterAnalyzer.h">
+      <Filter>Source\Vision\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\Map\RoguelikeRoutingTaskPlugin.h">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="LDExtras.h">
+      <Filter>Source\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Vision\Battle\SupportListAnalyzer.h">
+      <Filter>Source\Vision\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\RoguelikeLevelTaskPlugin.h">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\RoguelikeInputSeedTaskPlugin.h">
+      <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -785,10 +814,10 @@
     <ClCompile Include="Config\TemplResource.cpp">
       <Filter>Source\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Config\Roguelike\RoguelikeFoldartalConfig.cpp">
+    <ClCompile Include="Config\Roguelike\RoguelikeCopilotConfig.cpp">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClCompile>
-    <ClCompile Include="Config\Roguelike\RoguelikeCopilotConfig.cpp">
+    <ClCompile Include="Config\Roguelike\RoguelikeMapConfig.cpp">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClCompile>
     <ClCompile Include="Config\Roguelike\RoguelikeRecruitConfig.cpp">
@@ -798,9 +827,6 @@
       <Filter>Source\Resource\Roguelike</Filter>
     </ClCompile>
     <ClCompile Include="Config\Roguelike\RoguelikeStageEncounterConfig.cpp">
-      <Filter>Source\Resource\Roguelike</Filter>
-    </ClCompile>
-    <ClCompile Include="Config\Roguelike\RoguelikeCollapsalParadigmConfig.cpp">
       <Filter>Source\Resource\Roguelike</Filter>
     </ClCompile>
     <ClCompile Include="Config\Miscellaneous\BattleDataConfig.cpp">
@@ -944,6 +970,9 @@
     <ClCompile Include="Task\Miscellaneous\BattleFormationTask.cpp">
       <Filter>Source\Task\Miscellaneous</Filter>
     </ClCompile>
+    <ClCompile Include="Task\Miscellaneous\UseSupportUnitTaskPlugin.cpp">
+      <Filter>Source\Task\Miscellaneous</Filter>
+    </ClCompile>
     <ClCompile Include="Task\Miscellaneous\BattleProcessTask.cpp">
       <Filter>Source\Task\Miscellaneous</Filter>
     </ClCompile>
@@ -965,10 +994,10 @@
     <ClCompile Include="Task\Roguelike\RoguelikeBattleTaskPlugin.cpp">
       <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Roguelike\RoguelikeFoldartalGainTaskPlugin.cpp">
+    <ClCompile Include="Task\Roguelike\Map\RoguelikeMap.cpp">
       <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Roguelike\RoguelikeFoldartalUseTaskPlugin.cpp">
+    <ClCompile Include="Task\Roguelike\Map\RoguelikeRoutingTaskPlugin.cpp">
       <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
     <ClCompile Include="Task\Roguelike\RoguelikeConfig.cpp">
@@ -1010,9 +1039,6 @@
     <ClCompile Include="Task\Roguelike\RoguelikeStrategyChangeTaskPlugin.cpp">
       <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Roguelike\RoguelikeCollapsalParadigmTaskPlugin.cpp">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClCompile>
     <ClCompile Include="InstHelper.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -1046,18 +1072,20 @@
     <ClCompile Include="Task\Interface\SingleStepTask.cpp">
       <Filter>Source\Task\Interface</Filter>
     </ClCompile>
+    <!-- 生息演算 .cpp Begin -->
     <ClCompile Include="Task\Interface\ReclamationTask.cpp">
       <Filter>Source\Task\Interface</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Reclamation\ReclamationBattlePlugin.cpp">
+    <ClCompile Include="Task\Reclamation\ReclamationConfig.cpp">
       <Filter>Source\Task\Reclamation</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Reclamation\ReclamationConclusionReportPlugin.cpp">
+    <ClCompile Include="Task\Reclamation\AbstractReclamationTaskPlugin.cpp">
       <Filter>Source\Task\Reclamation</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Reclamation\ReclamationControlTask.cpp">
+    <ClCompile Include="Task\Reclamation\ReclamationCraftTaskPlugin.cpp">
       <Filter>Source\Task\Reclamation</Filter>
     </ClCompile>
+    <!-- 生息演算 .cpp End -->
     <ClCompile Include="Controller\Controller.cpp">
       <Filter>Source\Controller</Filter>
     </ClCompile>
@@ -1133,6 +1161,9 @@
     <ClCompile Include="Vision\Miscellaneous\OperBoxImageAnalyzer.cpp">
       <Filter>Source\Vision\Miscellaneous</Filter>
     </ClCompile>
+    <ClCompile Include="Vision\Miscellaneous\BrightPointAnalyzer.cpp">
+      <Filter>Source\Vision\Miscellaneous</Filter>
+    </ClCompile>
     <ClCompile Include="Vision\Config\MatcherConfig.cpp">
       <Filter>Source\Vision\Config</Filter>
     </ClCompile>
@@ -1184,14 +1215,41 @@
     <ClCompile Include="Task\Roguelike\RoguelikeInvestTaskPlugin.cpp">
       <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
-    <ClCompile Include="Task\Roguelike\RoguelikeFoldartalStartTaskPlugin.cpp">
-      <Filter>Source\Task\Roguelike</Filter>
-    </ClCompile>
     <ClCompile Include="Controller\MumuExtras.cpp">
       <Filter>Source\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\LogControl.cpp">
-      <Filter>Source\Utils</Filter>
+    <ClCompile Include="Task\Roguelike\Sami\RoguelikeFoldartalGainTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\Sami\RoguelikeFoldartalStartTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\Sami\RoguelikeFoldartalUseTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\Sami\RoguelikeCollapsalParadigmTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike\Sami</Filter>
+    </ClCompile>
+    <ClCompile Include="Vision\Roguelike\RoguelikeParameterAnalyzer.cpp">
+      <Filter>Source\Vision\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\Roguelike\Sami\RoguelikeCollapsalParadigmConfig.cpp">
+      <Filter>Source\Resource\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\Roguelike\Sami\RoguelikeFoldartalConfig.cpp">
+      <Filter>Source\Resource\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="LDExtras.cpp">
+      <Filter>Source\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Vision\Battle\SupportListAnalyzer.cpp">
+      <Filter>Source\Vision\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\RoguelikeLevelTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\RoguelikeInputSeedTaskPlugin.cpp">
+      <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

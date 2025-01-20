@@ -10,8 +10,7 @@
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY
 // </copyright>
-
-using System.Collections.Generic;
+#nullable enable
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 using ObservableCollections;
@@ -20,17 +19,24 @@ namespace MaaWpfGui.Configuration
 {
     public class Root : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        [JsonInclude] public ObservableDictionary<string, SpecificConfig> Configurations { get; private set; } = new ObservableDictionary<string, SpecificConfig>();
+        [JsonInclude]
+        public ObservableDictionary<string, SpecificConfig> Configurations { get; private set; } = [];
 
-        [JsonInclude] public ObservableDictionary<int, Timer> Timers { get; private set; } = new ObservableDictionary<int, Timer>();
+        [JsonInclude]
+        public ObservableDictionary<int, Timer> Timers { get; private set; } = [];
 
         public string Current { get; set; } = "Default";
 
-        [JsonInclude] public VersionUpdate VersionUpdate { get; private set; } = new VersionUpdate();
+        [JsonInclude]
+        public VersionUpdate VersionUpdate { get; private set; } = new VersionUpdate();
 
-        [JsonInclude] public AnnouncementInfo AnnouncementInfo { get; private set; } = new AnnouncementInfo();
+        [JsonInclude]
+        public AnnouncementInfo AnnouncementInfo { get; private set; } = new AnnouncementInfo();
+
+        [JsonInclude]
+        public GUI GUI { get; private set; } = new GUI();
 
         [JsonIgnore]
         public SpecificConfig CurrentConfig

@@ -32,7 +32,7 @@ BattlefieldMatcher::ResultOpt BattlefieldMatcher::analyze() const
 
     if (m_object_of_interest.flag) {
         result.pause_button = pause_button_analyze();
-        if (!result.pause_button && !hp_flag_analyze() && !kills_flag_analyze()) {
+        if (!result.pause_button && !hp_flag_analyze() && !kills_flag_analyze() && !cost_symbol_analyze()) {
             // flag 表明当前画面是在战斗场景的，不在的就没必要识别了
             return std::nullopt;
         }
@@ -131,8 +131,13 @@ std::vector<battle::DeploymentOper> BattlefieldMatcher::deployment_analyze() con
 
 #ifdef ASST_DEBUG
         if (oper.cooling) {
-            cv::putText(m_image_draw, "cooling", cv::Point(oper.rect.x, oper.rect.y - 20), 1, 1.2,
-                        cv::Scalar(0, 0, 255));
+            cv::putText(
+                m_image_draw,
+                "cooling",
+                cv::Point(oper.rect.x, oper.rect.y - 20),
+                1,
+                1.2,
+                cv::Scalar(0, 0, 255));
         }
 #endif
 
@@ -190,28 +195,20 @@ bool BattlefieldMatcher::oper_cooling_analyze(const Rect& roi) const
 {
     const auto cooling_task_ptr = Task.get<MatchTaskInfo>("BattleOperCooling");
 
-    auto img_roi = m_image(make_rect<cv::Rect>(roi));
-    cv::Mat hsv;
-    cv::cvtColor(img_roi, hsv, cv::COLOR_BGR2HSV);
-    int h_low = cooling_task_ptr->mask_range.first;
-    int h_up = cooling_task_ptr->mask_range.second;
-    int s_low = cooling_task_ptr->specific_rect.x;
-    int s_up = cooling_task_ptr->specific_rect.y;
-    int v_low = cooling_task_ptr->specific_rect.width;
-    int v_up = cooling_task_ptr->specific_rect.height;
-
-    cv::Mat bin;
-    cv::inRange(hsv, cv::Scalar(h_low, s_low, v_low), cv::Scalar(h_up, s_up, v_up), bin);
-
-    int count = 0;
-    for (int i = 0; i != bin.rows; ++i) {
-        for (int j = 0; j != bin.cols; ++j) {
-            cv::uint8_t value = bin.at<cv::uint8_t>(i, j);
-            if (value) {
-                ++count;
-            }
-        }
+    if (cooling_task_ptr->color_scales.size() != 1 ||
+        !std::holds_alternative<MatchTaskInfo::ColorRange>(cooling_task_ptr->color_scales.front())) {
+        Log.error(__FUNCTION__, "| color_scales in `BattleOperCooling` is not a ColorRange");
+        return false;
     }
+
+    const auto& color_scale = std::get<MatchTaskInfo::ColorRange>(cooling_task_ptr->color_scales.front());
+    auto img_roi = m_image(make_rect<cv::Rect>(roi));
+
+    cv::Mat hsv, bin;
+    cv::cvtColor(img_roi, hsv, cv::COLOR_BGR2HSV);
+    cv::inRange(hsv, color_scale.first, color_scale.second, bin);
+    int count = cv::countNonZero(bin);
+
     // Log.trace("oper_cooling_analyze |", count);
     return count >= cooling_task_ptr->special_params.front();
 }
@@ -328,6 +325,13 @@ std::optional<std::pair<int, int>> BattlefieldMatcher::kills_analyze() const
     return std::make_pair(kills, total_kills);
 }
 
+bool BattlefieldMatcher::cost_symbol_analyze() const
+{
+    Matcher flag_analyzer(m_image);
+    flag_analyzer.set_task_info("BattleCostFlag");
+    return flag_analyzer.analyze().has_value();
+}
+
 std::optional<int> BattlefieldMatcher::costs_analyze() const
 {
     RegionOCRer cost_analyzer(m_image);
@@ -361,9 +365,14 @@ bool BattlefieldMatcher::pause_button_analyze() const
 
 #ifdef ASST_DEBUG
     cv::rectangle(m_image_draw, make_rect<cv::Rect>(task_ptr->roi), cv::Scalar(0, 0, 255), 2);
-    cv::putText(m_image_draw, std::to_string(count) + "/" + std::to_string(count_threshold),
-                cv::Point(task_ptr->roi.x, task_ptr->roi.y + task_ptr->roi.height + 10), cv::FONT_HERSHEY_PLAIN, 1.2,
-                cv::Scalar(255, 255, 255), 2);
+    cv::putText(
+        m_image_draw,
+        std::to_string(count) + "/" + std::to_string(count_threshold),
+        cv::Point(task_ptr->roi.x, task_ptr->roi.y + task_ptr->roi.height + 10),
+        cv::FONT_HERSHEY_PLAIN,
+        1.2,
+        cv::Scalar(255, 255, 255),
+        2);
 #endif
 
     return count > count_threshold;
@@ -411,9 +420,14 @@ bool asst::BattlefieldMatcher::speed_button_analyze() const
 
 #ifdef ASST_DEBUG
     cv::rectangle(m_image_draw, make_rect<cv::Rect>(task_ptr->roi), cv::Scalar(0, 0, 255), 2);
-    cv::putText(m_image_draw, std::to_string(count) + "/" + std::to_string(count_threshold),
-                cv::Point(task_ptr->roi.x, task_ptr->roi.y + task_ptr->roi.height + 20), cv::FONT_HERSHEY_PLAIN, 1.2,
-                cv::Scalar(255, 255, 255), 2);
+    cv::putText(
+        m_image_draw,
+        std::to_string(count) + "/" + std::to_string(count_threshold),
+        cv::Point(task_ptr->roi.x, task_ptr->roi.y + task_ptr->roi.height + 20),
+        cv::FONT_HERSHEY_PLAIN,
+        1.2,
+        cv::Scalar(255, 255, 255),
+        2);
 #endif
 
     return count > count_threshold;

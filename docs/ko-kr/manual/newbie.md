@@ -11,15 +11,13 @@ icon: ri:guide-fill
 
 1. 시스템 버전 확인
 
-    MAA 는 Windows 10/11만 지원합니다. 이전 버전의 Windows를 사용하는 경우 [FAQ](./faq.md)를 참조하세요.
+    MAA 는 Windows 10/11만 지원합니다. 이전 버전의 Windows를 사용하는 경우 [FAQ](./faq.md#가능성2:런타임문제)를 참조하세요.
+
+    Windows 사용자가 아닌 경우 [에뮬레이터 및 장치 지원](./device/)을 참조하십시오.
 
 2. 런타임 설치
 
-    MAA는 VCRedist x64와 .NET 8이 필요합니다. 시작 버튼을 우클릭하여 터미널을 열고, 아래 명령어를 터미널에 붙여넣고 엔터를 눌러 설치합니다.
-
-    ```sh
-    winget install Microsoft.VCRedist.2015+.x64 Microsoft.DotNet.DesktopRuntime.8
-    ```
+    MAA는 VCRedist x64 및 .NET 8이 필요합니다. MAA 디렉토리의 `DependencySetup_依赖库安装.bat`를 실행하여 설치하세요.
 
     자세한 정보는 [FAQ](./faq.md#가능성-2-런타임-문제)를 참조하세요.
 
@@ -37,7 +35,7 @@ icon: ri:guide-fill
 
 6. 에뮬레이터 해상도 설정
 
-    에뮬레이터 해상도는 `16:9` 비율이어야 하며, 최소 해상도는 `1280x720`입니다. YostarKR 사용자의 경우 권장 해상도는 `1920x720`과 `1280x720` 입니다.
+    에뮬레이터 해상도는 `16:9` 비율이어야 하며, 최소 해상도는 `1280x720`입니다. YostarKR 사용자의 경우 권장 해상도는 `1920x1080`과 `1280x720` 입니다.
 
 ## 초기 설정
 

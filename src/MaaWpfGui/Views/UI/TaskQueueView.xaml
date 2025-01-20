@@ -11,9 +11,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:MaaWpfGui.Styles.Properties"
     xmlns:s="https://github.com/canton7/Stylet"
+    xmlns:taskQueue="clr-namespace:MaaWpfGui.Views.UserControl.TaskQueue"
     xmlns:ui="clr-namespace:MaaWpfGui.ViewModels.UI"
     xmlns:userControl="clr-namespace:MaaWpfGui.Views.UserControl"
     MinWidth="720"
+    d:Background="White"
     d:DataContext="{d:DesignInstance {x:Type ui:TaskQueueViewModel}}"
     d:DesignHeight="495"
     d:DesignWidth="800"
@@ -52,7 +54,6 @@
                         dd:DragDrop.IsDragSource="{Binding Idle}"
                         dd:DragDrop.IsDropTarget="{Binding Idle}"
                         BorderThickness="0"
-                        DragDrop.Drop="{s:Action TaskItemSelectionChanged}"
                         ItemContainerStyle="{StaticResource CustomListBoxItemStyle}"
                         ItemsSource="{Binding TaskItemViewModels}"
                         ToolTip="{DynamicResource LabelSequenceTip}">
@@ -137,30 +138,47 @@
                     </Grid>
                 </Grid>
             </Border>
-            <Grid
+            <StackPanel
                 Grid.Row="1"
-                Margin="10"
-                HorizontalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <controls:TextBlock
-                    Padding="5,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Text="{DynamicResource Then}"
-                    TextWrapping="Wrap" />
-                <ComboBox
-                    Grid.Column="1"
-                    Width="160"
-                    Margin="5"
-                    DisplayMemberPath="Display"
-                    ItemsSource="{Binding ActionAfterCompletedList}"
-                    MaxDropDownHeight="800"
-                    SelectedValue="{Binding ActionAfterCompleted}"
-                    SelectedValuePath="Value" />
-            </Grid>
+                Width="210"
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal">
+                <StackPanel
+                    Width="185"
+                    Margin="0,10,0,10"
+                    HorizontalAlignment="Left"
+                    Orientation="Vertical">
+                    <controls:TextBlock
+                        Margin="20,5,0,0"
+                        HorizontalAlignment="Center"
+                        Text="{Binding PostActionSetting.ActionTitle}"
+                        TextAlignment="Center" />
+                    <hc:Divider Margin="10,2,10,5" />
+                    <controls:TextBlock
+                        Width="160"
+                        Margin="20,0,0,0"
+                        HorizontalAlignment="Center"
+                        Text="{Binding PostActionSetting.ActionDescription}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+                <hc:ButtonGroup HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!--  ReSharper disable once Xaml.StaticResourceNotResolved  -->
+                    <RadioButton
+                        hc:IconElement.Geometry="{StaticResource ConfigGeometry}"
+                        hc:VisualElement.HighlightBackground="Transparent"
+                        hc:VisualElement.HighlightForeground="{DynamicResource PrimaryBrush}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{DynamicResource SecondaryTextBrush}"
+                        GroupName="TaskSettings"
+                        IsChecked="{Binding EnableAfterActionSetting}"
+                        Style="{DynamicResource RadioGroupItemSingle}"
+                        ToolTip="{DynamicResource TaskSettings}" />
+                </hc:ButtonGroup>
+            </StackPanel>
+
+
             <Grid Grid.Row="2" Height="60">
                 <Button
                     Width="100"
@@ -168,7 +186,7 @@
                     Margin="5"
                     Command="{s:Action LinkStart}"
                     Content="{DynamicResource LinkStart}"
-                    IsEnabled="{Binding Inited}"
+                    IsEnabled="{c:Binding 'Inited and !TaskSettingVisibilities.Guide'}"
                     Visibility="{c:Binding '!Inited or (Idle and !Stopping)'}" />
                 <Button
                     Width="100"
@@ -214,6 +232,7 @@
             </Grid.RowDefinitions>
             <hc:ScrollViewer
                 Grid.Row="0"
+                Grid.RowSpan="{c:Binding 'TaskSettingVisibilities.AfterAction ? 2:1'}"
                 Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
@@ -222,48 +241,49 @@
                 PanningMode="Both"
                 VerticalScrollBarVisibility="Auto">
                 <hc:SimpleStackPanel Width="220" Margin="0,0,10,0">
-                    <userControl:FightSettingsUserControl 
-                        Visibility="{c:Binding TaskSettingVisibilities.Combat}" />
-                    <userControl:AutoRecruitSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        IsEnabled="{Binding Idle}"
-                        Visibility="{c:Binding TaskSettingVisibilities.Recruiting}" />
-                    <userControl:ConnectSettingsOnWakeUpUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        IsEnabled="{Binding Idle}"
-                        Visibility="{c:Binding TaskSettingVisibilities.WakeUp}" />
-                    <userControl:InfrastSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        IsEnabled="{Binding Idle}"
-                        Visibility="{c:Binding TaskSettingVisibilities.Base}" />
-                    <userControl:MallSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        IsEnabled="{Binding Idle}"
-                        Visibility="{c:Binding TaskSettingVisibilities.Mall}" />
-                    <userControl:AwardSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        IsEnabled="{Binding Idle}"
-                        Visibility="{c:Binding TaskSettingVisibilities.Mission}" />
-                    <userControl:RoguelikeSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        Visibility="{c:Binding TaskSettingVisibilities.AutoRoguelike}" />
-                    <userControl:ReclamationSettingsUserControl
-                        s:View.ActionTarget="{Binding DataContext, RelativeSource={RelativeSource Self}}"
-                        DataContext="{Binding TaskSettingDataContext}"
-                        Visibility="{c:Binding TaskSettingVisibilities.Reclamation2}" />
+                    <taskQueue:FightSettingsUserControl DataContext="{Binding FightTask}" Visibility="{c:Binding DataContext.TaskSettingVisibilities.Combat, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:RecruitSettingsUserControl
+                        DataContext="{Binding RecruitTask}"
+                        IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        Visibility="{c:Binding DataContext.TaskSettingVisibilities.Recruiting,
+                                               RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                              AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:StartUpTaskUserControl
+                        DataContext="{Binding StartUpTask}"
+                        IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        Visibility="{c:Binding DataContext.TaskSettingVisibilities.WakeUp,
+                                               RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                              AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:InfrastSettingsUserControl
+                        DataContext="{Binding InfrastTask}"
+                        IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        Visibility="{c:Binding DataContext.TaskSettingVisibilities.Base,
+                                               RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                              AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:MallSettingsUserControl
+                        DataContext="{Binding MallTask}"
+                        IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        Visibility="{c:Binding DataContext.TaskSettingVisibilities.Mall,
+                                               RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                              AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:AwardSettingsUserControl
+                        DataContext="{Binding AwardTask}"
+                        IsEnabled="{Binding DataContext.Idle, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                        Visibility="{c:Binding DataContext.TaskSettingVisibilities.Mission,
+                                               RelativeSource={RelativeSource Mode=FindAncestor,
+                                                                              AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:RoguelikeSettingsUserControl DataContext="{Binding RoguelikeTask}" Visibility="{c:Binding DataContext.TaskSettingVisibilities.AutoRoguelike, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:ReclamationSettingsUserControl DataContext="{Binding ReclamationTask}" Visibility="{c:Binding DataContext.TaskSettingVisibilities.Reclamation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                    <taskQueue:PostActionUserControl DataContext="{Binding PostActionSetting}" Visibility="{c:Binding DataContext.TaskSettingVisibilities.AfterAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                 </hc:SimpleStackPanel>
             </hc:ScrollViewer>
             <hc:ButtonGroup
                 Grid.Row="1"
                 Width="220"
                 Margin="0,0,10,0"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                Visibility="{c:Binding !TaskSettingVisibilities.AfterAction,
+                                       FalseToVisibility=Hidden}">
                 <RadioButton
                     Content="{DynamicResource GeneralSettings}"
                     IsChecked="{c:Binding !TaskSettingVisibilities.EnableAdvancedSettings}"

@@ -9,9 +9,9 @@ icon: basil:apple-solid
 
 ### ✅ [PlayCover](https://playcover.io)（原生运行最流畅 🚀）
 
-试验性支持，遇到问题请多多提 issue，并在标题中提及 iOS。
+试验性支持，遇到问题请多多提 Issue，并在标题中提及 `MacOS`。
 
-注意：由于 `macOS` 本身机制的问题，将游戏窗口最小化、台前调度状态下切换到别的窗口、将窗口移动到别的桌面/屏幕之后，截图会出现问题，导致无法正确运行。相关 Issue [#4371](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/4371#issuecomment-1527977512)
+注意：由于 `MacOS` 本身机制的问题，将游戏窗口最小化、台前调度状态下切换到别的窗口、将窗口移动到别的桌面/屏幕之后，截图会出现问题，导致无法正确运行。相关 Issue [#4371](https://github.com/MaaAssistantArknights/MaaAssistantArknights/issues/4371#issuecomment-1527977512)
 
 0. 要求：MAA 版本 v4.13.0-rc.1 以上
 
@@ -37,7 +37,17 @@ icon: basil:apple-solid
 
 支持，但从 Android 10 开始，Minitouch 在 SELinux 为 `Enforcing` 模式时不再可用。请切换至其他触控模式，或将 SELinux **临时**切换为 `Permissive` 模式。
 
+### ✅ [蓝叠模拟器air版](https://www.bluestacks.com/mac) （免费，针对 Apple M 系列芯片进行优化的版本）
+
+支持，经测试，可用 maatouch 经`127.0.0.1:5555`连接。
+
+需要在模拟器 `设置` - `高级` 中打开 `Android调试（ADB）`。
+
 ## Intel 芯片
+
+::: tip
+由于 Mac 版开发缺少人手，更新速度相对较慢，更推荐使用 Mac 自带的多系统安装 Windows，并使用 Windows 版 MAA。
+:::
 
 ### ✅ [蓝叠模拟器](https://www.bluestacks.cn/)
 
@@ -49,7 +59,7 @@ icon: basil:apple-solid
 
 ### ✅ [夜神模拟器](https://www.yeshen.com/)
 
-完美支持。目前 mac 上 MAAX 版本还不支持模拟器自动适配，需要在 MAA `设置` - `连接设置` 中使用 ADB 连接 `127.0.0.1:62001` ，注意端口不是默认的 `5555` ，关于模拟器端口的详细说明参见[模拟器调试端口](../faq.md#模拟器调试端口)。
+完美支持。目前 mac 上 MAAX 版本还不支持模拟器自动适配，需要在 MAA `设置` - `连接设置` 中使用 ADB 连接 `127.0.0.1:62001` ，注意端口不是默认的 `5555` ，关于模拟器端口的详细说明参见[获取端口号](../connection.md#获取端口号)。
 
 补充：mac 下夜神模拟器的 ADB 二进制文件的位置为 `/Applications/NoxAppPlayer.app/Contents/MacOS/adb` ，在父目录 `MacOS` 下可使用 `adb devices` 命令查看 ADB 端口。
 

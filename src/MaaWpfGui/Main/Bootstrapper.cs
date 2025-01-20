@@ -12,18 +12,23 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using GlobalHotKey;
+using MaaWpfGui.Configuration;
 using MaaWpfGui.Helper;
+using MaaWpfGui.Properties;
 using MaaWpfGui.Services;
 using MaaWpfGui.Services.HotKeys;
 using MaaWpfGui.Services.Managers;
@@ -48,32 +53,15 @@ namespace MaaWpfGui.Main
         private static readonly RunningState _runningState = RunningState.Instance;
         private static ILogger _logger = Logger.None;
 
-        // private static Mutex _mutex;
+        private static Mutex _mutex;
+        private static bool _hasMutex;
 
         /// <inheritdoc/>
         /// <remarks>初始化些啥自己加。</remarks>
         protected override void OnStart()
         {
-            /*
-            // 设置互斥量的名称
-            string mutexName = "MAA_" + Directory.GetCurrentDirectory().Replace("\\", "_").Replace(":", string.Empty);
-            _mutex = new Mutex(true, mutexName);
-
-            if (!_mutex.WaitOne(TimeSpan.Zero, true))
-            {
-                // 这里还没加载语言包，就不 GetString 了
-                MessageBox.Show("同一路径下只能启动一个实例！\n\n" +
-                                "同一路徑下只能啟動一個實例！\n\n" +
-                                "Only one instance can be launched under the same path!\n\n" +
-                                "同じパスの下で1つのインスタンスしか起動できません！\n\n" +
-                                "동일한 경로에는 하나의 인스턴스만 실행할 수 있습니다!");
-                Bootstrapper.Shutdown();
-                return;
-            }
-            */
-
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-            if (Directory.Exists("debug") is false)
+            if (!Directory.Exists("debug"))
             {
                 Directory.CreateDirectory("debug");
             }
@@ -92,21 +80,23 @@ namespace MaaWpfGui.Main
 
             // Bootstrap serilog
             var loggerConfiguration = new LoggerConfiguration()
-                .WriteTo.Debug(
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] <{ThreadId}><{ThreadName}> {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Debug(outputTemplate: "[{Timestamp:HH:mm:ss}][{Level:u3}] <{ThreadId}><{ThreadName}> {Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(
                     LogFilename,
-                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] <{ThreadId}><{ThreadName}> {Message:lj}{NewLine}{Exception}")
+                    outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] <{ThreadId}><{ThreadName}> {Message:lj}{NewLine}{Exception}")
                 .Enrich.FromLogContext()
                 .Enrich.WithThreadId()
                 .Enrich.WithThreadName();
 
             var uiVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "0.0.1";
             uiVersion = uiVersion == "0.0.1" ? "DEBUG VERSION" : uiVersion;
+            var builtDate = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildDateTimeAttribute>()?.BuildDateTime ?? DateTime.MinValue;
             var maaEnv = Environment.GetEnvironmentVariable("MAA_ENVIRONMENT") == "Debug"
                 ? "Debug"
                 : "Production";
-            loggerConfiguration = maaEnv == "Debug"
+            var args = Environment.GetCommandLineArgs();
+            var withDebugFile = File.Exists("DEBUG") || File.Exists("DEBUG.txt");
+            loggerConfiguration = (maaEnv == "Debug" || withDebugFile)
                 ? loggerConfiguration.MinimumLevel.Verbose()
                 : loggerConfiguration.MinimumLevel.Information();
 
@@ -114,9 +104,16 @@ namespace MaaWpfGui.Main
             _logger = Log.Logger.ForContext<Bootstrapper>();
             _logger.Information("===================================");
             _logger.Information("MaaAssistantArknights GUI started");
-            _logger.Information("Version {UiVersion}", uiVersion);
-            _logger.Information("Maa ENV: {MaaEnv}", maaEnv);
-            _logger.Information("User Dir {CurrentDirectory}", Directory.GetCurrentDirectory());
+            _logger.Information($"Version {uiVersion}");
+            _logger.Information($"Built at {builtDate:O}");
+            _logger.Information($"Maa ENV: {maaEnv}");
+            _logger.Information($"Command Line: {string.Join(' ', args)}");
+            _logger.Information($"User Dir {Directory.GetCurrentDirectory()}");
+            if (withDebugFile)
+            {
+                _logger.Information("Start with DEBUG file");
+            }
+
             if (IsUserAdministrator())
             {
                 _logger.Information("Run as Administrator");
@@ -157,16 +154,68 @@ namespace MaaWpfGui.Main
             ConfigurationHelper.Load();
             LocalizationHelper.Load();
             ETagCache.Load();
+
+            if (!HandleMultipleInstances())
+            {
+                Shutdown();
+                return;
+            }
+
+            _hasMutex = true;
+
+            const string ConfigFlag = "--config";
+            const string AnotherFlag = "--another"; // 示例，之后如果有其他参数，可以继续添加
+
+            var parsedArgs = ParseArgs(args, ConfigFlag, AnotherFlag);
+
+            if (parsedArgs.TryGetValue(ConfigFlag, out string configArgs) && Config(configArgs))
+            {
+                return;
+            }
+
+            // 检查 MaaCore.dll 是否存在
+            if (!File.Exists("MaaCore.dll"))
+            {
+                throw new FileNotFoundException("MaaCore.dll not found!");
+            }
+
+            // 检查 resource 文件夹是否存在
+            if (!Directory.Exists("resource"))
+            {
+                throw new DirectoryNotFoundException("resource folder not found!");
+            }
         }
 
-        private static bool IsUserAdministrator()
+        private static bool HandleMultipleInstances()
         {
-            WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(identity);
-            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            // 设置互斥量的名称
+            string mutexName = "MAA_" + Directory.GetCurrentDirectory().Replace("\\", "_").Replace(":", string.Empty);
+            _mutex = new Mutex(true, mutexName, out var isOnlyInstance);
 
-            return principal.IsInRole(adminSid);
+            try
+            {
+                if (isOnlyInstance || _mutex.WaitOne(500))
+                {
+                    return true;
+                }
+
+                MessageBox.Show(LocalizationHelper.GetString("MultiInstanceUnderSamePath"));
+                return false;
+            }
+            catch (AbandonedMutexException)
+            {
+                // 上一个程序没有正常释放互斥量
+                // 即使捕获到这个异常，此时也已经获得了锁
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(LocalizationHelper.GetString("MultiInstanceUnderSamePath") + e.Message);
+                return false;
+            }
         }
+
+        public static bool IsUserAdministrator() => new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 
         /// <inheritdoc/>
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
@@ -209,21 +258,8 @@ namespace MaaWpfGui.Main
         /// <remarks>退出时执行啥自己加。</remarks>
         protected override void OnExit(ExitEventArgs e)
         {
-            /*
-             // 释放互斥量
-            _mutex?.ReleaseMutex();
-            _mutex?.Dispose();
-            */
-
             // MessageBox.Show("O(∩_∩)O 拜拜");
-            ETagCache.Save();
-            Instances.SettingsViewModel.Sober();
-            Instances.MaaHotKeyManager.Release();
-
-            // 关闭程序时清理操作中心中的通知
-            ToastNotification.Cleanup();
-
-            ConfigurationHelper.Release();
+            Release();
 
             _logger.Information("MaaAssistantArknights GUI exited");
             _logger.Information(string.Empty);
@@ -240,12 +276,31 @@ namespace MaaWpfGui.Main
                 return;
             }
 
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = Environment.ProcessPath,
-            };
+            ProcessStartInfo startInfo = new ProcessStartInfo { FileName = Environment.ProcessPath, };
 
             Process.Start(startInfo);
+        }
+
+        public static void Release()
+        {
+            ETagCache.Save();
+            Instances.SettingsViewModel.Sober();
+            Instances.MaaHotKeyManager.Release();
+
+            // 关闭程序时清理操作中心中的通知
+            ToastNotification.Cleanup();
+
+            ConfigurationHelper.Release();
+            ConfigFactory.Release();
+
+            // 释放互斥量
+            if (!_hasMutex)
+            {
+                return;
+            }
+
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
         }
 
         private static bool _isRestartingWithoutArgs;
@@ -260,9 +315,9 @@ namespace MaaWpfGui.Main
             Execute.OnUIThread(Application.Current.Shutdown);
         }
 
-        public static void Shutdown()
+        public static void Shutdown([CallerMemberName]string caller = "")
         {
-            _logger.Information("Shutdown");
+            _logger.Information($"Shutdown called by {caller}");
             Execute.OnUIThread(Application.Current.Shutdown);
         }
 
@@ -284,13 +339,90 @@ namespace MaaWpfGui.Main
         /// <inheritdoc/>
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
+            LogUnhandledException(e.Exception);
+            ShowErrorDialog(e.Exception);
+            e.Handled = true;
+        }
+
+        private static void LogUnhandledException(Exception exception)
+        {
             if (_logger != Logger.None)
             {
-                _logger.Fatal(e.Exception, "Unhandled exception");
+                _logger.Fatal(exception, "Unhandled exception occurred");
+            }
+        }
+
+        private static void ShowErrorDialog(Exception exception)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // DragDrop.DoDragSourceMove 会导致崩溃，但不需要退出程序
+                // 这是一坨屎，但是没办法，只能这样了
+                var isDragDropException = exception is COMException && exception.ToString()!.Contains("DragDrop.DoDragSourceMove");
+
+                var shouldExit = !isDragDropException;
+
+                var errorView = new ErrorView(exception, shouldExit);
+                errorView.ShowDialog();
+            });
+        }
+
+        private static Dictionary<string, string> ParseArgs(string[] args, params string[] flags)
+        {
+            var result = new Dictionary<string, string>();
+            var flagSet = new HashSet<string>(flags);
+
+            for (int i = 0; i < args.Length; ++i)
+            {
+                if (flagSet.Contains(args[i]) && i + 1 < args.Length)
+                {
+                    result[args[i]] = args[i + 1];
+                    ++i;
+                }
             }
 
-            var errorView = new ErrorView(e.Exception, true);
-            errorView.ShowDialog();
+            return result;
+        }
+
+        /// <summary>
+        /// 检查配置并切换，如果成功切换则重启
+        /// </summary>
+        /// <param name="desiredConfig">配置名</param>
+        /// <returns>切换并重启</returns>
+        private static bool Config(string desiredConfig)
+        {
+            const string ConfigFile = @".\config\gui.json";
+            if (!File.Exists(ConfigFile) || string.IsNullOrEmpty(desiredConfig))
+            {
+                return false;
+            }
+
+            try
+            {
+                if (UpdateConfiguration(desiredConfig))
+                {
+                    ShutdownAndRestartWithoutArgs();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error updating configuration: {desiredConfig}, ex: {ex.Message}");
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 切换配置
+        /// </summary>
+        /// <param name="desiredConfig">配置名</param>
+        /// <returns>是否成功切换配置</returns>
+        private static bool UpdateConfiguration(string desiredConfig)
+        {
+            // 配置名可能就包在引号中，需要转义符，如 \"a\"
+            string currentConfig = ConfigurationHelper.GetCurrentConfiguration();
+            return currentConfig != desiredConfig && ConfigurationHelper.SwitchConfiguration(desiredConfig);
         }
     }
 }

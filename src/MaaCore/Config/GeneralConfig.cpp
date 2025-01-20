@@ -27,19 +27,13 @@ bool asst::GeneralConfig::parse(const json::value& json)
         // m_options.print_window = options_json.at("printWindow").as_boolean();
         m_options.adb_extra_swipe_dist = options_json.get("adbExtraSwipeDist", 100);
         m_options.adb_extra_swipe_duration = options_json.get("adbExtraSwipeDuration", -1);
-        m_options.adb_swipe_duration_multiplier =
-            options_json.get("adbSwipeDurationMultiplier", 10.0);
-        m_options.adb_swipe_x_distance_multiplier =
-            options_json.get("adbSwipeXDistanceMultiplier", 0.8);
+        m_options.adb_swipe_duration_multiplier = options_json.get("adbSwipeDurationMultiplier", 10.0);
+        m_options.adb_swipe_x_distance_multiplier = options_json.get("adbSwipeXDistanceMultiplier", 0.8);
         m_options.minitouch_extra_swipe_dist = options_json.get("minitouchExtraSwipeDist", 100);
-        m_options.minitouch_extra_swipe_duration =
-            options_json.get("minitouchExtraSwipeDuration", -1);
-        m_options.minitouch_swipe_default_duration =
-            options_json.get("minitouchSwipeDefaultDuration", 200);
-        m_options.minitouch_swipe_extra_end_delay =
-            options_json.get("minitouchSwipeExtraEndDelay", 150);
-        m_options.swipe_with_pause_required_distance =
-            options_json.get("swipeWithPauseRequiredDistance", 50);
+        m_options.minitouch_extra_swipe_duration = options_json.get("minitouchExtraSwipeDuration", -1);
+        m_options.minitouch_swipe_default_duration = options_json.get("minitouchSwipeDefaultDuration", 200);
+        m_options.minitouch_swipe_extra_end_delay = options_json.get("minitouchSwipeExtraEndDelay", 150);
+        m_options.swipe_with_pause_required_distance = options_json.get("swipeWithPauseRequiredDistance", 50);
         if (auto order = options_json.find<json::array>("minitouchProgramsOrder")) {
             m_options.minitouch_programs_order.clear();
             for (const auto& type : *order) {
@@ -70,12 +64,12 @@ bool asst::GeneralConfig::parse(const json::value& json)
         }
         m_options.depot_export_template.ark_planner =
             options_json.get("depotExportTemplate", "arkPlanner", std::string());
-        m_options.debug.clean_files_freq = options_json.get("debug", "cleanFilesFreq", 100);
-        m_options.debug.max_debug_file_num = options_json.get("debug", "maxDebugFileNum", 1000);
+        m_options.debug.clean_files_freq = options_json.get("debug", "cleanFilesFreq", 50);
+        m_options.debug.max_debug_file_num = options_json.get("debug", "maxDebugFileNum", 100);
     }
 
-    for (const auto& [client_type, intent_name] : json.at("intent").as_object()) {
-        m_intent_name[client_type] = intent_name.as_string();
+    for (const auto& [client_type, package_name] : json.at("packageName").as_object()) {
+        m_package_name[client_type] = package_name.as_string();
     }
 
     for (const auto& cfg_json : json.at("connection").as_array()) {
@@ -83,15 +77,17 @@ bool asst::GeneralConfig::parse(const json::value& json)
         const AdbCfg& base_cfg = base_name.empty() ? AdbCfg() : m_adb_cfg.at(base_name);
 
         AdbCfg& adb = m_adb_cfg[cfg_json.at("configName").as_string()];
+        adb.devices = cfg_json.get("devices", base_cfg.devices);
+        adb.address_regex = cfg_json.get("addressRegex", base_cfg.address_regex);
         adb.connect = cfg_json.get("connect", base_cfg.connect);
         adb.display_id = cfg_json.get("displayId", base_cfg.display_id);
         adb.uuid = cfg_json.get("uuid", base_cfg.uuid);
         adb.click = cfg_json.get("click", base_cfg.click);
+        adb.input = cfg_json.get("input", base_cfg.input);
         adb.swipe = cfg_json.get("swipe", base_cfg.swipe);
         adb.press_esc = cfg_json.get("pressEsc", base_cfg.press_esc);
         adb.display = cfg_json.get("display", base_cfg.display);
-        adb.screencap_raw_with_gzip =
-            cfg_json.get("screencapRawWithGzip", base_cfg.screencap_raw_with_gzip);
+        adb.screencap_raw_with_gzip = cfg_json.get("screencapRawWithGzip", base_cfg.screencap_raw_with_gzip);
         adb.screencap_raw_by_nc = cfg_json.get("screencapRawByNC", base_cfg.screencap_raw_by_nc);
         adb.nc_address = cfg_json.get("ncAddress", base_cfg.nc_address);
         adb.screencap_encode = cfg_json.get("screencapEncode", base_cfg.screencap_encode);

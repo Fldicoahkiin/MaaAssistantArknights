@@ -6,27 +6,37 @@ from pathlib import Path
 def sort_tasks(res: dict[str, any]):
     # 暂时只对 Roguelike 和 Reclamation 任务进行类字典序排序，其他任务保持原有相对顺序
     classified_lists = {
+        "UseSupportUnit...": [],
+        "...@UseSupportUnit...": [],
         "Roguelike...": [],
         "Roguelike@...": [],
         "Phantom@Roguelike...": [],
         "Mizuki@Roguelike...": [],
         "Sami@Roguelike...": [],
+        "Sarkaz@Roguelike...": [],
         "...@Roguelike...": [],
         "Reclamation...": [],
         "Reclamation@...": [],
+        "Fire@Reclamation...": [],
+        "Tales@RA...": [],
         "...@Reclamation...": []
     }
     unclassified_list = []
 
     classify_rules: list[tuple[str, list]] = [
+        (r"^UseSupportUnit", classified_lists["UseSupportUnit..."]),
+        (r"^(\w+)@UseSupportUnit", classified_lists["...@UseSupportUnit..."]),
         (r"^Roguelike@", classified_lists["Roguelike@..."]),
         (r"^Roguelike", classified_lists["Roguelike..."]),
         (r"^Phantom@Roguelike", classified_lists["Phantom@Roguelike..."]),
         (r"^Mizuki@Roguelike", classified_lists["Mizuki@Roguelike..."]),
         (r"^Sami@Roguelike", classified_lists["Sami@Roguelike..."]),
+        (r"^Sarkaz@Roguelike", classified_lists["Sarkaz@Roguelike..."]),
         (r"^(\w+)@Roguelike", classified_lists["...@Roguelike..."]),
         (r"^Reclamation@", classified_lists["Reclamation@..."]),
         (r"^Reclamation", classified_lists["Reclamation..."]),
+        (r"^Fire@Reclamation", classified_lists["Fire@Reclamation..."]),
+        (r"^Tales@RA", classified_lists["Tales@RA..."]),
         (r"^(\w+)@Reclamation", classified_lists["...@Reclamation..."]),
         (r"", unclassified_list)
     ]

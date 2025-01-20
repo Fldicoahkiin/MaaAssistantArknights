@@ -5,6 +5,20 @@ icon: mdi:plug
 
 # 连接设置
 
+## 自动检测
+
+MAA 可以通过当前**正在运行的单个模拟器**自动检测并填充 ADB 路径、连接地址和连接配置。
+
+截止至 MAA v5.7.0 支持检测的模拟器及连接地址如下：
+
+- BlueStacks 5：`127.0.0.1:5555/5556/5565/5575/5585/5595/5554`
+- MuMu 模拟器 12：`127.0.0.1:16384/16416/16448/16480/16512/16544/16576`
+- 雷电模拟器 9：`emulator-5554/5556/5558/5560`, `127.0.0.1:5555/5557/5559/5561`
+- 夜神模拟器：`127.0.0.1:62001/59865`
+- 逍遥模拟器：`127.0.0.1:21503`
+
+若检测失败，请尝试使用 UAC 管理员权限启动 MAA 并再次检测。若仍失败，则请参考下文手动设置，并确认模拟器和连接地址是否包含在上述列表中。
+
 ## ADB 路径
 
 :::info 技术细节
@@ -34,20 +48,18 @@ icon: mdi:plug
 运行在本机的模拟器连接地址应该是 `127.0.0.1:<端口号>` 或 `emulator-<四位数字>`。
 :::
 
-### 获取端口号
+### 模拟器相关文档及参考地址
 
-#### 模拟器相关文档及参考端口
-
-- [Bluestacks 5](https://support.bluestacks.com/hc/zh-tw/articles/360061342631-%E5%A6%82%E4%BD%95%E5%B0%87%E6%82%A8%E7%9A%84%E6%87%89%E7%94%A8%E5%BE%9EBlueStacks-4%E8%BD%89%E7%A7%BB%E5%88%B0BlueStacks-5#%E2%80%9C2%E2%80%9D) `5555`
-- [MuMu Pro](https://mumu.163.com/mac/function/20240126/40028_1134600.html) `16384`
-- [MuMu 12](https://mumu.163.com/help/20230214/35047_1073151.html) `16384`
-- [MuMu 6](https://mumu.163.com/help/20210531/35047_951108.html) `7555`
-- [逍遥](https://bbs.xyaz.cn/forum.php?mod=viewthread&tid=365537) `21503`
-- [夜神](https://support.yeshen.com/zh-CN/qt/ml) `62001`
+- [Bluestacks 5](https://support.bluestacks.com/hc/zh-tw/articles/360061342631-%E5%A6%82%E4%BD%95%E5%B0%87%E6%82%A8%E7%9A%84%E6%87%89%E7%94%A8%E5%BE%9EBlueStacks-4%E8%BD%89%E7%A7%BB%E5%88%B0BlueStacks-5#%E2%80%9C2%E2%80%9D) `127.0.0.1:5555`
+- [MuMu 模拟器 Pro](https://mumu.163.com/mac/function/20240126/40028_1134600.html) `127.0.0.1:16384`
+- [MuMu 模拟器 12](https://mumu.163.com/help/20230214/35047_1073151.html) `127.0.0.1:16384`
+- [雷电模拟器 9](https://help.ldmnq.com/docs/LD9adbserver) `emulator-5554`
+- [夜神模拟器](https://support.yeshen.com/zh-CN/qt/ml) `127.0.0.1:62001`
+- [逍遥模拟器](https://bbs.xyaz.cn/forum.php?mod=viewthread&tid=365537) `127.0.0.1:21503`
 
 其他模拟器可参考 [赵青青的博客](https://www.cnblogs.com/zhaoqingqing/p/15238464.html)。
 
-#### 获取多开端口
+### 获取多开端口
 
 - MuMu 12 多开器右上角可查看正在运行的多开端口。
 - Bluestacks 5 模拟器设置内可查看当前的多开端口。
@@ -152,27 +164,27 @@ MAA 现在会尝试从注册表中读取 `bluestacks.conf` 的存储位置，当
 
 需选择对应模拟器的配置，若列表中没有则选择通用配置。若通用配置不可用请尝试并选择其他任一可用的配置。
 
-具体区别可以阅读[源码](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/4f1ef65a9c217c414f52461e88e9705115b5c338/resource/config.json#L74)。
+具体区别可以阅读[源码](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/resource/config.json#L65)。
 
 ### MuMu 截图增强模式
 
-需使用官版 MuMu 12 V3.8.13 及更新版本，并关闭后台保活。方舟专版、国际版等暂不支持。
+需使用官版或方舟专版 MuMu 12 V4.0.0 及更新版本。国际版等暂不支持。<!-- 官版 V3.8.13 支持初版截图增强 -->
 
-1. `设置` - `连接设置`，勾选 `启用 MuMu 截图增强模式`。
+1. `设置` - `连接设置`，勾选 `启用 MuMu 截图增强模式`，MAA 会在勾选开关时自动尝试通过注册表获取安装路径。
 
-2. `MuMu 模拟器路径` 填写 `MuMuPlayer-12.0` 文件夹的路径，如 `C:\Program Files\Netease\MuMuPlayer-12.0`。
+2. `MuMu 安装路径` 填写 `MuMuPlayer-12.0` 或 `YXArkNights-12.0` 文件夹的路径，如 `C:\Program Files\Netease\MuMuPlayer-12.0`。
 
-3. `实例编号` 填写 MuMu 多开器内对应模拟器的序号，如主多开为 `0`。
+3. 若正在使用 MuMu 网络桥接，则需勾选 `MuMu 网络桥接模式` 后手动填写 MuMu 多开器内对应模拟器的序号，如主多开为 `0`。
 
-4. `实例屏幕` 填 `0`。
+### 雷电截图增强模式
 
-#### 关于后台保活
+需使用官版雷电模拟器 9 V9.0.78 及更新版本。专版、国际版等暂不支持。<!-- 官版 V9.0.78 支持初版截图增强 但存在高分辨率失效问题-->
 
-推荐关闭，此时实例屏幕始终为 `0`。
+1. `设置` - `连接设置`，勾选 `启用 LD 截图增强模式`，MAA 会在勾选开关时自动尝试通过注册表获取安装路径。
 
-开启时，MuMu 模拟器标签页的顺序应为实例屏幕的序号，如 `0` 为模拟器桌面，`1` 为明日方舟客户端。
+2. `LD 安装路径` 填写 `LDPlayer9` 文件夹的路径，如 `C:\leidian\LDPlayer9\`。
 
-针对后台保活的适配非常不完善，总会出现各种各样莫名其妙的问题，非常不建议使用。
+3. `实例编号` 填写雷电多开器内对应模拟器的编号（ID），如主多开为 `0`。
 
 ## 触控模式
 
@@ -182,13 +194,13 @@ MAA 现在会尝试从注册表中读取 `bluestacks.conf` 的存储位置，当
 
 ## ADB Lite
 
-由 MAA 独立实现的 ADB Client，相较原版 ADB 可以避免不停开启多个 ADB 进程，减少性能损耗，但部分截图方式不可用。
+由 MAA 独立实现的 ADB Client，使用 TCP 直接与 ADB Server 通信。相较原版 ADB 可以避免不停开启多个 ADB 进程，减少性能开销，但部分截图方式不可用。<sup>[PR](https://github.com/MaaAssistantArknights/MaaAssistantArknights/pull/3315)</sup>
 
 推荐启用，但具体优缺点尚待反馈。~~帮我们做做测试 x2~~
 
-## 多开 MAA
+## MAA 和模拟器多开
 
-::: info
+::: info 如何实现
 若需要多开模拟器同时操作，可将 MAA 文件夹复制多份，使用 **不同的 MAA**、**同一个 adb.exe**、**不同的连接地址** 来进行连接。
 :::
 

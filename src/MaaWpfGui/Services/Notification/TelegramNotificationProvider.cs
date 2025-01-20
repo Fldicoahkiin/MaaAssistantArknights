@@ -16,9 +16,9 @@
 using System;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
 using MaaWpfGui.Services.Web;
+using MaaWpfGui.ViewModels.UI;
 using Serilog;
 
 namespace MaaWpfGui.Services.Notification;
@@ -29,8 +29,8 @@ public class TelegramNotificationProvider(IHttpService httpService) : IExternalN
 
     public async Task<bool> SendAsync(string title, string content)
     {
-        var botToken = ConfigurationHelper.GetValue(ConfigurationKeys.ExternalNotificationTelegramBotToken, string.Empty);
-        var chatId = ConfigurationHelper.GetValue(ConfigurationKeys.ExternalNotificationTelegramChatId, string.Empty);
+        var botToken = SettingsViewModel.ExternalNotificationSettings.TelegramBotToken;
+        var chatId = SettingsViewModel.ExternalNotificationSettings.TelegramChatId;
 
         var uri = $"https://api.telegram.org/bot{botToken}/sendMessage";
 
@@ -40,7 +40,7 @@ public class TelegramNotificationProvider(IHttpService httpService) : IExternalN
 
         if (response is not null)
         {
-            return true;
+            return !response.Contains("\"ok\":false");
         }
 
         _logger.Warning("Failed to send message.");
@@ -55,7 +55,5 @@ public class TelegramNotificationProvider(IHttpService httpService) : IExternalN
 
         [JsonPropertyName("text")]
         public string? Content { get; set; }
-
-        // ReSharper restore UnusedAutoPropertyAccessor.Local
     }
 }

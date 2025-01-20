@@ -21,7 +21,7 @@ Usage of `resource/copilot/*.json` and field description.
             "skill_usage": 0,       // Skill usage, optional, 0 by default
                                     // 0 - Used on `actions`
                                     // 1 - Used when ready (e.g. Thorns: Destreza, Myrtle: Support Beta)
-                                    // 2 - Used when ready, only once（e.g. Mountain: Sweeping Stance）
+                                    // 2 - Used when ready, only once (e.g. Mountain: Sweeping Stance)
                                     // 3 - Auto-decision (not implemented)
                                     // 0 for auto skills
 
@@ -101,7 +101,9 @@ Usage of `resource/copilot/*.json` and field description.
                                     // Set it to 1 in that case.
 
             "pre_delay": 0,         // Pre-delay in ms, optional, 0 by default
+                                    // Once all condition parameters of the current action are met, a timer starts, and upon its completion, the action corresponding to the type is executed.
             "post_delay": 0,        // Post-delay in ms, optional, 0 by default
+                                    // The current action's type starts a timer upon completion of the action, and once the timer ends, the next action begins.
 
             // "timeout": 999999999,   // Reserved field, not implemented
                                     // Timeout time in ms, optional when `type` is "Deploy" | "Skill", INT_MAX by default
